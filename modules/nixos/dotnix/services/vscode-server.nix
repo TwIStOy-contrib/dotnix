@@ -11,5 +11,6 @@ in {
 
   config = lib.mkIf cfg.enable {
     services.vscode-server.enable = true;
+    services.vscode-server.installPath = "$HOME/.vscode-server-insiders";
   };
 }
