@@ -1,14 +1,20 @@
 _: let
   hostname = "poi";
 in {
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
   networking = {
     hostName = hostname;
     networkmanager.enable = true;
-    proxy.default = "http://192.168.50.217:8888";
+    proxy.default = "http://192.168.50.217:6152";
+  };
+
+  systemd.network.wait-online.enable = false;
+  systemd.services.NetworkManager-wait-online.enable = false;
+
+  boot = {
+    # Bootloader.
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+    initrd.systemd.network.wait-online.enable = false;
   };
 
   # Configure keymap in X11
