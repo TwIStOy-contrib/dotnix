@@ -33,6 +33,8 @@
       };
     };
 
+    nix-ai-tools.url = "github:numtide/nix-ai-tools";
+
     secrets-hawtian = {
       url = "git+ssh://git@github.com/TwIStOy/nix-secret.git?shallow=1";
       flake = false;

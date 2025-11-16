@@ -1,6 +1,6 @@
 {
   config,
-  pkgs-unstable,
+  nix-ai-tools,
   lib,
   ...
 }: let
@@ -11,13 +11,17 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    dotnix.hm.packages = with pkgs-unstable; [
+    dotnix.hm.packages = with nix-ai-tools; [
       # Github Copilot CLI
-      github-copilot-cli
+      copilot-cli
       # Claude Code Cli
       claude-code
       # Opencode
       opencode
+      # Claude Code Router
+      claude-code-router
+      # Google Gemini CLI
+      gemini-cli
     ];
   };
 }
