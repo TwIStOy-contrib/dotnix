@@ -3,7 +3,7 @@ _: {
     extraConfig = ''
       Host github.com
           HostName %h
-          ProxyCommand nc -X 5 -x 192.168.50.217:8889 %h %p
+          ProxyCommand nc -X 5 -x 192.168.50.217:6152 %h %p
     '';
     matchBlocks = {
       "taihou.local" = {
