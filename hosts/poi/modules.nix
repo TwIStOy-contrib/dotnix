@@ -30,7 +30,7 @@
 
   services.github-runners = {
     general-private-contrib = {
-      enable = true;
+      enable = false;
       name = "poi-private-contrib";
       tokenFile = "/run/agenix/github-actions-runner-token";
       url = "https://github.com/TwIStOy-contrib";
@@ -43,7 +43,7 @@
       ];
     };
     account-book = {
-      enable = true;
+      enable = false;
       name = "poi-account-book";
       tokenFile = "/run/agenix/github-actions-runner-token";
       url = "https://github.com/TwIStOy-contrib";
