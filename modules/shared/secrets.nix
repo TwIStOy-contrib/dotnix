@@ -97,5 +97,9 @@ in {
       file = "openrouter-api-key.age";
       owner = user.name;
     };
+    telegram-bot = ageSecret {
+      file = "telegram-bot.age";
+      owner = user.name;
+    };
   };
 }

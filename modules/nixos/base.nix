@@ -3,6 +3,8 @@
     startAgent = true;
   };
 
+  programs.nix-ld.enable = true;
+
   environment.enableAllTerminfo = true;
 
   environment.systemPackages = with pkgs; [

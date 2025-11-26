@@ -42,4 +42,5 @@ in {
   "bot-ssh-private-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "tesla-password.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "openrouter-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "telegram-bot.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }
