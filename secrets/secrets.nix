@@ -43,4 +43,5 @@ in {
   "tesla-password.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "openrouter-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "telegram-bot.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "ledger-bot-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }

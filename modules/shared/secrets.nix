@@ -101,5 +101,9 @@ in {
       file = "telegram-bot.age";
       owner = user.name;
     };
+    ledger-bot-token = ageSecret {
+      file = "ledger-bot-token.age";
+      owner = user.name;
+    };
   };
 }
