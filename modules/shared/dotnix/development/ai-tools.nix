@@ -16,8 +16,6 @@ in {
       copilot-cli
       # Claude Code Cli
       claude-code
-      # Opencode
-      opencode
       # Claude Code Router
       claude-code-router
       # Google Gemini CLI

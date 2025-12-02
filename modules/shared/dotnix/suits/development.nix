@@ -22,7 +22,9 @@ in {
         "git"
         "lazygit"
         "difftastic"
+
         "codex"
+        "opencode"
       ];
 
       development = {
