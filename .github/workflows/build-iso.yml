@@ -25,7 +25,7 @@ jobs:
       run: |
         nix build .#nixosConfigurations.cloud-iso.config.formats.install-iso
     - name: "provide default iso"
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: live-iso
         path: |
