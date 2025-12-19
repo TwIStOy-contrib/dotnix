@@ -16,10 +16,8 @@ in {
       copilot-cli
       # Claude Code Cli
       claude-code
-      # Claude Code Router
-      claude-code-router
-      # Google Gemini CLI
-      gemini-cli
+      # A beautiful status line for claude code
+      ccstatusline
     ];
   };
 }

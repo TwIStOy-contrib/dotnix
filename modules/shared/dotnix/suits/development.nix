@@ -24,6 +24,7 @@ in {
         "difftastic"
 
         "codex"
+        "claude-code-router"
         "opencode"
       ];
 
