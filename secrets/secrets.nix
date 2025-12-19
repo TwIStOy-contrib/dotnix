@@ -44,4 +44,5 @@ in {
   "openrouter-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "telegram-bot.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "ledger-bot-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "kouri-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }

@@ -105,5 +105,9 @@ in {
       file = "ledger-bot-token.age";
       owner = user.name;
     };
+    kouri-api-token = ageSecret {
+      file = "kouri-api-token.age";
+      owner = user.name;
+    };
   };
 }
