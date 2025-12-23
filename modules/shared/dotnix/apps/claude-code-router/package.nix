@@ -33,6 +33,7 @@ in
       # Install the WASM file in the same directory as the CLI
       cp $src/dist/tiktoken_bg.wasm $out/bin/
       cp $src/dist/* $out/dist/
+      cp $src/dist/cli.js $out/bin/
 
       runHook postInstall
     '';
@@ -43,7 +44,6 @@ in
       changelog = "https://github.com/musistudio/claude-code-router/releases";
       license = licenses.mit;
       sourceProvenance = with lib.sourceTypes; [binaryBytecode];
-      maintainers = with maintainers; [];
       mainProgram = "ccr";
       platforms = platforms.all;
     };
