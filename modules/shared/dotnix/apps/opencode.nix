@@ -27,7 +27,7 @@
         };
       };
     };
-    plugin = ["opencode-skills"];
+    plugin = [];
   };
 in {
   options.dotnix.apps.opencode = {
