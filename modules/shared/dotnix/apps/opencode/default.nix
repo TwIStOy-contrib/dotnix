@@ -1,6 +1,6 @@
 {
   config,
-  nix-ai-tools,
+  llm-agents,
   lib,
   dotnix-utils,
   ...
@@ -77,7 +77,7 @@ in {
   config = lib.mkIf cfg.enable {
     # Install opencode package
     environment.systemPackages = [
-      nix-ai-tools.opencode
+      llm-agents.opencode
     ];
 
     # setup opencode configs

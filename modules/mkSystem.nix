@@ -57,8 +57,8 @@ in
     dotnix-utils = buildDotnixUtils {
       inherit inputs dotnix-constants;
     };
-    # nix-ai-tools
-    nix-ai-tools = inputs.nix-ai-tools .packages.${system};
+    # llm-agents
+    llm-agents = inputs.llm-agents .packages.${system};
   in
     {
       modules,
@@ -69,8 +69,8 @@ in
         inherit dotnix-constants dotnix-utils;
         # unstable channel
         inherit pkgs-unstable;
-        # nix-ai-tools
-        inherit nix-ai-tools;
+        # llm-agents
+        inherit llm-agents;
         # my nur channel
         inherit (inputs) nur-hawtian secrets-hawtian;
         # self!

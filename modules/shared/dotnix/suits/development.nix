@@ -48,6 +48,8 @@ in {
         rsync
         # man pages
         man-pages
+        # nix-search
+        nix-search-cli
       ];
     };
 

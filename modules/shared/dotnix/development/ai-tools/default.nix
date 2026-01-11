@@ -1,6 +1,6 @@
 {
   config,
-  nix-ai-tools,
+  llm-agents,
   lib,
   ...
 }: let
@@ -11,7 +11,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    dotnix.hm.packages = with nix-ai-tools; [
+    dotnix.hm.packages = with llm-agents; [
       # Github Copilot CLI
       copilot-cli
       # Claude Code Cli
