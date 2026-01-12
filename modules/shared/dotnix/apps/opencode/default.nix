@@ -3,9 +3,12 @@
   llm-agents,
   lib,
   dotnix-utils,
+  dotnix-constants,
   ...
 }: let
   cfg = config.dotnix.apps.opencode;
+  inherit (dotnix-constants) user;
+  homeDir = config.users.users."${user.name}".home;
   openrouterApiKeyPath = config.age.secrets."openrouter-api-key".path;
   kouriApiKeyPath = config.age.secrets."kouri-api-token".path;
   kouriOptions = {
@@ -85,6 +88,21 @@ in {
       xdg.configFile."opencode/opencode.json" = {
         text = builtins.toJSON opencodeConfig;
         force = true;
+      };
+
+      home = {
+        file = {
+          "${homeDir}/.opencode/scripts" = {
+            source = ./scripts;
+            recursive = true;
+            force = true;
+          };
+          "${homeDir}/.opencode/command" = {
+            source = ./command;
+            recursive = true;
+            force = true;
+          };
+        };
       };
     };
   };

@@ -37,15 +37,11 @@ Update `flake.lock` to pull in the latest commits from all flake inputs. This ge
    just switch
    ```
 
-4. **Verify services are running**
-   ```bash
-   systemctl status docker tailscaled
-   ```
 
 ## Rollback if needed
 When you're done echo out the instructions to:
 ```bash
-# Revert to previous system generation
+# Revert to previous system generation, except on nix-darwin
 sudo nixos-rebuild switch --rollback
 
 # Revert flake.lock to previous state

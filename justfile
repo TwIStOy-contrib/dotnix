@@ -5,12 +5,14 @@ alias yu := yukikaze
 host := `hostname -s`
 system := if os() == "macos" { "macos" } else { "nixos" }
 
-default:
-  @echo "System: {{system}}, Host: {{host}}"
-  @{{just_executable()}} {{host}}
+default: switch
 
 check:
   {{just_executable()}} ci-{{host}}
+
+switch:
+  @echo "System: {{system}}, Host: {{host}}"
+  @{{just_executable()}} {{host}}
 
 LCNDWWYVTFMFX use_nom="yes" details="yes": (_macos_rebuild "LCNDWWYVTFMFX" use_nom details)
 
@@ -51,7 +53,7 @@ _cleanup_atuin_config:
   -@rm $HOME/.config/atuin/config.toml
 
 _remove_conflicting_files:
-    @sudo rm /etc/zshrc /etc/zprofile
+    -@sudo rm /etc/zshrc /etc/zprofile
 
 up:
   @nix flake update
