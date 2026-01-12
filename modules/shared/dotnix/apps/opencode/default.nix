@@ -22,8 +22,7 @@
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
     theme = "catppuccin";
-    model = "anthropic/claude-sonnet-4.5";
-    autoupdate = true;
+    autoupdate = false;
     provider = {
       openrouter = {
         options = {
