@@ -73,6 +73,14 @@
     plugin = [];
   };
 
+  # fetch claude skills repo
+  claudeSkills = pkgs.fetchFromGitHub {
+    owner = "anthropics";
+    repo = "skills";
+    rev = "69c0b1a0674149f27b61b2635f935524b6add202";
+    sha256 = "sha256-pllFZoWRdtLliz/5pLWks0V9nKFMzeWoRcmFgu2UWi8=";
+  };
+
   originalOpencode = llm-agents.opencode;
   opencode = pkgs.writeShellScriptBin "opencode" ''
     export NODE_TLS_REJECT_UNAUTHORIZED=0
@@ -105,6 +113,11 @@ in {
           };
           "${homeDir}/.opencode/command" = {
             source = ./command;
+            recursive = true;
+            force = true;
+          };
+          "${homeDir}/.opencode/skill/skill-creator" = {
+            source = "${claudeSkills}/skills/skill-creator";
             recursive = true;
             force = true;
           };
