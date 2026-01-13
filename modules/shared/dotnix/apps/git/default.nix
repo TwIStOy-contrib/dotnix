@@ -18,11 +18,10 @@ in {
         enable = true;
         lfs.enable = true;
 
-        userName = dotnix-constants.user.fullName;
-        userEmail = dotnix-constants.user.email;
-
-        extraConfig =
+        settings =
           {
+            user.name = dotnix-constants.user.fullName;
+            user.email = dotnix-constants.user.email;
             init.defaultBranch = "master";
             push.autoSetupRemote = true;
             pull.rebase = false;
