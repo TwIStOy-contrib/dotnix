@@ -25,9 +25,14 @@ in {
           notARepository = "skip";
           git = {
             parseEmoji = true;
-            paging = {
-              externalDiffCommand = "difft --color=always";
-            };
+            pagers = [
+              {
+                pager = "delta --dark --paging=never";
+              }
+              {
+                externalDiffCommand = "difft --color=always";
+              }
+            ];
           };
         };
       };
