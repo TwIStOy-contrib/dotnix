@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   llm-agents,
   lib,
@@ -71,6 +72,12 @@
     };
     plugin = [];
   };
+
+  originalOpencode = llm-agents.opencode;
+  opencode = pkgs.writeShellScriptBin "opencode" ''
+    export NODE_TLS_REJECT_UNAUTHORIZED=0
+    ${originalOpencode}/bin/opencode "$@"
+  '';
 in {
   options.dotnix.apps.opencode = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.opencode";
@@ -79,7 +86,7 @@ in {
   config = lib.mkIf cfg.enable {
     # Install opencode package
     environment.systemPackages = [
-      llm-agents.opencode
+      opencode
     ];
 
     # setup opencode configs
