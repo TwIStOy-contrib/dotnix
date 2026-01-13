@@ -3,6 +3,7 @@
   lib,
   dotnix-utils,
   pkgs,
+  pkgs-unstable,
   ...
 }: let
   inherit (dotnix-utils) enabled enableModules;
@@ -44,13 +45,15 @@ in {
         };
       };
 
-      hm.packages = with pkgs; [
-        rsync
-        # man pages
-        man-pages
-        # nix-search
-        nix-search-cli
-      ];
+      hm.packages =
+        (with pkgs; [
+          rsync
+          # man pages
+          man-pages
+        ])
+        ++ (with pkgs-unstable; [
+          angrr
+        ]);
     };
 
     home-manager =
