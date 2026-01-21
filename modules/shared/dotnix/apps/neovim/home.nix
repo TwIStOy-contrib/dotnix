@@ -15,6 +15,7 @@
     inherit (unstableVimPlugins) avante-nvim;
     inherit (unstableVimPlugins) markdown-preview-nvim;
     inherit (unstableVimPlugins) rest-nvim;
+    inherit (unstableVimPlugins) codediff-nvim;
   };
 
   bins = {
