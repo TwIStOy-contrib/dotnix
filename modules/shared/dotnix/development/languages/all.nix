@@ -18,6 +18,7 @@ in {
       # dart = enabled;
       nix = enabled;
       node = enabled;
+      typescript = enabled;
       python = enabled;
       rust = enabled;
       lua = enabled;
