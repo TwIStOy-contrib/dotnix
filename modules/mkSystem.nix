@@ -42,10 +42,10 @@ in
     pkgs-unstable = import inputs.nixpkgs-unstable {
       inherit system;
       config.allowUnfree = true;
-      overlays = [
-        inputs.neovim-nightly-overlay.overlays.default
-      ];
     };
+    # Use neovim packages from the overlay's own pinned nixpkgs
+    # to avoid compatibility issues with nixpkgs-unstable
+    neovim-pkgs = inputs.neovim-nightly-overlay.packages.${system};
     isDarwin = hasSuffix "darwin" system;
     mkSystemImpl =
       if isDarwin
@@ -69,6 +69,8 @@ in
         inherit dotnix-constants dotnix-utils;
         # unstable channel
         inherit pkgs-unstable;
+        # neovim packages from nightly overlay
+        inherit neovim-pkgs;
         # llm-agents
         inherit llm-agents;
         # my nur channel
