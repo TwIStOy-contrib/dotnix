@@ -15,6 +15,15 @@ on:
       - "**.md"
       - "Justfile"
       - ".github/workflows/*"
+  pull_request_target:
+    branches:
+      - master
+    paths-ignore:
+      - "**.md"
+      - "Justfile"
+      - ".github/workflows/*"
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
   checks:
@@ -23,6 +32,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Install nix
         uses: cachix/install-nix-action@v31
         with:
@@ -54,6 +65,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: cachix/install-nix-action@v31
         with:
           install_url: https://nixos.org/nix/install
