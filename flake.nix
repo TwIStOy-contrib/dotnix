@@ -63,7 +63,8 @@
 
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # Don't follow nixpkgs-unstable to avoid compatibility issues
+      # The overlay needs its own pinned nixpkgs version
     };
 
     # fix vscode server on nixos
