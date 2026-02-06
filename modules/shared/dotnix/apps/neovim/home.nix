@@ -3,6 +3,7 @@
   lib,
   pkgs,
   pkgs-unstable,
+  neovim-pkgs,
   ...
 }: let
   user-dotpath = "${config.home.homeDirectory}/.dotvim";
@@ -96,7 +97,7 @@ in {
 
   programs.neovim = {
     enable = true;
-    package = pkgs-unstable.neovim;
+    package = neovim-pkgs.default;
     plugins = builtins.attrValues plugins;
   };
 
