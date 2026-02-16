@@ -23,7 +23,10 @@
       cleanup = "zap";
     };
 
-    masApps = {};
+    masApps = {
+      "Nook X" = 6733240772;
+      "Wechat" = 836500024;
+    };
 
     taps = [
       "homebrew/services"
@@ -46,13 +49,13 @@
       "gnu-tar"
       "jq"
 
-      # "fvm" # for flutter
-
       # xcode related tools
       # "xcbeautify" # beautifier tool for xcodebuild
       # "xcode-build-server" # xcodeproject to lspconfigs
       "swift-format"
       "emacs-plus"
+
+      "mas"
     ];
 
     casks = [
@@ -74,7 +77,7 @@
       "orbstack"
       "obsidian"
       "ghostty"
-      "coteditor"
+      "neteasemusic"
     ];
   };
 }
