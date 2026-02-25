@@ -28,8 +28,8 @@ in {
         source = pkgs.fetchFromGitHub {
           owner = "gaboolic";
           repo = "rime-shuangpin-fuzhuma";
-          rev = "1.0.0";
-          sha256 = "sha256-ArETWI/pZvzuOakFXSPLNkQ831WXz5y0JtcsXR0hwX8=";
+          rev = "1.0.5";
+          sha256 = "sha256-1RH4KO9VfG5ln/eMQqwzT/5QNfKevmTmaqCeWwUwnD8=";
         };
         recursive = true;
       };

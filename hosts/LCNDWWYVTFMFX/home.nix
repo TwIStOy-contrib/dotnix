@@ -2,7 +2,7 @@ _: {
   programs.ssh = {
     matchBlocks = {
       "dev.work.local" = {
-        hostname = "10.114.192.19";
+        hostname = "10.114.192.14";
         user = "wanghaot";
         forwardAgent = true;
         forwardX11 = true;
@@ -11,7 +11,7 @@ _: {
         };
       };
       "dev.work.local.tmux" = {
-        hostname = "10.114.192.19";
+        hostname = "10.114.192.14";
         user = "wanghaot";
         forwardAgent = true;
         forwardX11 = true;
