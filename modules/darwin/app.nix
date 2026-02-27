@@ -20,7 +20,7 @@
       autoUpdate = true;
       upgrade = true;
 
-      cleanup = "zap";
+      cleanup = "none";
     };
 
     masApps = {
@@ -78,6 +78,7 @@
       "obsidian"
       "ghostty"
       "neteasemusic"
+      "finetune"
     ];
   };
 }

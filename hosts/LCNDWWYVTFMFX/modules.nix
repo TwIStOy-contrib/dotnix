@@ -1,4 +1,8 @@
-{dotnix-utils, ...}: let
+{
+  dotnix-utils,
+  lib,
+  ...
+}: let
   inherit (dotnix-utils) enabled;
   hostname = "LCNDWWYVTFMFX";
 in {
@@ -55,6 +59,10 @@ in {
         "--accept-routes"
       ];
     };
+  };
+
+  homebrew = {
+    masApps = lib.mkForce {};
   };
 
   networking.hostName = hostname;
