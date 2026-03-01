@@ -29,6 +29,7 @@ in {
             kubectx
             kubelogin-oidc
             squashfsTools
+            flyctl
           ]
         );
     };
