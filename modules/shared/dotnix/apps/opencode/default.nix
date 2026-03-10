@@ -104,6 +104,12 @@ in {
         force = true;
       };
 
+      xdg.configFile."opencode/plugins" = {
+        source = ./plugins;
+        recursive = true;
+        force = true;
+      };
+
       home = {
         file = {
           "${homeDir}/.opencode/scripts" = {
