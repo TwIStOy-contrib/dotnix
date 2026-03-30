@@ -28,10 +28,12 @@ in {
             minikube # k8s
             kubectx
             kubelogin-oidc
-            squashfsTools
             flyctl
           ]
-        );
+        )
+        ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+          pkgs-unstable.squashfsTools
+        ];
     };
   };
 }
