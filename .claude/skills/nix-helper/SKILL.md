@@ -80,3 +80,30 @@ age.secrets = {
 };
 ```
 
+### Using flake inputs in modules
+
+The `inputs` specialArg is available in all modules (injected by `mkSystem.nix`):
+
+```nix
+{
+  inputs,
+  ...
+}: let
+  hm-dag = inputs.home-manager.lib.hm.dag;
+in { }
+```
+
+### Home Manager activation scripts
+
+For post-deploy actions (git clone, build steps), use `home.activation` with hm-dag:
+
+```nix
+home-manager = dotnix-utils.hm.hmConfig {
+  home.activation.setup-foo = hm-dag.entryAfter ["linkGeneration"] ''
+    $DRY_RUN_CMD git clone ... "''${homeDir}/foo"
+  '';
+};
+```
+
+Access `hm-dag` via `inputs.home-manager.lib.hm.dag`.
+

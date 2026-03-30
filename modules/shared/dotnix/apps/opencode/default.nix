@@ -5,11 +5,13 @@
   lib,
   dotnix-utils,
   dotnix-constants,
+  inputs,
   ...
 }: let
   cfg = config.dotnix.apps.opencode;
   inherit (dotnix-constants) user;
   homeDir = config.users.users."${user.name}".home;
+  hm-dag = inputs.home-manager.lib.hm.dag;
   openrouterApiKeyPath = config.age.secrets."openrouter-api-key".path;
   kouriApiKeyPath = config.age.secrets."kouri-api-token".path;
   zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
@@ -76,7 +78,7 @@
         };
       };
     };
-    plugin = [];
+    plugin = ["${homeDir}/dotcode/dist/dotcode.js"];
   };
 
   # fetch claude skills repo
@@ -135,6 +137,16 @@ in {
           };
         };
       };
+
+      home.activation.setup-dotcode = hm-dag.entryAfter ["linkGeneration"] ''
+        if [ ! -d "${homeDir}/dotcode" ]; then
+          $DRY_RUN_CMD git clone git@github.com:TwIStOy/dotcode.git "${homeDir}/dotcode"
+        fi
+        if [ ! -f "${homeDir}/dotcode/dist/dotcode.js" ]; then
+          $DRY_RUN_CMD ${pkgs.bun}/bin/bun install --cwd "${homeDir}/dotcode"
+          $DRY_RUN_CMD ${pkgs.bun}/bin/bun run --cwd "${homeDir}/dotcode" build
+        fi
+      '';
     };
   };
 }
