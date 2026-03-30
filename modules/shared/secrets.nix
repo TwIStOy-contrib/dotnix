@@ -109,5 +109,9 @@ in {
       file = "kouri-api-token.age";
       owner = user.name;
     };
+    z-ai-api-key = ageSecret {
+      file = "z-ai-api-key.age";
+      owner = user.name;
+    };
   };
 }

@@ -12,6 +12,7 @@
   homeDir = config.users.users."${user.name}".home;
   openrouterApiKeyPath = config.age.secrets."openrouter-api-key".path;
   kouriApiKeyPath = config.age.secrets."kouri-api-token".path;
+  zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
   kouriOptions = {
     baseURL = "https://api.kourichat.com/v1";
     apiKey = "{file:${kouriApiKeyPath}}";
@@ -29,6 +30,11 @@
         options = {
           baseURL = "https://ai-proxy.chatwise.app/openrouter";
           apiKey = "{file:${openrouterApiKeyPath}}";
+        };
+      };
+      zai-coding-plan = {
+        options = {
+          apiKey = "{file:${zAiApiKeyPath}}";
         };
       };
       kouri-openai-comp = {
