@@ -25,7 +25,6 @@
 
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
-    theme = "catppuccin";
     autoupdate = false;
     provider = {
       openrouter = {
@@ -78,7 +77,13 @@
         };
       };
     };
-    plugin = ["${homeDir}/dotcode/dist/dotcode.js"];
+    plugin = ["${homeDir}/dotcode/plugin/dist/dotcode.js"];
+  };
+
+  tuiConfig = {
+    "$schema" = "https://opencode.ai/tui.json";
+    theme = "catppuccin";
+    plugin = ["${homeDir}/dotcode/plugin/dist/dotcode-tui.js"];
   };
 
   # fetch claude skills repo
@@ -112,6 +117,11 @@ in {
         force = true;
       };
 
+      xdg.configFile."opencode/tui.json" = {
+        text = builtins.toJSON tuiConfig;
+        force = true;
+      };
+
       xdg.configFile."opencode/plugins" = {
         source = ./plugins;
         recursive = true;
@@ -142,9 +152,9 @@ in {
         if [ ! -d "${homeDir}/dotcode" ]; then
           $DRY_RUN_CMD git clone git@github.com:TwIStOy/dotcode.git "${homeDir}/dotcode"
         fi
-        if [ ! -f "${homeDir}/dotcode/dist/dotcode.js" ]; then
-          $DRY_RUN_CMD ${pkgs.bun}/bin/bun install --cwd "${homeDir}/dotcode"
-          $DRY_RUN_CMD ${pkgs.bun}/bin/bun run --cwd "${homeDir}/dotcode" build
+        if [ ! -f "${homeDir}/dotcode/plugin/dist/dotcode.js" ]; then
+          $DRY_RUN_CMD ${pkgs.bun}/bin/bun install --cwd "${homeDir}/dotcode/plugin"
+          $DRY_RUN_CMD ${pkgs.bun}/bin/bun run --cwd "${homeDir}/dotcode/plugin" build
         fi
       '';
     };
