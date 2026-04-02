@@ -27,7 +27,40 @@ in {
 
 ## Package configuration Patterns
 
+### Standalone Package (no HM program module)
+
+Use `dotnix.hm.packages` with `pkgs-unstable` for packages that don't have a dedicated home-manager program module:
+
+```nix
+{
+  config,
+  lib,
+  pkgs,
+  pkgs-unstable,
+  ...
+}: let
+  cfg = config.dotnix.apps.todoist;
+in {
+  options.dotnix.apps.todoist = {
+    enable = lib.mkEnableOption "Enable module dotnix.apps.todoist";
+  };
+
+  config = lib.mkIf cfg.enable {
+    dotnix.hm.packages = with pkgs-unstable; [
+      todoist
+    ];
+
+    # For macOS GUI apps, also add the homebrew cask
+    homebrew = lib.optionalAttrs pkgs.stdenv.isDarwin {
+      casks = ["todoist"];
+    };
+  };
+}
+```
+
 ### Home Manager Package
+
+For packages that have a dedicated home-manager program module:
 
 ```nix
 {

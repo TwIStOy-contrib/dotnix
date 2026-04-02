@@ -27,6 +27,7 @@ in {
         "codex"
         "claude-code-router"
         "opencode"
+        "todoist"
       ];
 
       development = {

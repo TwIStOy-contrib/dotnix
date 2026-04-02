@@ -44,13 +44,14 @@
 
       font-thicken = "true";
       background-opacity = "0.9";
-      background-blur-radius = "20";
+      background-blur = "20";
 
       window-title-font-family = "Maple Mono NF CN";
 
-      custom-shader = "ghostty-shader-playground/shaders/cursor_frozen.glsl";
+      # custom-shader = "ghostty-shader-playground/shaders/cursor_frozen.glsl";
 
       auto-update-channel = "tip";
+      cursor-click-to-move = "true";
       shell-integration-features = "ssh-env,ssh-terminfo";
     }
     // (
