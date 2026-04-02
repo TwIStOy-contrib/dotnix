@@ -117,5 +117,9 @@ in {
       file = "todoist-api-key.age";
       owner = user.name;
     };
+    dotcode-memory-db-url = ageSecret {
+      file = "dotcode-memory-db-url.age";
+      owner = user.name;
+    };
   };
 }
