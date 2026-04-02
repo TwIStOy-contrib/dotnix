@@ -15,6 +15,7 @@
   openrouterApiKeyPath = config.age.secrets."openrouter-api-key".path;
   kouriApiKeyPath = config.age.secrets."kouri-api-token".path;
   zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
+  dotcodeMemoryDbUrlPath = config.age.secrets."dotcode-memory-db-url".path;
   kouriOptions = {
     baseURL = "https://api.kourichat.com/v1";
     apiKey = "{file:${kouriApiKeyPath}}";
@@ -125,6 +126,14 @@ in {
       xdg.configFile."opencode/plugins" = {
         source = ./plugins;
         recursive = true;
+        force = true;
+      };
+
+      xdg.configFile."dotcode/config.toml" = {
+        text = ''
+          [database]
+          memory_url = "{file:${dotcodeMemoryDbUrlPath}}"
+        '';
         force = true;
       };
 
