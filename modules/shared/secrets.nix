@@ -113,5 +113,9 @@ in {
       file = "z-ai-api-key.age";
       owner = user.name;
     };
+    todoist-api-key = ageSecret {
+      file = "todoist-api-key.age";
+      owner = user.name;
+    };
   };
 }

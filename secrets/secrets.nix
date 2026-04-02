@@ -46,4 +46,5 @@ in {
   "ledger-bot-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "kouri-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "z-ai-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "todoist-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }
