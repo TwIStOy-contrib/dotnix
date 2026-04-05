@@ -1,0 +1,51 @@
+name: Dependabot Rebase
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  rebase:
+    name: Request rebase for dependabot PRs
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Comment rebase on all open dependabot PRs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pulls = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+            });
+
+            for (const pull of pulls) {
+              if (pull.user.login !== 'dependabot[bot]') {
+                continue;
+              }
+
+              // Skip if the most recent github-actions[bot] comment is already a rebase request
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pull.number,
+              });
+              const botComments = comments.filter(c => c.user.login === 'github-actions[bot]');
+              const lastBotComment = botComments[botComments.length - 1];
+              if (lastBotComment && lastBotComment.body.trim() === '@dependabot rebase') {
+                core.info(`PR #${pull.number} already has a pending rebase request, skipping`);
+                continue;
+              }
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pull.number,
+                body: '@dependabot rebase',
+              });
+              core.info(`Requested rebase for PR #${pull.number}: ${pull.title}`);
+            }
