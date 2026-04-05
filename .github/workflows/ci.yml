@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - update_flake_lock_action
     paths-ignore:
       - "**.md"
       - "Justfile"
@@ -11,6 +12,7 @@ on:
   pull_request:
     branches:
       - master
+      - update_flake_lock_action
     paths-ignore:
       - "**.md"
       - "Justfile"
@@ -18,6 +20,7 @@ on:
   pull_request_target:
     branches:
       - master
+      - update_flake_lock_action
     paths-ignore:
       - "**.md"
       - "Justfile"
