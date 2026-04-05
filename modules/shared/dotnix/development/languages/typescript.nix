@@ -14,7 +14,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     dotnix.hm.packages =
-      (with pkgs-unstable.nodePackages; [
+      (with pkgs-unstable; [
         typescript
         typescript-language-server
         prettier

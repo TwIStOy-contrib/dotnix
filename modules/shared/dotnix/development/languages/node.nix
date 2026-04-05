@@ -12,7 +12,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    dotnix.hm.packages = with pkgs-unstable.nodePackages; [
+    dotnix.hm.packages = with pkgs-unstable; [
       nodejs
       yarn
       pnpm
