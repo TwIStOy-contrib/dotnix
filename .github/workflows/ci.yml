@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - update_flake_lock_action
     paths-ignore:
       - "**.md"
       - "Justfile"
