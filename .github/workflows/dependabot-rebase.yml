@@ -15,7 +15,7 @@ jobs:
       - name: Comment rebase on all open dependabot PRs
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.BOT_TOKEN_FOR_UPDATES }}
           script: |
             const pulls = await github.paginate(github.rest.pulls.list, {
               owner: context.repo.owner,
@@ -28,15 +28,16 @@ jobs:
                 continue;
               }
 
-              // Skip if the most recent github-actions[bot] comment is already a rebase request
-              const comments = await github.paginate(github.rest.issues.listComments, {
+              // Skip if the most recent comment is already a rebase request
+              const { data: comments } = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pull.number,
+                per_page: 1,
+                direction: 'desc',
               });
-              const botComments = comments.filter(c => c.user.login === 'github-actions[bot]');
-              const lastBotComment = botComments[botComments.length - 1];
-              if (lastBotComment && lastBotComment.body.trim() === '@dependabot rebase') {
+              const lastComment = comments[0];
+              if (lastComment && lastComment.body.trim() === '@dependabot rebase') {
                 core.info(`PR #${pull.number} already has a pending rebase request, skipping`);
                 continue;
               }
