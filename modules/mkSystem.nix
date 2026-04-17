@@ -45,7 +45,15 @@ in
     };
     # Use neovim packages from the overlay's own pinned nixpkgs
     # to avoid compatibility issues with nixpkgs-unstable
-    neovim-pkgs = inputs.neovim-nightly-overlay.packages.${system};
+    neovim-pkgs =
+      builtins.mapAttrs
+      (_: pkg:
+        if pkg ? overrideAttrs
+        then
+          pkg.overrideAttrs
+          (_: {doCheck = false;})
+        else pkg)
+      inputs.neovim-nightly-overlay.packages.${system};
     isDarwin = hasSuffix "darwin" system;
     mkSystemImpl =
       if isDarwin
