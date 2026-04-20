@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgs-unstable,
   dotnix-utils,
   ...
 }: let
@@ -15,6 +16,7 @@ in {
     home-manager = dotnix-utils.hm.hmConfig {
       programs.fish = {
         enable = true;
+        package = pkgs-unstable.fish;
         interactiveShellInit = ''
           set fish_greeting
 

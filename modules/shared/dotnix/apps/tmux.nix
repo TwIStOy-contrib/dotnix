@@ -2,7 +2,7 @@
   config,
   lib,
   dotnix-utils,
-  pkgs,
+  pkgs-unstable,
   ...
 }: let
   cfg = config.dotnix.apps.tmux;
@@ -16,7 +16,7 @@ in {
       programs.tmux = {
         enable = true;
 
-        shell = "${pkgs.fish}/bin/fish";
+        shell = "${pkgs-unstable.fish}/bin/fish";
         terminal = "xterm-kitty";
         mouse = true;
         historyLimit = 5000;
