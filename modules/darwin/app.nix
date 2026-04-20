@@ -1,15 +1,19 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  pkgs-unstable,
+  ...
+}: {
   environment.systemPackages = with pkgs; [
     git
     gnugrep
     gnutar
-    fish
+    pkgs-unstable.fish
   ];
 
   programs.zsh.enable = true;
   environment.shells = with pkgs; [
     zsh
-    fish
+    pkgs-unstable.fish
     iproute2mac
   ];
 
