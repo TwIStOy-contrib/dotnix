@@ -90,6 +90,11 @@
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    portal = {
+      url = "github:Dreamacro/portal";
+      flake = false;
+    };
   };
 
   nixConfig = {

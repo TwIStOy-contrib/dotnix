@@ -1339,6 +1339,22 @@
         "type": "github"
       }
     },
+    "portal": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1776757783,
+        "narHash": "sha256-jxOTlj6f1ixliZPMvyoaTN/050vtIEziVS+LoOyl6u0=",
+        "owner": "Dreamacro",
+        "repo": "portal",
+        "rev": "4c8677564154fe9507d024dc4cfb7cc856499f9b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Dreamacro",
+        "repo": "portal",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": [
@@ -1437,6 +1453,7 @@
         "nixpkgs": "nixpkgs_9",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur-hawtian": "nur-hawtian",
+        "portal": "portal",
         "pre-commit-hooks": "pre-commit-hooks_3",
         "secrets-hawtian": "secrets-hawtian",
         "vscode-server": "vscode-server"

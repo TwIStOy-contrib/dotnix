@@ -59,6 +59,19 @@ in {
         "--accept-routes"
       ];
     };
+
+    development.portal = {
+      enable = true;
+      tunnels = [
+        {
+          name = "dev-work";
+          host = "dev.work.local";
+          mode = "local";
+          local = "127.0.0.1:9999";
+          remote = "127.0.0.1:2323";
+        }
+      ];
+    };
   };
 
   homebrew = {
