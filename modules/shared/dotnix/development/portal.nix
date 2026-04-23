@@ -4,9 +4,14 @@
   pkgs,
   inputs,
   dotnix-utils,
+  dotnix-constants,
+  isDarwin,
   ...
 }: let
   cfg = config.dotnix.development.portal;
+  inherit (dotnix-constants) user;
+  homeDir = config.users.users."${user.name}".home;
+
   portal = pkgs.rustPlatform.buildRustPackage {
     pname = "portal";
     version = "unstable-${inputs.portal.shortRev or "dirty"}";
@@ -54,6 +59,16 @@ in {
   options.dotnix.development.portal = {
     enable = lib.mkEnableOption "Enable portal SSH tunnel manager";
 
+    service = lib.mkOption {
+      type = lib.types.submodule {
+        options = {
+          enable = lib.mkEnableOption "Run portal as a background service";
+        };
+      };
+      default = {};
+      description = "Portal service configuration";
+    };
+
     forwards = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [];
@@ -87,6 +102,36 @@ in {
           force = true;
         };
       }
+      // lib.optionalAttrs cfg.service.enable (
+        if isDarwin
+        then {
+          launchd.agents.portal = {
+            enable = true;
+            config = {
+              Label = "com.dotnix.portal";
+              ProgramArguments = ["${portal}/bin/portal"];
+              RunAtLoad = true;
+              KeepAlive = true;
+              StandardErrorPath = "${homeDir}/Library/Logs/portal.stderr.log";
+              StandardOutPath = "${homeDir}/Library/Logs/portal.stdout.log";
+            };
+          };
+        }
+        else {
+          systemd.user.services.portal = {
+            Unit = {
+              Description = "Portal SSH tunnel manager";
+              After = ["network.target"];
+            };
+            Service = {
+              ExecStart = "${portal}/bin/portal";
+              Restart = "always";
+              RestartSec = 5;
+            };
+            Install.WantedBy = ["default.target"];
+          };
+        }
+      )
     );
   };
 }

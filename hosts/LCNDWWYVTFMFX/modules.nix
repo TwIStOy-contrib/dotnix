@@ -62,6 +62,7 @@ in {
 
     development.portal = {
       enable = true;
+      service.enable = true;
       tunnels = [
         {
           name = "dev-work";
