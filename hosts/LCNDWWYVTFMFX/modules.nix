@@ -71,6 +71,13 @@ in {
           local = "127.0.0.1:9999";
           remote = "127.0.0.1:2323";
         }
+        {
+          name = "dev-work-3000";
+          host = "dev.work.local";
+          mode = "remote";
+          local = "127.0.0.1:3000";
+          remote = "127.0.0.1:3000";
+        }
       ];
     };
   };
