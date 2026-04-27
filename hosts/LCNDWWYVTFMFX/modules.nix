@@ -74,7 +74,7 @@ in {
         {
           name = "dev-work-3000";
           host = "dev.work.local";
-          mode = "remote";
+          mode = "local";
           local = "127.0.0.1:3000";
           remote = "127.0.0.1:3000";
         }
