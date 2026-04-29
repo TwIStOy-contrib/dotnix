@@ -5,7 +5,7 @@
   nixpkgs,
   home-manager,
   agenix,
-  vars,
+  dotnixConstants,
   buildDotnixUtils,
   vscode-server,
   ...
@@ -60,8 +60,8 @@ in
       then nix-darwin.lib.darwinSystem
       else nixpkgs.lib.nixosSystem;
     platModules = buildPlatformModules system;
-    # re-export vars to dotnix-constants
-    dotnix-constants = vars.varsFor env;
+    # re-export selected environment constants to modules.
+    dotnix-constants = dotnixConstants.varsFor env;
     dotnix-utils = buildDotnixUtils {
       inherit inputs dotnix-constants;
     };
