@@ -4,9 +4,10 @@
   dotnixConstants = import ../lib/constants;
 
   buildDotnixUtils = import ../lib/utils;
+  buildDotnixPkgs = import ../lib/pkgs;
   mkSystem = import ../modules/mkSystem.nix (
     {
-      inherit self inputs dotnixConstants buildDotnixUtils;
+      inherit self inputs dotnixConstants buildDotnixUtils buildDotnixPkgs;
     }
     // inputs
   );

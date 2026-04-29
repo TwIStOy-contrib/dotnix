@@ -1,7 +1,3 @@
 {dotnix-utils, ...}: {
-  imports =
-    [
-      ../../lib/pkgs
-    ]
-    ++ dotnix-utils.path.listModules ./.;
+  imports = dotnix-utils.path.listModules ./.;
 }

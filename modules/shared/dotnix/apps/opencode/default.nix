@@ -4,6 +4,7 @@
   lib,
   dotnix-utils,
   dotnix-constants,
+  dotnix-pkgs,
   inputs,
   ...
 }: let
@@ -94,7 +95,7 @@
     sha256 = "sha256-pllFZoWRdtLliz/5pLWks0V9nKFMzeWoRcmFgu2UWi8=";
   };
 
-  opencode = config."dotnix-pkgs".wrappedPrograms.opencode;
+  opencode = dotnix-pkgs.wrapped-programs.opencode;
 in {
   options.dotnix.apps.opencode = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.opencode";
