@@ -31,7 +31,7 @@ taihou use_nom="yes" details="yes": (_nixos_rebuild "taihou" use_nom details)
 ci-taihou: (_nixos_build "taihou" "no" "yes")
 
 _macos_build hostname use_nom="yes" details="no":
-  @{{ if use_nom == "yes" { "nom" } else { "nix" } }} build .#darwinConfigurations.{{hostname}}.system --accept-flake-config --extra-experimental-features 'nix-command flakes' {{ if details != "no" { "--show-trace" } else { "" } }}
+  {{ if use_nom == "yes" { "nom" } else { "nix" } }} build .#darwinConfigurations.{{hostname}}.system --accept-flake-config --extra-experimental-features 'nix-command flakes' {{ if details != "no" { "--show-trace" } else { "" } }}
 
 _nixos_build hostname use_nom="yes" details="no":
   {{ if use_nom == "yes" { "nom" } else { "nix" } }} build .#nixosConfigurations.{{hostname}}.config.system.build.toplevel --accept-flake-config {{ if details != "no" { "--show-trace --verbose" } else { "" } }}

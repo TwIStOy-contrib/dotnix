@@ -1,5 +1,9 @@
 # Common configuration for both darwin and nixos
-{dotnix-constants, ...}: let
+{
+  config,
+  dotnix-constants,
+  ...
+}: let
   inherit (dotnix-constants) user;
 in {
   users.users.${user.name} = {
@@ -14,6 +18,8 @@ in {
     trusted-users = [user.name];
 
     substituters = [
+      "https://mirror.sjtu.edu.cn/nix-channels/store"
+      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
       "https://mirrors.ustc.edu.cn/nix-channels/store"
       "https://twistoy.cachix.org"
       "https://nix-community.cachix.org"
@@ -24,6 +30,10 @@ in {
     ];
     builders-use-substitutes = true;
   };
+
+  nix.extraOptions = ''
+    !include ${config.age.secrets.nix-secret-conf.path}
+  '';
 
   environment.variables = {
     EDITOR = "nvim";

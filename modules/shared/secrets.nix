@@ -121,5 +121,9 @@ in {
       file = "dotcode-memory-db-url.age";
       owner = user.name;
     };
+    nix-secret-conf = ageSecret {
+      file = "nix-secret-conf.age";
+      owner = user.name;
+    };
   };
 }

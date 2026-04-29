@@ -48,4 +48,5 @@ in {
   "z-ai-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "todoist-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "dotcode-memory-db-url.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "nix-secret-conf.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }
