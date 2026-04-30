@@ -97,6 +97,8 @@
     };
 
     dotvim.url = "github:TwIStOy/dotvim";
+
+    aicommit2.url = "git+https://github.com/tak-bro/aicommit2?shallow=1";
   };
 
   nixConfig = {
