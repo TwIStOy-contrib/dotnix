@@ -1,10 +1,10 @@
 {
   pkgs,
   config,
-  llm-agents,
   lib,
   dotnix-utils,
   dotnix-constants,
+  dotnix-pkgs,
   inputs,
   ...
 }: let
@@ -95,19 +95,14 @@
     sha256 = "sha256-pllFZoWRdtLliz/5pLWks0V9nKFMzeWoRcmFgu2UWi8=";
   };
 
-  originalOpencode = llm-agents.opencode;
-  opencode = pkgs.writeShellScriptBin "opencode" ''
-    export NODE_TLS_REJECT_UNAUTHORIZED=0
-    ${originalOpencode}/bin/opencode "$@"
-  '';
+  opencode = dotnix-pkgs.wrapped-programs.opencode;
 in {
   options.dotnix.apps.opencode = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.opencode";
   };
 
   config = lib.mkIf cfg.enable {
-    # Install opencode package
-    environment.systemPackages = [
+    dotnix.hm.packages = [
       opencode
     ];
 

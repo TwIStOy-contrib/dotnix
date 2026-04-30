@@ -1,12 +1,13 @@
 {self, ...} @ inputs: let
   inherit (inputs) flake-utils nixpkgs;
 
-  vars = import ../vars;
+  dotnixConstants = import ../lib/constants;
 
-  buildDotnixUtils = import ../lib;
+  buildDotnixUtils = import ../lib/utils;
+  buildDotnixPkgs = import ../lib/pkgs;
   mkSystem = import ../modules/mkSystem.nix (
     {
-      inherit self inputs vars buildDotnixUtils;
+      inherit self inputs dotnixConstants buildDotnixUtils buildDotnixPkgs;
     }
     // inputs
   );
@@ -15,7 +16,8 @@
 
   hostsConfiguration = import ../hosts {
     inherit (inputs) flake-utils nixpkgs deploy-rs;
-    inherit mkSystem vars;
+    inherit mkSystem;
+    vars = dotnixConstants;
   };
 
   templates = {

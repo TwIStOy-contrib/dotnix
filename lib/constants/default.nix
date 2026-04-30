@@ -18,7 +18,7 @@ let
   # env-unrelated constants
   constants = import ./constants.nix;
 in rec {
-  inherit availableEnvs;
+  inherit availableEnvs varFor;
 
   varsFor = env: {
     user = varFor "user" env;

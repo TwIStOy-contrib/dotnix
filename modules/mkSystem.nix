@@ -5,8 +5,9 @@
   nixpkgs,
   home-manager,
   agenix,
-  vars,
+  dotnixConstants,
   buildDotnixUtils,
+  buildDotnixPkgs,
   vscode-server,
   ...
 }: let
@@ -60,13 +61,16 @@ in
       then nix-darwin.lib.darwinSystem
       else nixpkgs.lib.nixosSystem;
     platModules = buildPlatformModules system;
-    # re-export vars to dotnix-constants
-    dotnix-constants = vars.varsFor env;
+    # re-export selected environment constants to modules.
+    dotnix-constants = dotnixConstants.varsFor env;
+    # llm-agents
+    llm-agents = inputs.llm-agents .packages.${system};
     dotnix-utils = buildDotnixUtils {
       inherit inputs dotnix-constants;
     };
-    # llm-agents
-    llm-agents = inputs.llm-agents .packages.${system};
+    dotnix-pkgs = buildDotnixPkgs {
+      inherit pkgs-unstable llm-agents;
+    };
   in
     {
       modules,
@@ -74,7 +78,7 @@ in
     }: let
       # inject the specialArgs into all modules and home-manager modules
       specialArgs = {
-        inherit dotnix-constants dotnix-utils;
+        inherit dotnix-constants dotnix-utils dotnix-pkgs;
         # unstable channel
         inherit pkgs-unstable;
         # neovim packages from nightly overlay
