@@ -86,6 +86,40 @@ in {
 }
 ```
 
+### Package from Flake Input
+
+For packages not in nixpkgs but available as a flake:
+
+```nix
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  dotnix-utils,
+  ...
+}: let
+  cfg = config.dotnix.apps.myApp;
+  myApp = inputs.my-app-flake.packages.${pkgs.system}.default;
+in {
+  options.dotnix.apps.myApp = {
+    enable = lib.mkEnableOption "Enable module dotnix.apps.myApp";
+  };
+
+  config = lib.mkIf cfg.enable {
+    dotnix.hm.packages = [ myApp ];
+  };
+}
+```
+
+Add the flake input to `flake.nix` first:
+```nix
+my-app-flake = {
+  url = "github:owner/repo";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+
 ### Xdg-Based Configuration
 
 ```nix

@@ -105,6 +105,26 @@ The `inputs` specialArg is available in all modules (injected by `mkSystem.nix`)
 in { }
 ```
 
+### Flake input gotchas
+
+- **Tarball failures**: When `github:` URLs fail with "Truncated tar archive", use `git+https://github.com/OWNER/REPO?shallow=1` instead.
+- **Non-existent input overrides**: Check which inputs a flake actually exposes before adding `X.follows = "Y"`. Nix warns but continues for overrides of non-existent inputs.
+- **Adding flake inputs for packages**: Use `inputs.FLAKE.packages.${pkgs.system}.default` to reference packages from flake inputs in modules.
+
+### Wrapper pattern for CLI tools needing agenix secrets
+
+When a CLI tool needs a secret at runtime, wrap it with `writeShellScriptBin`:
+
+```nix
+secretPath = config.age.secrets."my-secret".path;
+myTool = pkgs.writeShellScriptBin "my-tool" ''
+  export MY_API_KEY="$(cat ${secretPath})"
+  exec ${myToolPkg}/bin/my-tool "$@"
+'';
+```
+
+Do NOT use `home.sessionVariables` for `$(cat ...)` — it doesn't support shell expansion.
+
 ### Home Manager activation scripts
 
 For post-deploy actions (git clone, build steps), use `home.activation` with hm-dag:

@@ -7,16 +7,15 @@
   ...
 }: let
   cfg = config.dotnix.apps.aicommit2;
-  # aicommit2Pkg =
-  #   inputs.aicommit2.packages.${pkgs.system}.default.overrideAttrs
-  #   (old: {
-  #     pnpmDeps = pkgs.pnpm.fetchDeps {
-  #       inherit (old) pname version src;
-  #       fetcherVersion = 1;
-  #       hash = "sha256-Z3YAiyd52uqEbFN0bUPI+7X3wzz4XpuSSrhqjCm6AG8=";
-  #     };
-  #   });
-  aicommit2Pkg = inputs.aicommit2.packages.${pkgs.system}.default;
+  aicommit2Pkg =
+    inputs.aicommit2.packages.${pkgs.system}.default.overrideAttrs
+    (old: {
+      pnpmDeps = pkgs.pnpm.fetchDeps {
+        inherit (old) pname version src;
+        fetcherVersion = 1;
+        hash = "sha256-Z3YAiyd52uqEbFN0bUPI+7X3wzz4XpuSSrhqjCm6AG8=";
+      };
+    });
   zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
   aicommit2 = pkgs.writeShellScriptBin "aicommit2" ''
     export ZHIPU_API_KEY="$(cat ${zAiApiKeyPath})"
