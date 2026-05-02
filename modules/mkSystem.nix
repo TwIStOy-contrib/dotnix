@@ -43,6 +43,14 @@ in
     pkgs-unstable = import inputs.nixpkgs-unstable {
       inherit system;
       config.allowUnfree = true;
+      overlays = [
+        (_: prev: {
+          neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs (_: {
+            doCheck = false;
+            doInstallCheck = false;
+          });
+        })
+      ];
     };
     # Use neovim packages from the overlay's own pinned nixpkgs
     # to avoid compatibility issues with nixpkgs-unstable
@@ -52,7 +60,10 @@ in
         if pkg ? overrideAttrs
         then
           pkg.overrideAttrs
-          (_: {doCheck = false;})
+          (_: {
+            doCheck = false;
+            doInstallCheck = false;
+          })
         else pkg)
       inputs.neovim-nightly-overlay.packages.${system};
     isDarwin = hasSuffix "darwin" system;
