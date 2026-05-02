@@ -95,3 +95,10 @@ jobs:
           docker-images: true
           swap-storage: false
       - run: just ci-${{ matrix.host_name }}
+      - name: Push to Cachix
+        if: github.event_name != 'pull_request_target'
+        uses: cachix/cachix-action@v16
+        with:
+          name: twistoy
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          pushFilter: '(-source$|-nixed$|omnibus|requirements-txt|prefetch-npm-deps)'

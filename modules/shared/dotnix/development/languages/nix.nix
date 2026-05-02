@@ -17,6 +17,7 @@ in {
       deadnix
       alejandra
       nix-output-monitor
+      cachix
 
       nixpkgs-fmt
       nixpkgs-lint

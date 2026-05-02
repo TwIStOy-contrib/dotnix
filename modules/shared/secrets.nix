@@ -125,5 +125,9 @@ in {
       file = "nix-secret-conf.age";
       owner = user.name;
     };
+    cachix-auth-token = ageSecret {
+      file = "cachix-auth-token.age";
+      owner = user.name;
+    };
   };
 }

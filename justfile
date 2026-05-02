@@ -82,4 +82,7 @@ ci-fmt:
 ci-eval:
   @nix run --extra-experimental-features 'nix-command flakes' nixpkgs#nix-eval-jobs -- --flake .
 
+push-cache:
+  @export CACHIX_AUTH_TOKEN="$(cat /run/agenix/cachix-auth-token)" && nix-store -qR ./result | cachix push twistoy
+
 ci: ci-fmt ci-eval
