@@ -8,6 +8,7 @@
 in {
   dotnix = {
     darwin-shared-suit = enabled;
+    darwin.zscaler-ca.enable = true;
     desktop = {
       neovide.extraSettings.font.size = 18;
       terminal = {
