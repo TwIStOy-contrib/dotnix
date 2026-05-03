@@ -15,6 +15,7 @@
   openrouterApiKeyPath = config.age.secrets."openrouter-api-key".path;
   kouriApiKeyPath = config.age.secrets."kouri-api-token".path;
   zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
+  deepseekApiKeyPath = config.age.secrets."deepseek-api-key".path;
   dotcodeMemoryDbUrlPath = config.age.secrets."dotcode-memory-db-url".path;
   kouriOptions = {
     baseURL = "https://api.kourichat.com/v1";
@@ -75,6 +76,11 @@
             name = "Claude Sonnet 4.5";
             cost = makeCost 9 45;
           };
+        };
+      };
+      deepseek = {
+        options = {
+          apiKey = "{file:${deepseekApiKeyPath}}";
         };
       };
     };
