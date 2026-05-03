@@ -84,6 +84,22 @@
         };
       };
     };
+    mcp = {
+      web-search-prime = {
+        type = "remote";
+        url = "https://api.z.ai/api/mcp/web_search_prime/mcp";
+        headers = {
+          Authorization = "Bearer {file:${zAiApiKeyPath}}";
+        };
+      };
+      web-reader = {
+        type = "remote";
+        url = "https://api.z.ai/api/mcp/web_reader/mcp";
+        headers = {
+          Authorization = "Bearer {file:${zAiApiKeyPath}}";
+        };
+      };
+    };
     plugin = ["${homeDir}/dotcode/plugin/dist/dotcode.js"];
   };
 
