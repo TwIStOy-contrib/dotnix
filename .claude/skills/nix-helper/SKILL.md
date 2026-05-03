@@ -60,6 +60,13 @@ See `references/package-management.md` for module structure patterns.
 
 ### Adding a new secret
 
+**Runtime path:** Decrypted agenix secrets are available at `/run/agenix/<secret-name>`. Use this path in scripts, justfile recipes, and `writeShellScriptBin` wrappers:
+
+```bash
+# Example: reading a secret in a justfile recipe
+@export MY_TOKEN="$(cat /run/agenix/my-token)" && some-command
+```
+
 Edit the secret describe file: `secrets/secrets.nix`, adds the new secret file to the list, then create the secret file in `secrets/` with `.age` extension.
 
 ```nix
