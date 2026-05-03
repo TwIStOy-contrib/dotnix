@@ -50,4 +50,5 @@ in {
   "dotcode-memory-db-url.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "nix-secret-conf.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "cachix-auth-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "deepseek-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }

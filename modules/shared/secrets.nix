@@ -129,5 +129,9 @@ in {
       file = "cachix-auth-token.age";
       owner = user.name;
     };
+    deepseek-api-key = ageSecret {
+      file = "deepseek-api-key.age";
+      owner = user.name;
+    };
   };
 }
