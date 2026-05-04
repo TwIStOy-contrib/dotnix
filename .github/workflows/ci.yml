@@ -97,7 +97,7 @@ jobs:
       - run: just ci-${{ matrix.host_name }}
       - name: Push to Cachix
         if: github.event_name != 'pull_request_target'
-        uses: cachix/cachix-action@v16
+        uses: cachix/cachix-action@v17
         with:
           name: twistoy
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
