@@ -2,6 +2,7 @@
   config,
   lib,
   dotnix-utils,
+  inputs,
   pkgs,
   pkgs-unstable,
   ...
@@ -49,11 +50,13 @@ in {
       hm.packages =
         (with pkgs; [
           rsync
-          # man pages
           man-pages
         ])
         ++ (with pkgs-unstable; [
           angrr
+        ])
+        ++ (with inputs.dotvim.packages.${pkgs.system}; [
+          default
         ]);
     };
 

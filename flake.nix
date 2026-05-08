@@ -95,6 +95,8 @@
       url = "github:Dreamacro/portal";
       flake = false;
     };
+
+    dotvim.url = "github:TwIStOy/dotvim";
   };
 
   nixConfig = {
