@@ -13,7 +13,7 @@
       pnpmDeps = pkgs.pnpm.fetchDeps {
         inherit (old) pname version src;
         fetcherVersion = 1;
-        hash = "sha256-Z3YAiyd52uqEbFN0bUPI+7X3wzz4XpuSSrhqjCm6AG8=";
+        hash = "sha256-34djAIYi+joZ1BvVatMeB4cQ9r7+PighiHkIYSqRJxU=";
       };
     });
   zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
