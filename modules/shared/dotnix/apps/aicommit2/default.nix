@@ -19,6 +19,7 @@
   zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
   aicommit2 = pkgs.writeShellScriptBin "aicommit2" ''
     export ZHIPU_API_KEY="$(cat ${zAiApiKeyPath})"
+    export NODE_TLS_REJECT_UNAUTHORIZED=0
     exec ${aicommit2Pkg}/bin/aicommit2 "$@"
   '';
 in {
@@ -39,11 +40,11 @@ in {
           type=conventional
           diffCompression=compact
 
-          [Z.AI_CODING_PLAN]
+          [ZAI_CODING_PLAN]
+          compatible=true
           key=$ZHIPU_API_KEY
           url=https://api.z.ai/api/coding/paas/v4
           model=glm-5.1
-          path=/chat/completions
         '';
         force = true;
       };
