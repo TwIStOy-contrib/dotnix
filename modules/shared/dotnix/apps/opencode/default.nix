@@ -13,17 +13,9 @@
   homeDir = config.users.users."${user.name}".home;
   hm-dag = inputs.home-manager.lib.hm.dag;
   openrouterApiKeyPath = config.age.secrets."openrouter-api-key".path;
-  kouriApiKeyPath = config.age.secrets."kouri-api-token".path;
   zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
   deepseekApiKeyPath = config.age.secrets."deepseek-api-key".path;
   dotcodeMemoryDbUrlPath = config.age.secrets."dotcode-memory-db-url".path;
-  kouriOptions = {
-    baseURL = "https://api.kourichat.com/v1";
-    apiKey = "{file:${kouriApiKeyPath}}";
-  };
-  makeCost = input: output: {
-    inherit input output;
-  };
 
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
@@ -38,44 +30,6 @@
       zai-coding-plan = {
         options = {
           apiKey = "{file:${zAiApiKeyPath}}";
-        };
-      };
-      kouri-openai-comp = {
-        npm = "@ai-sdk/openai-compatible";
-        options = kouriOptions;
-        models = {
-          "qwen3-coder" = {
-            name = "Qwen 3 Coder";
-            cost = makeCost 4 16;
-          };
-          "qwen3-coder-flash" = {
-            name = "Qwen 3 Coder Flash";
-            cost = makeCost 0.99 1.98;
-          };
-        };
-      };
-      kouri-openai = {
-        npm = "@ai-sdk/openai";
-        options = kouriOptions;
-        models = {
-          "gpt-5.1-codex-max" = {
-            name = "GPT-5.1 Codex Max";
-            cost = makeCost 5 20;
-          };
-          "gpt-5.1-codex-mini" = {
-            name = "GPT-5.1 Codex Mini";
-            const = makeCost 0.5 4;
-          };
-        };
-      };
-      kouri-anthropic = {
-        npm = "@ai-sdk/anthropic";
-        options = kouriOptions;
-        models = {
-          "claude-sonnet-4-5-20250929" = {
-            name = "Claude Sonnet 4.5";
-            cost = makeCost 9 45;
-          };
         };
       };
       deepseek = {
