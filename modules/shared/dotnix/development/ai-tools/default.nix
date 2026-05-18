@@ -18,6 +18,8 @@ in {
       claude-code
       # A beautiful status line for claude code
       ccstatusline
+      # Pi Coding Agent
+      pi
     ];
   };
 }
