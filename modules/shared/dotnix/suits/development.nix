@@ -55,9 +55,6 @@ in {
         ])
         ++ (with pkgs-unstable; [
           angrr
-        ])
-        ++ (with inputs.dotvim.packages.${pkgs.system}; [
-          default
         ]);
     };
 
