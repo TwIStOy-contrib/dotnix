@@ -91,11 +91,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    portal = {
-      url = "github:Dreamacro/portal";
-      flake = false;
-    };
-
     dotvim.url = "github:TwIStOy/dotvim";
 
     aicommit2.url = "git+https://github.com/tak-bro/aicommit2?shallow=1";

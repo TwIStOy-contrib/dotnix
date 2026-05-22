@@ -61,7 +61,7 @@ in {
       ];
     };
 
-    development.portal = {
+    apps.boring = {
       enable = true;
       service.enable = true;
       tunnels = [
