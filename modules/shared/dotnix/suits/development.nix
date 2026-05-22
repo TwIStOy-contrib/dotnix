@@ -26,8 +26,9 @@ in {
         "difftastic"
 
         "aicommit2"
-        "codex"
         "claude-code-router"
+        "codex"
+        "hat"
         "opencode"
         "todoist"
       ];
