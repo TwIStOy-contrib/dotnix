@@ -95,16 +95,6 @@ in {
       description = "boring package to use";
     };
 
-    service = lib.mkOption {
-      type = lib.types.submodule {
-        options = {
-          enable = lib.mkEnableOption "Run boring as a background service";
-        };
-      };
-      default = {};
-      description = "boring service configuration";
-    };
-
     keep_alive = lib.mkOption {
       type = lib.types.nullOr lib.types.int;
       default = null;
@@ -149,36 +139,6 @@ in {
           BORING_CONFIG = "${homeDir}/.config/boring/.boring.toml";
         };
       }
-      // lib.optionalAttrs cfg.service.enable (
-        if pkgs.stdenv.isDarwin
-        then {
-          launchd.agents.boring = {
-            enable = true;
-            config = {
-              Label = "com.dotnix.boring";
-              ProgramArguments = ["${cfg.package}/bin/boring"];
-              RunAtLoad = true;
-              KeepAlive = true;
-              StandardErrorPath = "${homeDir}/Library/Logs/boring.stderr.log";
-              StandardOutPath = "${homeDir}/Library/Logs/boring.stdout.log";
-            };
-          };
-        }
-        else {
-          systemd.user.services.boring = {
-            Unit = {
-              Description = "boring SSH tunnel manager";
-              After = ["network.target"];
-            };
-            Service = {
-              ExecStart = "${cfg.package}/bin/boring";
-              Restart = "always";
-              RestartSec = 5;
-            };
-            Install.WantedBy = ["default.target"];
-          };
-        }
-      )
     );
   };
 }

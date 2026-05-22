@@ -63,7 +63,6 @@ in {
 
     apps.boring = {
       enable = true;
-      service.enable = true;
       tunnels = [
         {
           name = "dev-work";
