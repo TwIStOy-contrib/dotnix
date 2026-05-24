@@ -29,14 +29,27 @@
       ${mkShellEnvExports shellEnv}
       exec ${package}/bin/${executable} "$@"
     '';
+
+  llmApiKeys = {
+    ZAI_API_KEY = "$(cat /run/agenix/z-ai-api-key)";
+    DEEPSEEK_API_KEY = "$(cat /run/agenix/deepseek-api-key)";
+    OPENROUTER_API_KEY = "$(cat /run/agenix/openrouter-api-key)";
+  };
 in {
-  inherit mkWrappedProgram;
+  inherit mkWrappedProgram llmApiKeys;
 
   wrappedPrograms = {
     opencode = mkWrappedProgram {
       name = "opencode";
       package = llm-agents.opencode;
       env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+      shellEnv = llmApiKeys;
+    };
+
+    pi = mkWrappedProgram {
+      name = "pi";
+      package = llm-agents.pi;
+      shellEnv = llmApiKeys;
     };
   };
 }

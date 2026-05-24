@@ -30,6 +30,7 @@ in {
         "codex"
         "hat"
         "opencode"
+        "pi"
         "todoist"
       ];
 
