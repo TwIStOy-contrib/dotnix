@@ -8,7 +8,7 @@
 in {
   dotnix = {
     darwin-shared-suit = enabled;
-    darwin.zscaler-ca.enable = true;
+    darwin.zscaler-ca.enable = true; # Nix + HM: modules/darwin/core.nix (ca-bundle + session TLS env)
     desktop = {
       neovide.extraSettings.font.size = 18;
       terminal = {

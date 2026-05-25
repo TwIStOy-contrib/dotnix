@@ -14,7 +14,7 @@
   '';
 in {
   options.dotnix.darwin.zscaler-ca = {
-    enable = lib.mkEnableOption "Zscaler CA bundle for nix";
+    enable = lib.mkEnableOption "Zscaler CA for Nix ssl-cert-file and user TLS (curl/OpenSSL, Node via home.sessionVariables)";
   };
 
   config = {
@@ -38,6 +38,13 @@ in {
 
     users.users."${user.name}" = {
       home = "/Users/${user.name}";
+    };
+
+    # Same PEM as nix.settings.ssl-cert-file: Mozilla CA + Zscaler root (modules/darwin/zscaler-root-ca.pem).
+    home-manager.users.${user.name}.home.sessionVariables = lib.mkIf cfg.enable {
+      NIX_SSL_CERT_FILE = "${caBundle}";
+      SSL_CERT_FILE = "${caBundle}";
+      NODE_EXTRA_CA_CERTS = "${caBundle}";
     };
   };
 }
