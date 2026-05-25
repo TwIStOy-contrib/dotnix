@@ -4,6 +4,7 @@
   pkgs,
   inputs,
   dotnix-utils,
+  dotnix-pkgs,
   ...
 }: let
   cfg = config.dotnix.apps.aicommit2;
@@ -16,12 +17,12 @@
         hash = "sha256-34djAIYi+joZ1BvVatMeB4cQ9r7+PighiHkIYSqRJxU=";
       };
     });
-  zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
-  aicommit2 = pkgs.writeShellScriptBin "aicommit2" ''
-    export ZHIPU_API_KEY="$(cat ${zAiApiKeyPath})"
-    export NODE_TLS_REJECT_UNAUTHORIZED=0
-    exec ${aicommit2Pkg}/bin/aicommit2 "$@"
-  '';
+  aicommit2 = dotnix-pkgs.mkWrappedProgram {
+    name = "aicommit2";
+    package = aicommit2Pkg;
+    env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    shellEnv = dotnix-pkgs.llmApiKeys;
+  };
 in {
   options.dotnix.apps.aicommit2 = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.aicommit2";
@@ -42,7 +43,7 @@ in {
 
           [ZAI_CODING_PLAN]
           compatible=true
-          key=$ZHIPU_API_KEY
+          key=$ZAI_API_KEY
           url=https://api.z.ai/api/coding/paas/v4
           model=glm-5.1
         '';
