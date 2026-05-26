@@ -133,5 +133,9 @@ in {
       file = "deepseek-api-key.age";
       owner = user.name;
     };
+    inference-twistoy-api-key = ageSecret {
+      file = "inference-twistoy-api-key.age";
+      owner = user.name;
+    };
   };
 }

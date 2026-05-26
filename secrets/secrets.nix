@@ -51,4 +51,5 @@ in {
   "nix-secret-conf.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "cachix-auth-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "deepseek-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "inference-twistoy-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }
