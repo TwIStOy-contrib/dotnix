@@ -15,6 +15,7 @@
   openrouterApiKeyPath = config.age.secrets."openrouter-api-key".path;
   zAiApiKeyPath = config.age.secrets."z-ai-api-key".path;
   deepseekApiKeyPath = config.age.secrets."deepseek-api-key".path;
+  inferenceTwistoyApiKeyPath = config.age.secrets."inference-twistoy-api-key".path;
   dotcodeMemoryDbUrlPath = config.age.secrets."dotcode-memory-db-url".path;
 
   opencodeConfig = {
@@ -35,6 +36,11 @@
       deepseek = {
         options = {
           apiKey = "{file:${deepseekApiKeyPath}}";
+        };
+      };
+      inference-twistoy = {
+        options = {
+          apiKey = "{file:${inferenceTwistoyApiKeyPath}}";
         };
       };
     };
