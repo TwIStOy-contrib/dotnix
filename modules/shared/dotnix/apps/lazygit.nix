@@ -26,6 +26,7 @@ in {
           git = {
             parseEmoji = true;
             autoFetch = true;
+            overrideGpg = true;
             commit = {
               signOff = true;
             };
