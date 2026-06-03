@@ -8,15 +8,7 @@
   ...
 }: let
   cfg = config.dotnix.apps.aicommit2;
-  aicommit2Pkg =
-    inputs.aicommit2.packages.${pkgs.system}.default.overrideAttrs
-    (old: {
-      pnpmDeps = pkgs.pnpm.fetchDeps {
-        inherit (old) pname version src;
-        fetcherVersion = 1;
-        hash = "sha256-34djAIYi+joZ1BvVatMeB4cQ9r7+PighiHkIYSqRJxU=";
-      };
-    });
+  aicommit2Pkg = inputs.aicommit2.packages.${pkgs.system}.default;
   aicommit2 = dotnix-pkgs.mkWrappedProgram {
     name = "aicommit2";
     package = aicommit2Pkg;

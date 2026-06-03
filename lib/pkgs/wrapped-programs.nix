@@ -34,6 +34,7 @@
     ZAI_API_KEY = "$(cat /run/agenix/z-ai-api-key)";
     DEEPSEEK_API_KEY = "$(cat /run/agenix/deepseek-api-key)";
     OPENROUTER_API_KEY = "$(cat /run/agenix/openrouter-api-key)";
+    INFERENCE_TWISTOY_API_KEY = "$(cat /run/agenix/inference-twistoy-api-key)";
   };
 in {
   inherit mkWrappedProgram llmApiKeys;
