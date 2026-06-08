@@ -145,5 +145,9 @@ in {
       file = "brave-api-token.age";
       owner = user.name;
     };
+    tavily-api-token = ageSecret {
+      file = "tavily-api-token.age";
+      owner = user.name;
+    };
   };
 }
