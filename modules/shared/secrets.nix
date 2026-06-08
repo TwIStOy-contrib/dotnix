@@ -141,5 +141,9 @@ in {
       file = "exa-api-token.age";
       owner = user.name;
     };
+    brave-api-token = ageSecret {
+      file = "brave-api-token.age";
+      owner = user.name;
+    };
   };
 }
