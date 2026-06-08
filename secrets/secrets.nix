@@ -55,4 +55,5 @@ in {
   "exa-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "brave-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "tavily-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "firecrawl-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }

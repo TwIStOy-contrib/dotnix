@@ -149,5 +149,9 @@ in {
       file = "tavily-api-token.age";
       owner = user.name;
     };
+    firecrawl-api-token = ageSecret {
+      file = "firecrawl-api-token.age";
+      owner = user.name;
+    };
   };
 }
