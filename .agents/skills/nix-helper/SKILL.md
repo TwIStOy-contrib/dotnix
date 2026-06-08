@@ -67,30 +67,79 @@ See `references/package-management.md` for module structure patterns.
 @export MY_TOKEN="$(cat /run/agenix/my-token)" && some-command
 ```
 
-Edit the secret describe file: `secrets/secrets.nix`, adds the new secret file to the list, then create the secret file in `secrets/` with `.age` extension.
+Adding a new secret requires **3 files** to be updated/created, in this order:
+
+#### Step 1: Access control — `secrets/secrets.nix`
+
+Add the new `.age` file to the public keys list. This defines **which hosts can decrypt** the secret:
 
 ```nix
-# new secret age file
-"secret-file.age".publicKeys = mkSecrets (hostServers ++ desktops);
+# Append to the attribute set in secrets/secrets.nix
+"my-secret.age".publicKeys = mkSecrets (homeServers ++ desktops);
 ```
 
-Create a new empty secret file: (Run the bash command under the `dotnix/secrets/` directory)
+- `homeServers` = `[ poi taihou ]` (NixOS hosts)
+- `desktops` = `[ yukikaze yamato LCNDWWYVTFMFX ]` (macOS hosts)
+- `mkSecrets` adds the user keys on top of the host list
+- Adjust the host groups if the secret should only be available on specific hosts
+
+#### Step 2: Create the encrypted `.age` file — `secrets/<name>.age`
+
+Run `agenix` **from the `secrets/` directory** (it reads `./secrets.nix` relative to cwd):
 
 ```bash
-echo "" | agenix -e <path-to-secret-file> -i /etc/ssh/ssh_host_ed25519_key
+cd secrets
+echo "" | agenix -e my-secret.age
 ```
 
-Adds the secret file to the `modules/shared/secrets.nix`, append the secret to the `age.secrets` list.
+This opens `$EDITOR` with the plaintext. For an empty secret, pipe empty content. If you need to pre-fill a value, set `EDITOR` appropriately:
+
+```bash
+# Pre-fill a value
+echo "my-secret-value" | EDITOR="cp /dev/stdin" agenix -e my-secret.age
+```
+
+#### Step 3: Wire into the system — `modules/shared/secrets.nix`
+
+Add the secret to the `age.secrets` attribute set so agenix decrypts it to `/run/agenix/<name>` at activation:
 
 ```nix
 age.secrets = {
-      ...
-      "secret-file" = ageSecret {
-          file = "secret-file.age";
-          owner = user.name;
-      }
+  # ... existing secrets ...
+
+  my-secret = ageSecret {
+    file = "my-secret.age";
+    owner = user.name;
+  };
 };
 ```
+
+The `ageSecret` helper sets defaults (`owner = "root"`, `mode = "400"`). Override as needed:
+
+```nix
+# Custom owner and mode
+my-secret = ageSecret {
+  file = "my-secret.age";
+  owner = user.name;  # non-root owner
+  mode = "600";       # custom permissions
+};
+
+# Custom decrypt path (e.g., into home directory)
+my-secret = (ageSecret {
+  file = "my-secret.age";
+  owner = user.name;
+}) // {
+  path = "/home/user/.config/my-secret.conf";
+};
+```
+
+#### Quick checklist
+
+| # | File | Action |
+|---|------|--------|
+| 1 | `secrets/secrets.nix` | Add `"<name>.age".publicKeys = mkSecrets (...)` |
+| 2 | `secrets/<name>.age` | Create encrypted file (`cd secrets && agenix -e <name>.age`) |
+| 3 | `modules/shared/secrets.nix` | Add to `age.secrets` with `ageSecret { }` |
 
 ### Using flake inputs in modules
 
