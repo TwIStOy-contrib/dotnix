@@ -52,4 +52,5 @@ in {
   "cachix-auth-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "deepseek-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "inference-twistoy-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "exa-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }
