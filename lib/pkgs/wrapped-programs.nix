@@ -1,6 +1,7 @@
 {
   pkgs-unstable,
   llm-agents,
+  dotvim-ne,
 }: let
   pkgs = pkgs-unstable;
   mkEnvExports = env:
@@ -43,17 +44,27 @@
 in {
   inherit mkWrappedProgram llmApiKeys;
 
-  wrappedPrograms = {
+  wrappedPrograms = let
+    editorBin = "${dotvim-ne}/bin/ne";
+  in {
     opencode = mkWrappedProgram {
       name = "opencode";
       package = llm-agents.opencode;
-      env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+      env = {
+        NODE_TLS_REJECT_UNAUTHORIZED = "0";
+        VISUAL = editorBin;
+        EDITOR = editorBin;
+      };
       shellEnv = llmApiKeys;
     };
 
     pi = mkWrappedProgram {
       name = "pi";
       package = llm-agents.pi;
+      env = {
+        VISUAL = editorBin;
+        EDITOR = editorBin;
+      };
       shellEnv = llmApiKeys;
     };
   };
