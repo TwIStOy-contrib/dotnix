@@ -28,6 +28,7 @@ in {
         "claude-code-router"
         "codex"
         "hat"
+        "moshi-hook"
         "opencode"
         "pi"
         "todoist"
