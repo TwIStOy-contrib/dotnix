@@ -136,7 +136,7 @@ in {
 
       home.activation.setup-dotcode = hm-dag.entryAfter ["linkGeneration"] ''
         if [ ! -d "${homeDir}/dotcode" ]; then
-          $DRY_RUN_CMD git clone git@github.com:TwIStOy/dotcode.git "${homeDir}/dotcode"
+          $DRY_RUN_CMD ${pkgs.git}/bin/git clone git@github.com:TwIStOy/dotcode.git "${homeDir}/dotcode"
         fi
         if [ ! -f "${homeDir}/dotcode/plugin/dist/dotcode.js" ]; then
           $DRY_RUN_CMD ${pkgs.bun}/bin/bun install --cwd "${homeDir}/dotcode/plugin"
