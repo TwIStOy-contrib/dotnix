@@ -135,8 +135,11 @@ in {
       };
 
       home.activation.setup-dotcode = hm-dag.entryAfter ["linkGeneration"] ''
+        # activation runs with a minimal PATH (home.path only); expose git+ssh
+        # so `git clone git@...` can fork ssh.
+        export PATH="${pkgs.git}/bin:${pkgs.openssh}/bin:${pkgs.coreutils}/bin:$PATH"
         if [ ! -d "${homeDir}/dotcode" ]; then
-          $DRY_RUN_CMD ${pkgs.git}/bin/git clone git@github.com:TwIStOy/dotcode.git "${homeDir}/dotcode"
+          $DRY_RUN_CMD git clone git@github.com:TwIStOy/dotcode.git "${homeDir}/dotcode"
         fi
         if [ ! -f "${homeDir}/dotcode/plugin/dist/dotcode.js" ]; then
           $DRY_RUN_CMD ${pkgs.bun}/bin/bun install --cwd "${homeDir}/dotcode/plugin"
