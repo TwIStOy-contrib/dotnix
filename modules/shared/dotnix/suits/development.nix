@@ -25,7 +25,6 @@ in {
         "lazygit"
         "difftastic"
 
-        "aicommit2"
         "claude-code-router"
         "codex"
         "hat"

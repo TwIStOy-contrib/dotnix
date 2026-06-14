@@ -39,15 +39,6 @@ in {
               }
             ];
           };
-          customCommands = [
-            {
-              key = "<c-a>";
-              command = "aicommit2 --confirm --auto-select";
-              description = "Generate commit message with aicommit2";
-              context = "files";
-              output = "terminal";
-            }
-          ];
         };
       };
     };
