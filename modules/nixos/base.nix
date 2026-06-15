@@ -1,4 +1,7 @@
-{pkgs, ...}: {
+{lib, pkgs, ...}: {
+  # Mirror modules/darwin/core.nix: allow unfree packages (e.g. moshi-hook).
+  nixpkgs.config.allowUnfree = true;
+
   programs.ssh = {
     startAgent = true;
   };
