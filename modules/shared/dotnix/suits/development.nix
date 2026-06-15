@@ -28,6 +28,7 @@ in {
         "claude-code-router"
         "codex"
         "hat"
+        "herdr"
         "moshi-hook"
         "opencode"
         "pi"

@@ -1,9 +1,7 @@
 {
   config,
-  inputs,
   llm-agents,
   lib,
-  pkgs,
   ...
 }: let
   cfg = config.dotnix.development.ai-tools;
@@ -13,16 +11,11 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    dotnix.hm.packages =
-      (with llm-agents; [
-        # Github Copilot CLI
-        copilot-cli
-        # Claude Code Cli
-        claude-code
-      ])
-      ++ [
-        # Agent multiplexer for the terminal
-        inputs.herdr.packages.${pkgs.system}.default
-      ];
+    dotnix.hm.packages = with llm-agents; [
+      # Github Copilot CLI
+      copilot-cli
+      # Claude Code Cli
+      claude-code
+    ];
   };
 }
