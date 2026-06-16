@@ -29,6 +29,9 @@
     services.moshi = {
       enable = true;
     };
+    services.eternal-terminal = {
+      enable = true;
+    };
   };
 
   services.github-runners = {

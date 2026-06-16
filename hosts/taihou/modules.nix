@@ -18,5 +18,8 @@ _: {
         "--ssh"
       ];
     };
+    services.eternal-terminal = {
+      enable = true;
+    };
   };
 }
