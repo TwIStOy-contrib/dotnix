@@ -26,6 +26,9 @@
       mainFile = "main.bean";
       accountBookRepo = "git@github.com:TwIStOy-contrib/account-book.git";
     };
+    services.moshi = {
+      enable = true;
+    };
   };
 
   services.github-runners = {
