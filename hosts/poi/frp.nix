@@ -36,7 +36,7 @@
         localIP = "127.0.0.1"
         localPort = 2022
         name = "poi-et"
-        remotePort = 9000
+        remotePort = 4003
         type = "tcp"
       '';
     };
