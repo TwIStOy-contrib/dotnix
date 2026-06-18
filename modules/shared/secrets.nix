@@ -44,14 +44,6 @@ in {
       file = "ssh-remote-hosts.age";
       owner = user.name;
     };
-    copilot-gpt4-service-env = ageSecret {
-      file = "copilot-gpt4-service-env.age";
-      owner = user.name;
-    };
-    chatgpt-next-web-env = ageSecret {
-      file = "chatgpt-next-web.age";
-      owner = user.name;
-    };
     wildcard-api-key = ageSecret {
       file = "wildcard-api-key.age";
       owner = user.name;
