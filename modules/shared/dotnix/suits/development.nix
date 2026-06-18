@@ -58,6 +58,7 @@ in {
         ])
         ++ (with pkgs-unstable; [
           angrr
+          net-tools
         ])
         ++ (with inputs.dotvim.packages.${pkgs.system}; [
           default
