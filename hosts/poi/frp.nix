@@ -34,16 +34,9 @@
 
         [[proxies]]
         localIP = "127.0.0.1"
-        localPort = 3000
-        name = "copilot-next-web"
+        localPort = 2022
+        name = "poi-et"
         remotePort = 9000
-        type = "tcp"
-
-        [[proxies]]
-        localIP = "127.0.0.1"
-        localPort = 8080
-        name = "copilot-gpt4-service"
-        remotePort = 9001
         type = "tcp"
       '';
     };
