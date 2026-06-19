@@ -59,6 +59,7 @@ in {
         ++ (with pkgs-unstable; [
           angrr
           net-tools
+          eternal-terminal
         ])
         ++ (with inputs.dotvim.packages.${pkgs.system}; [
           default
