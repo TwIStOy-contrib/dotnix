@@ -17,5 +17,10 @@ in {
       devops = enabled;
       term = enabled;
     };
+
+    # RunCat icon font (icomoon, U+E900-U+E904) for the pi-runcat
+    # loading indicator. Installed on every host so the codepoint maps
+    # in kitty/ghostty always resolve.
+    dotnix.fonts.runcat = enabled;
   };
 }

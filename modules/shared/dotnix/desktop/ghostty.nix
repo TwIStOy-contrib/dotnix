@@ -108,6 +108,14 @@
     )
     ++ (
       lib.attrsets.mapAttrsToList (key: value: toConfigItem "keybind" "${key}=${value}") keybindings
+    )
+    # Route the RunCat icon font (family "icomoon") to its Private Use
+    # Area code points U+E900-U+E904 so the pi-runcat loading indicator
+    # animates in the terminal.
+    ++ (
+      lib.optional config.dotnix.fonts.runcat.enable {
+        font-codepoint-map = "U+E900-U+E904=icomoon";
+      }
     );
 
   generateConfigLine = attrs: lib.attrsets.mapAttrsToList (key: value: "${key} = ${toString value}") attrs;

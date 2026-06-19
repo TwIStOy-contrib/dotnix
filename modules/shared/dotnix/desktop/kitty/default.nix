@@ -236,6 +236,14 @@ in {
               }
             else ""
           }
+          # Route the RunCat icon font (family "icomoon") to its Private
+          # Use Area code points U+E900-U+E904 so the pi-runcat loading
+          # indicator animates in the terminal.
+          ${
+            if config.dotnix.fonts.runcat.enable
+            then "symbol_map U+E900-U+E904 icomoon"
+            else ""
+          }
           ${
             if termCfg.adjust-cell-width != ""
             then "modify_font cell_width ${termCfg.adjust-cell-width}"
