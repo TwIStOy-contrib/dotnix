@@ -8,6 +8,19 @@
 }: let
   cfg = config.dotnix.services.moshi;
   moshi-hook = pkgs.callPackage ../apps/moshi-hook/package.nix {};
+  # moshi reaches api.getmoshi.app over HTTP, so it honours the usual
+  # *_proxy env vars. We inject them explicitly into the unit so the
+  # daemon does not depend on the user systemd manager inheriting them
+  # (that environment is only refreshed on reboot; on long-uptime hosts
+  # a stale user manager keeps serving the old proxy long after
+  # networking.proxy.default was bumped via `switch`).
+  proxyUrl = config.networking.proxy.default;
+  proxyEnv = lib.optionalAttrs (proxyUrl != null) {
+    http_proxy = proxyUrl;
+    https_proxy = proxyUrl;
+    all_proxy = proxyUrl;
+    no_proxy = "127.0.0.1,localhost";
+  };
 in {
   options.dotnix.services.moshi = {
     enable = lib.mkEnableOption "Enable module dotnix.services.moshi";
@@ -38,6 +51,7 @@ in {
         };
         Service = {
           ExecStart = "${lib.getExe cfg.package} serve";
+          Environment = lib.mapAttrsToList (n: v: "${n}=${v}") proxyEnv;
           Restart = "on-failure";
           RestartSec = "2s";
         };

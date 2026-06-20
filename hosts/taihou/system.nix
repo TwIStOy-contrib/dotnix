@@ -15,7 +15,7 @@ in {
   networking = {
     hostName = hostname;
     networkmanager.enable = true;
-    proxy.default = "http://192.168.50.217:8888";
+    proxy.default = "http://192.168.50.217:6152";
   };
 
   # Configure keymap in X11
