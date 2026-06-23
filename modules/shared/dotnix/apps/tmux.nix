@@ -63,9 +63,9 @@ in {
           bind C-f command-prompt -p find-session 'switch-client -t %%'
 
           # split current window horizontally
-          bind - split-window -v
+          bind - split-window -v -c '#{pane_current_path}'
           # split current window vertically
-          bind | split-window -h
+          bind | split-window -h -c '#{pane_current_path}'
 
           # pane navigation
           bind -r h select-pane -L  # move left
@@ -84,6 +84,7 @@ in {
           # window navigation
           unbind n
           unbind p
+          bind p split-window -h -c '#{pane_current_path}' pi  # vertical split, same cwd, run pi
           bind -r C-h previous-window # select previous window
           bind -r C-l next-window     # select next window
           bind Tab last-window        # move to last active window
