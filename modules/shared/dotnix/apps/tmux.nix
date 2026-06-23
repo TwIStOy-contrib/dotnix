@@ -38,10 +38,8 @@ in {
 
           setw -q -g utf8 on
 
-          set -s extended-keys on
+          set -sg extended-keys on
           set -as terminal-features 'xterm*:extkeys'
-
-          setw -g pane-base-index 1     # make pane numbering consistent with windows
 
           setw -g automatic-rename on   # rename window to reflect current program
           set -g renumber-windows on    # renumber windows when a window is closed
