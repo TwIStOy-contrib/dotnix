@@ -12,8 +12,6 @@ in {
 
   config = lib.mkIf cfg.enable {
     dotnix.hm.packages = with llm-agents; [
-      # Github Copilot CLI
-      copilot-cli
       # Claude Code Cli
       claude-code
     ];
