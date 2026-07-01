@@ -19,6 +19,7 @@ in {
         "aerospace"
         "hammerspoon"
         "karabiner"
+        "obsidian-cli"
         "pbcopy-paste"
         "ssh"
         "zed"
