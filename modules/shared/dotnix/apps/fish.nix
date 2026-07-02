@@ -17,6 +17,14 @@ in {
       programs.fish = {
         enable = true;
         package = pkgs-unstable.fish;
+        # pkgs-unstable.fish is 4.x (the Rust rewrite), which dropped
+        # share/fish/tools/create_manpage_completions.py entirely. Home-manager's
+        # default generateCompletions builds a `<pkg>-fish-completions` derivation
+        # per home.packages entry that invokes that script, so it fails for every
+        # package (e.g. bat). Disable it: fish 4.x has no manpage->completion
+        # generator, and packages that want fish completions ship them natively
+        # under share/fish/vendor_completions.d/, which fish auto-loads.
+        generateCompletions = false;
         interactiveShellInit = ''
           set fish_greeting
 
