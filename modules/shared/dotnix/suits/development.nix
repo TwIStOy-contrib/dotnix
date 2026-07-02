@@ -55,9 +55,12 @@ in {
         (with pkgs; [
           rsync
           man-pages
+          # angrr lives in stable nixpkgs (fish 4.2.1) — the pkgs-unstable
+          # copy pulls fish 4.8.0, whose dropped create_manpage_completions.py
+          # breaks home-manager's fish-completions build.
+          angrr
         ])
         ++ (with pkgs-unstable; [
-          angrr
           net-tools
           eternal-terminal
         ])
