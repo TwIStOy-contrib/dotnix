@@ -6,6 +6,9 @@
 }: let
   default_profile = {
     name = "Default profile";
+    virtual_hid_keyboard = {
+      keyboard_type_v2 = "ansi";
+    };
     devices = [
       {
         ignore = false;
