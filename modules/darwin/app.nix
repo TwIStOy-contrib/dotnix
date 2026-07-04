@@ -60,6 +60,9 @@
       "emacs-plus"
 
       "mas"
+
+      # virtualisation
+      "qemu"
     ];
 
     casks = [
