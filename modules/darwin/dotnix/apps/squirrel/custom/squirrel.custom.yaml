@@ -1,0 +1,8 @@
+# Squirrel (macOS Rime frontend) custom override for oh-my-rime.
+# Ref: https://www.mintimate.cc/zh/guide/configurationOverride.html
+#
+# Patch keys use slash path syntax. Do NOT nest as a map — nesting replaces
+# the whole `style` block and wipes sibling keys.
+patch:
+  # Candidate list orientation: stacked (vertical) -> linear (horizontal).
+  "style/candidate_list_layout": linear

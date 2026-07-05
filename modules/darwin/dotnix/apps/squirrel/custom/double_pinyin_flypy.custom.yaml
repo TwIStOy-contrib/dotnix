@@ -1,0 +1,23 @@
+# Rime schema custom override for oh-my-rime `double_pinyin_flypy` (小鹤双拼).
+# Refs:
+#   - page_size: https://www.mintimate.cc/zh/guide/configurationOverride.html (覆写候选个数和快捷键)
+#   - grammar:   https://www.mintimate.cc/zh/guide/languageModel.html
+#
+# IMPORTANT: `menu/page_size` and `key_binder` must be patched HERE per-schema,
+# NOT in default.custom.yaml. oh-my-rime duplicates these keys inside each
+# *.schema.yaml for Rimetool compatibility, so schema-level custom wins.
+patch:
+  # --- Candidate count (default 6 -> 9) ---
+  "menu/page_size": 9
+
+  # --- 万象语言模型 (Wanxiang LM) for better long-sentence recognition ---
+  # The .gram file is deployed to ~/Library/Rime/wanxiang-lts-zh-hans.gram
+  # (see squirrel/default.nix). grammar/language is the basename w/o extension.
+  "grammar/language": wanxiang-lts-zh-hans
+  "grammar/collocation_max_length": 5
+  "grammar/collocation_min_length": 2
+
+  # Load the model inside the translator.
+  "translator/contextual_suggestions": true
+  "translator/max_homophones": 7
+  "translator/max_homographs": 7

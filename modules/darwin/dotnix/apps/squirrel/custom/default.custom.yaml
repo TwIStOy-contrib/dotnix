@@ -1,0 +1,9 @@
+# Default schema activation list override for oh-my-rime.
+# Ref: https://www.mintimate.cc/zh/guide/defaultActivationScheme.html
+#
+# schema_list is a *list*, so it must be patched as a nested map (full
+# replacement) — slash-path syntax cannot address list elements. Replacing the
+# whole list is exactly what we want: only activate the schemes listed here.
+patch:
+  schema_list:
+    - schema: double_pinyin_flypy # 小鹤双拼
