@@ -13,7 +13,6 @@
   plugins = {
     inherit (unstableVimPlugins) codesnap-nvim;
     inherit (unstableVimPlugins) telescope-fzf-native-nvim;
-    inherit (unstableVimPlugins) avante-nvim;
     inherit (unstableVimPlugins) markdown-preview-nvim;
     inherit (unstableVimPlugins) rest-nvim;
     inherit (unstableVimPlugins) codediff-nvim;
