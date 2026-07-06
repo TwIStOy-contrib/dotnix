@@ -10,6 +10,12 @@ patch:
   # --- Candidate count (default 6 -> 9) ---
   "menu/page_size": 9
 
+  # --- Disable user dictionary learning (freeze candidate ordering) ---
+  # Stops Rime from recording selection frequency, so candidate order stays
+  # fixed by static dictionary weights instead of shifting with usage.
+  # Side effect: no new words are auto-learned from user input.
+  "translator/enable_user_dict": false
+
   # --- 万象语言模型 (Wanxiang LM) for better long-sentence recognition ---
   # The .gram file is deployed to ~/Library/Rime/wanxiang-lts-zh-hans.gram
   # (see squirrel/default.nix). grammar/language is the basename w/o extension.
