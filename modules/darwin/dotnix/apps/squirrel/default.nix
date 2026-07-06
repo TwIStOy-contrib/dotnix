@@ -20,7 +20,7 @@
   # Referenced from double_pinyin_flypy.custom.yaml as `grammar/language`.
   wanxiang-gram = pkgs.fetchurl {
     url = "https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram";
-    hash = "sha256-OZy+/4m9THEMlyYwWwWmnpi/jiT4tHVFxfuXrgRLit0=";
+    hash = "sha256-DRnxrj9nZW3x+LIHoULuEIyPa2bjZ4cgIiG7k3w++Cw=";
   };
 in {
   options.dotnix.apps.squirrel = {
