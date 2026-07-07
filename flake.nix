@@ -101,6 +101,11 @@
         nixpkgs.follows = "nixpkgs-unstable";
       };
     };
+
+    hunk = {
+      url = "github:modem-dev/hunk";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   nixConfig = {

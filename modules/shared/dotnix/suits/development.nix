@@ -29,6 +29,7 @@ in {
         "codex"
         "hat"
         "herdr"
+        "hunk"
         "moshi-hook"
         "opencode"
         "pi"
