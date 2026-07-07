@@ -52,7 +52,10 @@ in {
         Service = {
           ExecStart = "${lib.getExe cfg.package} serve";
           Environment = lib.mapAttrsToList (n: v: "${n}=${v}") proxyEnv;
-          Restart = "on-failure";
+          # `always` (not `on-failure`): moshi-hook catches SIGTERM and
+          # exits 0 on graceful shutdown, which systemd treats as success —
+          # `on-failure` would therefore not restart it after a plain `kill`.
+          Restart = "always";
           RestartSec = "2s";
         };
         Install = {
