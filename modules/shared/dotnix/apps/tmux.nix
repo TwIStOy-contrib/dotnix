@@ -6,6 +6,20 @@
   ...
 }: let
   cfg = config.dotnix.apps.tmux;
+
+  # Pin catppuccin/tmux v2.x for the modern @catppuccin_flavor / status-module API.
+  # nixpkgs may lag (or still ship a pre-v2 snapshot); keep this in sync with the
+  # version validated on the work machine (~/.config/tmux).
+  tmux-catppuccin = pkgs-unstable.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "catppuccin";
+    version = "2.3.0";
+    src = pkgs-unstable.fetchFromGitHub {
+      owner = "catppuccin";
+      repo = "tmux";
+      rev = "v2.3.0";
+      hash = "sha256-3CJRQCgS8NAN7vOLBjNGiHbGXTIrIyY/FLmfZrXcEYc=";
+    };
+  };
 in {
   options.dotnix.apps.tmux = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.tmux";
@@ -23,6 +37,18 @@ in {
         prefix = "c-g";
 
         baseIndex = 1;
+
+        # HM order: plugin.extraConfig → run-shell <rtp> → (later) programs.tmux.extraConfig.
+        # Pre-load options only here; status/message overrides belong in extraConfig below.
+        plugins = [
+          {
+            plugin = tmux-catppuccin;
+            extraConfig = ''
+              set -g @catppuccin_flavor "mocha"
+              set -g @catppuccin_window_status_style "rounded"
+            '';
+          }
+        ];
 
         extraConfig = ''
           set -as terminal-overrides ",xterm**:Tc"
@@ -87,6 +113,19 @@ in {
           bind -r C-h previous-window # select previous window
           bind -r C-l next-window     # select next window
           bind Tab last-window        # move to last active window
+
+          # --- catppuccin statusline (after plugins: HM mkAfter extraConfig) ---
+          set -g status-right-length 100
+          set -g status-left-length 100
+          set -g status-left  "#{E:@catppuccin_status_session}"
+          set -g status-right "#{E:@catppuccin_status_application}"
+
+          # Command prompt (prefix + :) is drawn ON TOP of the status line, not
+          # instead of it. Catppuccin defaults to centre-aligned messages with
+          # no full-width cover, so window tabs on the left stay visible and
+          # bury the text you type. Force a full-width opaque prompt.
+          set -gF message-style "fg=#{@thm_teal},bg=#{@thm_mantle},align=left,width=100%,fill=#{@thm_mantle}"
+          set -gF message-command-style "fg=#{@thm_teal},bg=#{@thm_mantle},align=left,width=100%,fill=#{@thm_mantle}"
         '';
       };
     };
