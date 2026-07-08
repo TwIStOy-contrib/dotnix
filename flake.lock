@@ -618,7 +618,7 @@
       "inputs": {
         "bun2nix": "bun2nix",
         "nixpkgs": [
-          "nixpkgs-unstable"
+          "nixpkgs"
         ]
       },
       "locked": {

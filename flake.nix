@@ -104,7 +104,12 @@
 
     hunk = {
       url = "github:modem-dev/hunk";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # Hunk's package.nix sets dontFixup = true, so its bun-compiled binary
+      # keeps the interpreter of the glibc it was built against. If that
+      # differs from the host runtime glibc (e.g. unstable 2.42 vs stable
+      # 2.40), the loader and libc mismatch and the binary segfaults.
+      # Follow the same stable nixpkgs the system uses so they match.
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
