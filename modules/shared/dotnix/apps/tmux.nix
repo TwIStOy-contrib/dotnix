@@ -84,8 +84,13 @@ in {
           set -g monitor-activity on
           set -g visual-activity off
 
-          # find session
-          bind C-f command-prompt -p find-session 'switch-client -t %%'
+          # session: fzf switch (C-f) / create or attach (C-n)
+          bind C-f display-popup -E -w 60% -h 40% "\
+            tmux list-sessions -F '#{session_name}' \
+            | ${pkgs-unstable.fzf}/bin/fzf --reverse --prompt='session> ' \
+            | xargs -r tmux switch-client -t"
+          bind C-n command-prompt -p "new session:" \
+            "new-session -A -s '%%' -c '#{pane_current_path}'"
 
           # split current window horizontally
           bind - split-window -v -c '#{pane_current_path}'
