@@ -40,6 +40,7 @@ in {
 
           set -sg extended-keys on
           set -as terminal-features 'xterm*:extkeys'
+          set -g extended-keys-format csi-u
 
           setw -g automatic-rename on   # rename window to reflect current program
           set -g renumber-windows on    # renumber windows when a window is closed
