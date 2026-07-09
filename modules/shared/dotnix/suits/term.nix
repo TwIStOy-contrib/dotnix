@@ -71,6 +71,7 @@ in {
             grpcurl
             krabby
             jc
+            sesh
           ]
         )
         ++ [
