@@ -29,6 +29,8 @@ in {
             kubectx
             kubelogin-oidc
             flyctl
+            ncdu
+            nh
           ]
         )
         ++ lib.optionals (!pkgs.stdenv.isDarwin) [
