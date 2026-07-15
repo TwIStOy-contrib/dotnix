@@ -20,8 +20,13 @@ in {
       cargo-nextest
       cargo-outdated
     ];
-    home-manager =
-      dotnix-utils.hm.hmConfig {
-      };
+    home-manager = dotnix-utils.hm.hmConfig (
+      lib.optionalAttrs pkgs-unstable.stdenv.isDarwin {
+        home.file.".cargo/config.toml".text = ''
+          [build]
+          rustflags = ["-C", "link-arg=-L${pkgs-unstable.lib.getLib pkgs-unstable.libiconv}/lib"]
+        '';
+      }
+    );
   };
 }
