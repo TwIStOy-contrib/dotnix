@@ -74,8 +74,31 @@ in
     platModules = buildPlatformModules system;
     # re-export selected environment constants to modules.
     dotnix-constants = dotnixConstants.varsFor env;
+    # Stable nixpkgs instance matching the system's runtime glibc. Only used to
+    # repoint pi's dynamic linker below; not exposed to modules.
+    pkgs = import nixpkgs {inherit system;};
     # llm-agents
-    llm-agents = inputs.llm-agents .packages.${system};
+    # pi is distributed as a `bun build --compile` binary. Bun embeds its own
+    # dynamic loader, taken from llm-agents's pinned unstable nixpkgs (glibc
+    # 2.42). This host runs stable (glibc 2.40), so the loader/libc version
+    # skew makes pi segfault on every invocation -- even `pi --version`.
+    # Repoint the ELF interpreter and pin an rpath at the stable glibc so the
+    # binary is self-consistent on 2.40. Darwin ships a Mach-O binary, skip.
+    llm-agents =
+      inputs.llm-agents.packages.${system}
+      // nixpkgs.lib.optionalAttrs (!isDarwin) {
+        pi = inputs.llm-agents.packages.${system}.pi.overrideAttrs (old: {
+          nativeBuildInputs = (old.nativeBuildInputs or []) ++ [pkgs.patchelf];
+          postFixup =
+            (old.postFixup or "")
+            + ''
+              patchelf \
+                --set-interpreter "${pkgs.stdenv.cc.bintools.dynamicLinker}" \
+                --set-rpath "${pkgs.stdenv.cc.libc}/lib" \
+                "$out/libexec/pi/pi"
+            '';
+        });
+      };
     dotnix-utils = buildDotnixUtils {
       inherit inputs dotnix-constants;
     };
