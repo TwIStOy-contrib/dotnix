@@ -7,9 +7,56 @@
   ...
 }: let
   cfg = config.dotnix.apps.fish;
+
+  # Extract the bare host (no scheme/port) from the proxy URL so it can be
+  # added to no_proxy — the proxy itself must never be asked to reach itself.
+  proxyHost =
+    if cfg.proxyUrl == null
+    then null
+    else
+      builtins.head
+      (builtins.match "^[a-zA-Z]+://([^:/]+)(:[0-9]+)?/?" cfg.proxyUrl);
+  # Build a de-duplicated no_proxy list. localhost/loopback are always direct;
+  # add the proxy host only if it isn't already one of them.
+  noProxyList = let
+    base = ["localhost" "127.0.0.1" "::1"];
+    isLocal = builtins.elem proxyHost base;
+    extra = lib.optional (!isLocal) proxyHost;
+  in
+    lib.concatStringsSep "," (base ++ extra);
+
+  # Shared env vars handed to `env` for one-shot commands.
+  proxyEnv = {
+    http_proxy = cfg.proxyUrl;
+    https_proxy = cfg.proxyUrl;
+    all_proxy = cfg.proxyUrl;
+    HTTP_PROXY = cfg.proxyUrl;
+    HTTPS_PROXY = cfg.proxyUrl;
+    ALL_PROXY = cfg.proxyUrl;
+    no_proxy = noProxyList;
+    NO_PROXY = noProxyList;
+  };
+  # Render an attrset of VAR=VAL pairs as `env` arguments (VAL shell-quoted).
+  envArgs = vars:
+    lib.concatStringsSep " "
+    (lib.mapAttrsToList (n: v: "${n}=${lib.escapeShellArg v}") vars);
 in {
   options.dotnix.apps.fish = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.fish";
+
+    proxyUrl = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = "http://127.0.0.1:7890";
+      description = ''
+        HTTP/SOCKS proxy URL used by the `with-proxy` fish helper to route a
+        single command (and by `proxy-on` to route the rest of the shell).
+        Set to `null` to disable proxy helpers entirely on a host.
+
+        Defaults to the local mihomo mixed-port on NixOS hosts that run
+        `dotnix.services.mihomo`; override per-host where no local proxy
+        exists (e.g. point darwin hosts at a LAN machine running mihomo).
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -59,6 +106,56 @@ in {
           goto = "kitten ssh --kitten forward_remote_control=yes";
           ts = "tailscale";
         };
+        functions =
+          {}
+          // lib.optionalAttrs (cfg.proxyUrl != null) {
+            # One-shot: route just the next command through the proxy.
+            with-proxy = ''
+              if test (count $argv) -eq 0
+                  echo "usage: with-proxy COMMAND..." >&2
+                  return 1
+              end
+              env ${envArgs proxyEnv} $argv
+            '';
+            # One-shot: force the next command to bypass the proxy even if
+            # the shell has proxy-on active.
+            with-direct = ''
+              if test (count $argv) -eq 0
+                  echo "usage: with-direct COMMAND..." >&2
+                  return 1
+              end
+              env http_proxy= https_proxy= all_proxy= \
+                  HTTP_PROXY= HTTPS_PROXY= ALL_PROXY= \
+                  no_proxy="*" NO_PROXY="*" \
+                  $argv
+            '';
+            # Persistent: route every following command in this shell through
+            # the proxy until `proxy-off`.
+            proxy-on = ''
+              set -gx http_proxy ${lib.escapeShellArg cfg.proxyUrl}
+              set -gx https_proxy ${lib.escapeShellArg cfg.proxyUrl}
+              set -gx all_proxy ${lib.escapeShellArg cfg.proxyUrl}
+              set -gx HTTP_PROXY ${lib.escapeShellArg cfg.proxyUrl}
+              set -gx HTTPS_PROXY ${lib.escapeShellArg cfg.proxyUrl}
+              set -gx ALL_PROXY ${lib.escapeShellArg cfg.proxyUrl}
+              set -gx no_proxy ${lib.escapeShellArg noProxyList}
+              set -gx NO_PROXY ${lib.escapeShellArg noProxyList}
+              echo "proxy on: ${cfg.proxyUrl}"
+            '';
+            proxy-off = ''
+              set -e http_proxy; set -e https_proxy; set -e all_proxy
+              set -e HTTP_PROXY; set -e HTTPS_PROXY; set -e ALL_PROXY
+              set -e no_proxy; set -e NO_PROXY
+              echo "proxy off"
+            '';
+            proxy-status = ''
+              if set -q http_proxy
+                  echo "proxy on: $http_proxy"
+              else
+                  echo "proxy off"
+              end
+            '';
+          };
       };
     };
   };
