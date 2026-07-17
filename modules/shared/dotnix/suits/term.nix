@@ -31,8 +31,8 @@ in {
         "rime-scheme"
       ];
 
-      hm.packages = with pkgs;
-        [
+      hm.packages = let
+        stablePkgs = with pkgs; [
           neofetch
           xdg-utils
 
@@ -64,19 +64,16 @@ in {
           fswatch
 
           ffmpeg-full
-        ]
-        ++ (
-          with pkgs-unstable; [
-            curl
-            grpcurl
-            krabby
-            jc
-            sesh
-          ]
-        )
-        ++ [
-          nur-hawtian.packages.${pkgs.system}.rime-ls
         ];
+        unstablePkgs = with pkgs-unstable; [
+          curl
+          grpcurl
+          jc
+          smug
+        ];
+        nurPackages = [nur-hawtian.packages.${pkgs.system}.rime-ls];
+      in
+        stablePkgs ++ unstablePkgs ++ nurPackages;
     };
 
     home-manager = dotnix-utils.hm.hmConfig {
