@@ -19,6 +19,7 @@ in {
       cargo
       cargo-nextest
       cargo-outdated
+      clippy
     ];
     home-manager = dotnix-utils.hm.hmConfig (
       lib.optionalAttrs pkgs-unstable.stdenv.isDarwin {
