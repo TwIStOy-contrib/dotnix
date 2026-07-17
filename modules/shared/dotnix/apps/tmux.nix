@@ -29,6 +29,7 @@ in {
     home-manager = dotnix-utils.hm.hmConfig {
       programs.tmux = {
         enable = true;
+        package = pkgs-unstable.tmux;
 
         shell = "${pkgs-unstable.fish}/bin/fish";
         terminal = "xterm-kitty";
