@@ -54,4 +54,5 @@ in {
   "brave-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "tavily-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "firecrawl-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "mihomo-config.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }

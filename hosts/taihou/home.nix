@@ -3,7 +3,7 @@
     extraConfig = ''
       Host github.com
           HostName %h
-          ProxyCommand ${pkgs.netcat}/bin/nc -X 5 -x 192.168.50.217:6153 %h %p
+          # ProxyCommand ${pkgs.netcat}/bin/nc -X 5 -x 192.168.50.217:6153 %h %p
     '';
     matchBlocks = {
       "poi.local" = {

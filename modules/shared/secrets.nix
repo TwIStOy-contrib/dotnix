@@ -145,5 +145,10 @@ in {
       file = "firecrawl-api-token.age";
       owner = user.name;
     };
+    mihomo-config = ageSecret {
+      file = "mihomo-config.age";
+      owner = "root";
+      mode = "600";
+    };
   };
 }
