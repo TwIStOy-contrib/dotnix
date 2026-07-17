@@ -48,7 +48,7 @@
     option = {
       proxyUrl = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
-        default = "http://127.0.0.1:7890";
+        default = "http://127.0.0.1:7893";
         description = ''
           HTTP/SOCKS proxy URL used by the `with-proxy` fish helper to route a
           single command (and by `proxy-on` to route the rest of the shell).

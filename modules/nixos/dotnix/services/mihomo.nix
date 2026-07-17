@@ -23,7 +23,7 @@ in {
 
     mixedPort = lib.mkOption {
       type = lib.types.port;
-      default = 7890;
+      default = 7893;
       description = ''
         Local HTTP/SOCKS mixed proxy port. Point applications (or
         `networking.proxy`) here.
