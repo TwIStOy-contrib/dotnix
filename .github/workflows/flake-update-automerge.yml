@@ -10,8 +10,7 @@ jobs:
     name: Squash-merge flake-update PR
     runs-on: ubuntu-latest
     if: >-
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.actor.login == 'TwIStOy-bot'
+      github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: write
       pull-requests: write
