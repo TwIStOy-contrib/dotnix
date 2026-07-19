@@ -16,11 +16,18 @@
 
   # Wanxiang (万象) language model for Rime. Improves long-sentence accuracy.
   # Ref: https://www.mintimate.cc/zh/guide/languageModel.html
-  # Repo: https://github.com/amzxyz/RIME-LMDG (LTS release)
+  # Upstream: https://github.com/amzxyz/RIME-LMDG (LTS release)
   # Referenced from double_pinyin_flypy.custom.yaml as `grammar/language`.
+  #
+  # NOTE: The upstream LTS release is mutable (`isImmutable: false`); its
+  # assets get re-uploaded periodically, which changes the content hash and
+  # breaks reproducible Nix fetches. We pin to an immutable mirror under
+  # TwIStOy-contrib/rime-assets instead. To move to a newer snapshot, create
+  # a new immutable release (v2, v3, ...) there and bump both `url` and
+  # `hash` — never overwrite an existing versioned release.
   wanxiang-gram = pkgs.fetchurl {
-    url = "https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram";
-    hash = "sha256-DRnxrj9nZW3x+LIHoULuEIyPa2bjZ4cgIiG7k3w++Cw=";
+    url = "https://github.com/TwIStOy-contrib/rime-assets/releases/download/v1/wanxiang-lts-zh-hans.gram";
+    hash = "sha256-5+DhVkiYe1Bx3AohNc9BeQycvCe7tqYqjeD+Ljqivzo=";
   };
 in {
   options.dotnix.apps.squirrel = {
