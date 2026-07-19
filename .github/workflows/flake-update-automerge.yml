@@ -1,0 +1,66 @@
+name: Flake Update Auto-merge
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+jobs:
+  automerge:
+    name: Squash-merge flake-update PR
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.actor.login == 'TwIStOy-bot'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Squash-merge the flake-update PR
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ secrets.BOT_TOKEN_FOR_UPDATES }}
+          script: |
+            const headBranch = context.payload.workflow_run.head_branch;
+            const headSha = context.payload.workflow_run.head_sha;
+
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${headBranch}`,
+            });
+
+            if (prs.length === 0) {
+              core.info(`No open PR for branch ${headBranch}, nothing to merge`);
+              return;
+            }
+
+            for (const pr of prs) {
+              if (pr.user.login !== 'TwIStOy-bot') {
+                core.info(`PR #${pr.number} is not from TwIStOy-bot, skipping`);
+                continue;
+              }
+              if (pr.title.trim() !== 'Update Nix flake inputs') {
+                core.info(`PR #${pr.number} title "${pr.title}" does not match, skipping`);
+                continue;
+              }
+              if (pr.head.sha !== headSha) {
+                core.info(`PR #${pr.number} head SHA mismatch, skipping`);
+                continue;
+              }
+
+              core.info(`Squash-merging PR #${pr.number}: ${pr.title}`);
+              try {
+                await github.rest.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  merge_method: 'squash',
+                  sha: headSha,
+                });
+                core.info(`Successfully squash-merged PR #${pr.number}`);
+              } catch (err) {
+                core.setFailed(`Failed to merge PR #${pr.number}: ${err.message}`);
+              }
+            }
