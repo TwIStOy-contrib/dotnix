@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - update_flake_lock_action
     paths-ignore:
       - "**.md"
       - "Justfile"
@@ -16,15 +15,6 @@ on:
       - "**.md"
       - "Justfile"
       - ".github/workflows/*"
-  pull_request_target:
-    branches:
-      - master
-      - update_flake_lock_action
-    paths-ignore:
-      - "**.md"
-      - "Justfile"
-      - ".github/workflows/*"
-    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
