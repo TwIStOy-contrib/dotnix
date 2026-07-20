@@ -13,6 +13,9 @@ _: {
     services.github-runner = {
       enable = false;
     };
+    services.moshi = {
+      enable = true;
+    };
 
     services.tailscale = {
       enable = true;
