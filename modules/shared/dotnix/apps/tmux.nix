@@ -31,6 +31,13 @@ in {
         enable = true;
         package = pkgs-unstable.tmux;
 
+        # moshi daemon (systemd user unit, no fish env) and bare SSH/bash look up
+        # tmux on the default /tmp/tmux-<uid>/default socket. HM's secureSocket
+        # (on by default on Linux) forces TMUX_TMPDIR=$XDG_RUNTIME_DIR via
+        # home.sessionVariables, which only fish picks up -> the two worlds split
+        # and moshi cannot find sessions started from fish. Keep the default socket.
+        secureSocket = false;
+
         shell = "${pkgs-unstable.fish}/bin/fish";
         terminal = "xterm-kitty";
         mouse = true;
