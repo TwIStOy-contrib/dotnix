@@ -129,6 +129,10 @@ in {
       file = "inference-twistoy-api-key.age";
       owner = user.name;
     };
+    inference-v2-twistoy-api-key = ageSecret {
+      file = "inference-v2-twistoy-api-key.age";
+      owner = user.name;
+    };
     exa-api-token = ageSecret {
       file = "exa-api-token.age";
       owner = user.name;

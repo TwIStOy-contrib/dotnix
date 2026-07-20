@@ -36,6 +36,7 @@
     DEEPSEEK_API_KEY = "$(cat /run/agenix/deepseek-api-key)";
     OPENROUTER_API_KEY = "$(cat /run/agenix/openrouter-api-key)";
     INFERENCE_TWISTOY_API_KEY = "$(cat /run/agenix/inference-twistoy-api-key)";
+    INFERENCE_V2_TWISTOY_API_KEY = "$(cat /run/agenix/inference-v2-twistoy-api-key)";
     EXA_API_KEY = "$(cat /run/agenix/exa-api-token)";
     BRAVE_API_KEY = "$(cat /run/agenix/brave-api-token)";
     TAVILY_API_KEY = "$(cat /run/agenix/tavily-api-token)";
