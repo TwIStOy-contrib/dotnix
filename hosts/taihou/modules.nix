@@ -7,6 +7,9 @@ _: {
     apps.ollama = {
       enable = false;
     };
+    # ssh agent socket manager for tmux (keeps SSH_AUTH_SOCK pointed at the
+    # active tmux client across multiple simultaneous SSH/ET connections).
+    apps.socklink.enable = true;
     services.github-runner = {
       enable = false;
     };
