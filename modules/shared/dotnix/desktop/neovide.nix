@@ -4,6 +4,7 @@
   pkgs-unstable,
   lib,
   dotnix-utils,
+  dotvim-ne,
   ...
 }: let
   cfg = config.dotnix.desktop.neovide;
@@ -75,7 +76,7 @@ in {
 
       neovim-bin = lib.mkOption {
         type = lib.types.package;
-        default = pkgs.neovim;
+        default = dotvim-ne;
         description = ''
           Path to the neovim binary to use.
         '';
