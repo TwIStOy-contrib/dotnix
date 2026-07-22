@@ -6,16 +6,11 @@
   ...
 }: let
   cfg = config.dotnix.apps.yazi;
-  yazi-plugins = [
-    "smart-enter.yazi/init.lua"
-  ];
 
-  add-plugin = plugin: {
-    "yazi/plugins/${plugin}".text =
-      builtins.readFile ./plugins/${plugin};
-  };
-
-  useNvimAsOpenerFiles = [
+  # File name globs that yazi opens with the `text` (nvim) opener.
+  # yazi v25.12.29 (#3034) renamed the `name` matcher to `url` to support the
+  # virtual file system, so each rule must use `url`, not `name`.
+  nvimOpenerFiles = [
     "*.json"
     "*.cpp"
     "*.lua"
@@ -29,10 +24,12 @@
     "LICENSE"
     "flake.lock"
   ];
-  nvimRules = lib.lists.forEach useNvimAsOpenerFiles (file: {
-    name = file;
-    use = "text";
-  });
+  nvimRules =
+    map (file: {
+      url = file;
+      use = "text";
+    })
+    nvimOpenerFiles;
 in {
   options.dotnix.apps.yazi = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.yazi";
@@ -46,40 +43,35 @@ in {
         enableBashIntegration = true;
         enableFishIntegration = true;
 
+        # ~/.config/yazi/yazi.toml
         settings = {
-          log = {
-            enabled = true;
-          };
-          opener = {
-            text = [
-              {
-                run = "nvim \"$@\"";
-                block = true;
-              }
-            ];
-          };
-          open = {
-            rules = nvimRules;
-          };
-          manager = {
-            keymap = [
-              {
-                on = ["l"];
-                run = "plugin --sync smart-enter";
-                desc = "Enter the child directory, or open the file";
-              }
-            ];
-          };
+          log.enabled = true;
+          opener.text = [
+            {
+              run = "nvim \"$@\"";
+              block = true;
+            }
+          ];
+          open.rules = nvimRules;
         };
-      };
 
-      # plugins
-      xdg.configFile = lib.attrsets.mergeAttrsList (
-        (lib.lists.forEach yazi-plugins add-plugin)
-        ++ [
-          {"yazi/init.lua".text = builtins.readFile ./init.lua;}
-        ]
-      );
+        # ~/.config/yazi/keymap.toml — yazi reads keymaps from a dedicated file
+        # (not yazi.toml), and the manager section was renamed `[manager]` ->
+        # `[mgr]` (#2803). `prepend_keymap` layers on top of the defaults.
+        keymap.mgr.prepend_keymap = [
+          {
+            on = "l";
+            run = "plugin smart-enter";
+            desc = "Enter the child directory, or open the file";
+          }
+        ];
+
+        # Vendored plugin + init.lua wired through home-manager's native
+        # options. The plugin entry file MUST be `main.lua` — the loader
+        # defaults to entry "main", not "init".
+        plugins.smart-enter = ./plugins/smart-enter.yazi;
+        initLua = ./init.lua;
+      };
     };
   };
 }
