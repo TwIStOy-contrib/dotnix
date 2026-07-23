@@ -102,9 +102,11 @@ in
     dotnix-utils = buildDotnixUtils {
       inherit inputs dotnix-constants;
     };
+    # The dotvim editor package (ships /bin/ne). Surfaced to modules via
+    # specialArgs so e.g. yazi / neovide can launch it directly.
+    dotvim-ne = inputs.dotvim.packages.${system}.default;
     dotnix-pkgs = buildDotnixPkgs {
-      inherit pkgs-unstable llm-agents;
-      dotvim-ne = inputs.dotvim.packages.${system}.default;
+      inherit pkgs-unstable llm-agents dotvim-ne;
     };
   in
     {
@@ -113,7 +115,7 @@ in
     }: let
       # inject the specialArgs into all modules and home-manager modules
       specialArgs = {
-        inherit dotnix-constants dotnix-utils dotnix-pkgs;
+        inherit dotnix-constants dotnix-utils dotnix-pkgs dotvim-ne;
         # unstable channel
         inherit pkgs-unstable;
         # neovim packages from nightly overlay

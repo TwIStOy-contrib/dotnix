@@ -3,33 +3,104 @@
   lib,
   dotnix-utils,
   pkgs-unstable,
+  dotvim-ne,
   ...
 }: let
   cfg = config.dotnix.apps.yazi;
 
-  # File name globs that yazi opens with the `text` (nvim) opener.
+  # The dotvim editor entry point. `dotvim-ne` ships /bin/ne, a wrapper that
+  # sets NVIM_APPNAME and execs the underlying nixvim nvim binary.
+  editorBin = "${dotvim-ne}/bin/ne";
+
+  # File name globs that yazi opens with the `text` (dotvim-ne) opener.
   # yazi v25.12.29 (#3034) renamed the `name` matcher to `url` to support the
   # virtual file system, so each rule must use `url`, not `name`.
-  nvimOpenerFiles = [
-    "*.json"
+  textOpenerFiles = [
+    # C / C++
+    "*.c"
+    "*.h"
     "*.cpp"
+    "*.hpp"
+    "*.cc"
+    "*.cxx"
+    # other languages
+    "*.cs"
+    "*.go"
+    "*.java"
+    "*.kt"
+    "*.py"
+    "*.rb"
+    "*.rs"
+    "*.scala"
+    "*.swift"
+    "*.php"
+    "*.sql"
+    "*.vim"
     "*.lua"
+    "*.nim"
+    "*.zig"
+    # web
+    "*.js"
+    "*.jsx"
+    "*.ts"
+    "*.tsx"
+    "*.html"
+    "*.htm"
+    "*.css"
+    "*.scss"
+    "*.sass"
+    "*.less"
+    # markup / docs
+    "*.md"
+    "*.markdown"
+    "*.rst"
+    "*.tex"
+    "*.txt"
+    "*.org"
+    # shell / scripting
+    "*.sh"
+    "*.bash"
+    "*.zsh"
+    "*.fish"
+    ".envrc"
+    # config / data
+    "*.conf"
+    "*.ini"
+    "*.cfg"
+    "*.properties"
     "*.toml"
     "*.yaml"
-    "*.c"
-    "*.rs"
-    "*.ts"
-    "*.nix"
+    "*.yml"
+    "*.json"
+    "*.jsonc"
+    "*.json5"
+    "*.xml"
+    # build / project
+    "Makefile"
+    "makefile"
+    "GNUmakefile"
+    "CMakeLists.txt"
+    "*.cmake"
+    "Dockerfile"
+    "*.dockerfile"
     "justfile"
-    "LICENSE"
+    "Justfile"
+    "*.service"
+    "*.timer"
+    "*.socket"
+    # nix
+    "*.nix"
+    "flake.nix"
     "flake.lock"
+    # misc
+    "LICENSE"
   ];
-  nvimRules =
+  textRules =
     map (file: {
       url = file;
       use = "text";
     })
-    nvimOpenerFiles;
+    textOpenerFiles;
 in {
   options.dotnix.apps.yazi = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.yazi";
@@ -48,11 +119,11 @@ in {
           log.enabled = true;
           opener.text = [
             {
-              run = "nvim \"$@\"";
+              run = "${editorBin} \"$@\"";
               block = true;
             }
           ];
-          open.rules = nvimRules;
+          open.rules = textRules;
         };
 
         # ~/.config/yazi/keymap.toml — yazi reads keymaps from a dedicated file
