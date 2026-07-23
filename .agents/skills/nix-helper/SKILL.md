@@ -55,6 +55,7 @@ See `references/package-management.md` for module structure patterns.
         - If within another module, consider creating a new standalone module for better organization.
     - If it does not exist, create a new module in the appropriate directory based on platform.
 2. Follow the module structure patterns in `refrerences/package-management.md` to create or modify the module.
+3. **Verify against the installed binary, not just upstream docs.** Packages from `pkgs-unstable` are often newer than the upstream docs site — when a program rejects its generated config on startup, check the installed `<bin> --version`, then cross-reference the upstream **CHANGELOG** / source for that version (the docs site may still show pre-breaking-change syntax). See `references/package-management.md` → "Validating a generated config" and "Finding the home-manager module API".
 
 See `references/package-management.md` for module structure patterns.
 
