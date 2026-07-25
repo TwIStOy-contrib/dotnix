@@ -244,6 +244,17 @@ in {
             then "symbol_map U+E900-U+E904 icomoon"
             else ""
           }
+          # Route sketchybar-app-font PUA codepoints to the font so its app
+          # icons render in the terminal. The font ships icons in the
+          # supplementary PUA (U+100000-U+10FFFD, see fonts/sketchybar-app-font).
+          # Terminals cannot use the upstream ligature form (":iconname:")
+          # because those are plain ASCII codepoints that the primary font
+          # already covers.
+          ${
+            if config.dotnix.fonts.sketchybar-app-font.enable
+            then "symbol_map ${config.dotnix.fonts.sketchybar-app-font.puaRange} sketchybar-app-font"
+            else ""
+          }
           ${
             if termCfg.adjust-cell-width != ""
             then "modify_font cell_width ${termCfg.adjust-cell-width}"

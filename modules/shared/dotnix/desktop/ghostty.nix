@@ -116,6 +116,14 @@
       lib.optional config.dotnix.fonts.runcat.enable {
         font-codepoint-map = "U+E900-U+E904=icomoon";
       }
+    )
+    # Route sketchybar-app-font PUA codepoints to the font so its app icons
+    # render in the terminal. See kitty/default.nix for the rationale on why
+    # terminals cannot use the upstream ligature form.
+    ++ (
+      lib.optional config.dotnix.fonts.sketchybar-app-font.enable {
+        font-codepoint-map = "${config.dotnix.fonts.sketchybar-app-font.puaRange}=sketchybar-app-font";
+      }
     );
 
   generateConfigLine = attrs: lib.attrsets.mapAttrsToList (key: value: "${key} = ${toString value}") attrs;
