@@ -119,9 +119,6 @@ in {
     // lib.optionalAttrs isLinux proxyHelpers.option;
 
   config = lib.mkIf cfg.enable {
-    # termbg detects the terminal background via OSC 11 for TERM_THEME below.
-    dotnix.hm.packages = [pkgs-unstable.termbg];
-
     home-manager = dotnix-utils.hm.hmConfig {
       programs.fish = {
         enable = true;
@@ -136,15 +133,18 @@ in {
         generateCompletions = false;
         interactiveShellInit = lib.mkMerge [
           (lib.mkOrder 700 ''
-            # Detect the terminal's color scheme via OSC 11. The query is
-            # answered by the terminal emulator itself, so it works over SSH;
-            # inside tmux it relies on `allow-passthrough on`. Exported for
-            # theme-aware tools (starship, tmux); falls back to dark when
-            # detection fails.
-            if ${pkgs-unstable.termbg}/bin/termbg 2>/dev/null | string match -qrg 'Theme:\s*Light'
-                set -gx TERM_THEME light
-            else
-                set -gx TERM_THEME dark
+            # Determine the terminal color scheme for theme-aware tools
+            # (starship, difft, delta). Inside tmux, read the theme tmux already
+            # detected via CSI 2031 — fast (no query) and live-correct. In a
+            # bare terminal there's no dependency-free, non-blocking way to
+            # query OSC 11 from fish startup (termbg can't be piped; `script`
+            # steals fish's stdin and blocks the prompt), so it defaults to
+            # dark — run inside tmux (e.g. the `tdev` alias) for theme awareness.
+            set -gx TERM_THEME dark
+            if set -q TMUX
+                if test (tmux display-message -p "#{client_theme}" 2>/dev/null) = light
+                    set -gx TERM_THEME light
+                end
             end
           '')
           ''
