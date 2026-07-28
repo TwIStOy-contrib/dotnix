@@ -21,29 +21,48 @@
     };
   };
 
-  # The plugin's generator script, re-run by the theme hooks below to rebuild
+  # The plugin's generator script, re-run by apply-catppuccin.conf to rebuild
   # the @thm_* palette after a flavor change.
   catppuccinScript = "${tmux-catppuccin}/share/tmux-plugins/catppuccin/catppuccin.tmux";
 
   # message-style uses set -gF, which bakes the resolved @thm_* colours at set
-  # time, so it must be re-applied whenever the flavor changes.
+  # time, so it must be re-applied whenever the flavor changes (both at initial
+  # config load and on each switch via apply-catppuccin.conf).
+  msgStyleVal = "fg=#{@thm_teal},bg=#{@thm_mantle},align=left,width=100%,fill=#{@thm_mantle}";
   messageStyles = ''
-    set -gF message-style "fg=#{@thm_teal},bg=#{@thm_mantle},align=left,width=100%,fill=#{@thm_mantle}"
-    set -gF message-command-style "fg=#{@thm_teal},bg=#{@thm_mantle},align=left,width=100%,fill=#{@thm_mantle}"
+    set -gF message-style "${msgStyleVal}"
+    set -gF message-command-style "${msgStyleVal}"
   '';
 
-  # Rebuild catppuccin for a new flavor. The first run (with @catppuccin_reset)
-  # regenerates the @thm_* palette but also reverts custom @catppuccin_* options
-  # to defaults, so re-apply them and run a second time (see catppuccin/tmux
-  # docs/tutorials/03-resetting-theme.md). Finally re-apply the baked message
-  # styles.
-  switchFlavor = flavor: ''
-    set -g @catppuccin_flavor "${flavor}"
+  # Apply the current @catppuccin_flavor. Sourced from a standalone file so the
+  # logic is identical to the work machine's apply-catppuccin.conf. Mirrors
+  # catppuccin/tmux docs/tutorials/03-resetting-theme.md: reset + run, restore
+  # the customized window style, unset status-module colors that bake palette
+  # via -ogqF (session/application modules), run again, then re-apply
+  # message-style. Without the set -Ug the status modules keep the stale baked
+  # palette even after @thm_* regenerate.
+  applyConf = ''
     set -g @catppuccin_reset "true"
     run ${catppuccinScript}
     set -g @catppuccin_window_status_style "rounded"
+    set -Ug @catppuccin_session_color
+    set -Ug @catppuccin_application_color
+    set -Ug @catppuccin_status_session_icon_fg
+    set -Ug @catppuccin_status_session_text_fg
+    set -Ug @catppuccin_status_session_icon_bg
+    set -Ug @catppuccin_status_application_icon_fg
+    set -Ug @catppuccin_status_application_text_fg
+    set -Ug @catppuccin_status_application_icon_bg
     run ${catppuccinScript}
     ${messageStyles}
+  '';
+
+  # Set flavor, apply it via the standalone file, and record what we applied
+  # (so client-attached can skip redundant reloads).
+  applyFlavor = flavor: ''
+    set -g @catppuccin_flavor "${flavor}"
+    source-file ~/.config/tmux/apply-catppuccin.conf
+    set -g @applied_theme "${flavor}"
   '';
 in {
   options.dotnix.apps.tmux = {
@@ -52,6 +71,8 @@ in {
 
   config = lib.mkIf cfg.enable {
     home-manager = dotnix-utils.hm.hmConfig {
+      xdg.configFile."tmux/apply-catppuccin.conf".text = applyConf;
+
       programs.tmux = {
         enable = true;
         package = pkgs-unstable.tmux;
@@ -78,9 +99,12 @@ in {
             plugin = tmux-catppuccin;
             # Default flavor; the client-dark/light-theme hooks in extraConfig
             # override it once tmux detects the terminal color scheme.
+            # @applied_theme tracks the last flavor we applied so the
+            # client-attached hook below can skip redundant catppuccin reloads.
             extraConfig = ''
               set -g @catppuccin_flavor "mocha"
               set -g @catppuccin_window_status_style "rounded"
+              set -g @applied_theme "mocha"
             '';
           }
         ];
@@ -174,10 +198,27 @@ in {
           # by ghostty/kitty and re-reported on OS appearance change) and fires
           # these hooks. See catppuccin/tmux README and tmux CHANGES (3.6).
           set-hook -g client-dark-theme {
-          ${switchFlavor "mocha"}
+          ${applyFlavor "mocha"}
           }
           set-hook -g client-light-theme {
-          ${switchFlavor "latte"}
+          ${applyFlavor "latte"}
+          }
+
+          # The hooks above only fire on a theme *change* event, so a server
+          # that started (or a config that loaded) with the scheme already
+          # settled never applies it. On every client attach, sync the flavor
+          # to #{client_theme} (expanded at fire time, unlike %if at parse).
+          # Guarded by @applied_theme to skip redundant catppuccin reloads.
+          set-hook -g client-attached {
+            if-shell -F '#{==:#{client_theme},light}' {
+              if-shell -F '#{!=:#{@applied_theme},latte}' {
+          ${applyFlavor "latte"}
+              }
+            } {
+              if-shell -F '#{!=:#{@applied_theme},mocha}' {
+          ${applyFlavor "mocha"}
+              }
+            }
           }
         '';
       };
