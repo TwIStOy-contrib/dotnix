@@ -134,14 +134,15 @@ in {
         interactiveShellInit = lib.mkMerge [
           (lib.mkOrder 700 ''
             # Determine the terminal color scheme for theme-aware tools
-            # (starship, difft, delta). Inside tmux, read the theme tmux already
-            # detected via CSI 2031 — fast (no query) and live-correct. In a
-            # bare terminal there's no dependency-free, non-blocking way to
-            # query OSC 11 from fish startup (termbg can't be piped; `script`
-            # steals fish's stdin and blocks the prompt), so it defaults to
-            # dark — run inside tmux (e.g. the `tdev` alias) for theme awareness.
+            # (starship, difft, delta). fish 4.x natively detects it as
+            # $fish_terminal_color_theme (dark|light|unknown) — dependency-free,
+            # non-blocking, works in a bare terminal. Inside tmux, fall back to
+            # the theme tmux already detected via CSI 2031 if fish's value is
+            # unknown. Defaults to dark.
             set -gx TERM_THEME dark
-            if set -q TMUX
+            if test "$fish_terminal_color_theme" = light
+                set -gx TERM_THEME light
+            else if set -q TMUX
                 if test (tmux display-message -p "#{client_theme}" 2>/dev/null) = light
                     set -gx TERM_THEME light
                 end
