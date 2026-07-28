@@ -68,13 +68,17 @@ in {
       };
 
       # starship has no native dark/light support (starship/starship#6991);
-      # select the palette file based on TERM_THEME (see dotnix.apps.fish).
+      # follow TERM_THEME via an --on-variable handler (TERM_THEME is itself
+      # driven by fish's fish_terminal_color_theme, see dotnix.apps.fish).
       programs.fish.interactiveShellInit = ''
-        if test "$TERM_THEME" = "light"
-            set -gx STARSHIP_CONFIG ~/.config/starship-light.toml
-        else
-            set -e STARSHIP_CONFIG
+        function _dotnix_sync_starship_config --on-variable TERM_THEME
+            if test "$TERM_THEME" = light
+                set -gx STARSHIP_CONFIG ~/.config/starship-light.toml
+            else
+                set -e STARSHIP_CONFIG
+            end
         end
+        _dotnix_sync_starship_config
       '';
 
       xdg.configFile."starship-light.toml".source = toml.generate "starship-light.toml" (withFlavor "latte");
