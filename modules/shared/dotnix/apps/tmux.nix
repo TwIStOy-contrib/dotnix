@@ -20,6 +20,31 @@
       hash = "sha256-3CJRQCgS8NAN7vOLBjNGiHbGXTIrIyY/FLmfZrXcEYc=";
     };
   };
+
+  # The plugin's generator script, re-run by the theme hooks below to rebuild
+  # the @thm_* palette after a flavor change.
+  catppuccinScript = "${tmux-catppuccin}/share/tmux-plugins/catppuccin/catppuccin.tmux";
+
+  # message-style uses set -gF, which bakes the resolved @thm_* colours at set
+  # time, so it must be re-applied whenever the flavor changes.
+  messageStyles = ''
+    set -gF message-style "fg=#{@thm_teal},bg=#{@thm_mantle},align=left,width=100%,fill=#{@thm_mantle}"
+    set -gF message-command-style "fg=#{@thm_teal},bg=#{@thm_mantle},align=left,width=100%,fill=#{@thm_mantle}"
+  '';
+
+  # Rebuild catppuccin for a new flavor. The first run (with @catppuccin_reset)
+  # regenerates the @thm_* palette but also reverts custom @catppuccin_* options
+  # to defaults, so re-apply them and run a second time (see catppuccin/tmux
+  # docs/tutorials/03-resetting-theme.md). Finally re-apply the baked message
+  # styles.
+  switchFlavor = flavor: ''
+    set -g @catppuccin_flavor "${flavor}"
+    set -g @catppuccin_reset "true"
+    run ${catppuccinScript}
+    set -g @catppuccin_window_status_style "rounded"
+    run ${catppuccinScript}
+    ${messageStyles}
+  '';
 in {
   options.dotnix.apps.tmux = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.tmux";
@@ -27,21 +52,6 @@ in {
 
   config = lib.mkIf cfg.enable {
     home-manager = dotnix-utils.hm.hmConfig {
-      # Sync a running tmux server's flavor with the terminal theme. tmux.conf
-      # cannot reliably read the starting shell's env at parse time, so the
-      # flavor is driven by the @term_theme option instead: store TERM_THEME
-      # into it and re-source the config (re-evaluating the %if on
-      # @term_theme) whenever the two diverge.
-      programs.fish.interactiveShellInit = ''
-        if set -q TMUX
-            set -l tmux_theme (tmux show -gv @term_theme 2>/dev/null)
-            if test "$tmux_theme" != "$TERM_THEME"
-                tmux set -g @term_theme "$TERM_THEME"
-                tmux source-file ~/.config/tmux/tmux.conf
-            end
-        end
-      '';
-
       programs.tmux = {
         enable = true;
         package = pkgs-unstable.tmux;
@@ -66,14 +76,10 @@ in {
         plugins = [
           {
             plugin = tmux-catppuccin;
-            # The flavor follows the @term_theme user option (written by the
-            # fish hook below from TERM_THEME); defaults to mocha when unset.
+            # Default flavor; the client-dark/light-theme hooks in extraConfig
+            # override it once tmux detects the terminal color scheme.
             extraConfig = ''
-              %if #{==:#{@term_theme},light}
-              set -g @catppuccin_flavor "latte"
-              %else
               set -g @catppuccin_flavor "mocha"
-              %endif
               set -g @catppuccin_window_status_style "rounded"
             '';
           }
@@ -162,8 +168,17 @@ in {
           # instead of it. Catppuccin defaults to centre-aligned messages with
           # no full-width cover, so window tabs on the left stay visible and
           # bury the text you type. Force a full-width opaque prompt.
-          set -gF message-style "fg=#{@thm_teal},bg=#{@thm_mantle},align=left,width=100%,fill=#{@thm_mantle}"
-          set -gF message-command-style "fg=#{@thm_teal},bg=#{@thm_mantle},align=left,width=100%,fill=#{@thm_mantle}"
+          ${messageStyles}
+
+          # tmux 3.6+ detects the terminal color scheme via mode 2031 (answered
+          # by ghostty/kitty and re-reported on OS appearance change) and fires
+          # these hooks. See catppuccin/tmux README and tmux CHANGES (3.6).
+          set-hook -g client-dark-theme {
+          ${switchFlavor "mocha"}
+          }
+          set-hook -g client-light-theme {
+          ${switchFlavor "latte"}
+          }
         '';
       };
     };
