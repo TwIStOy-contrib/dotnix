@@ -212,11 +212,11 @@ in {
           set-hook -g client-attached {
             if-shell -F '#{==:#{client_theme},light}' {
               if-shell -F '#{!=:#{@applied_theme},latte}' {
-          ${applyFlavor "latte"}
+                ${applyFlavor "latte"}
               }
             } {
               if-shell -F '#{!=:#{@applied_theme},mocha}' {
-          ${applyFlavor "mocha"}
+                ${applyFlavor "mocha"}
               }
             }
           }
