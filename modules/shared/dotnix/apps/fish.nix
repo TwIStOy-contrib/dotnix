@@ -119,6 +119,9 @@ in {
     // lib.optionalAttrs isLinux proxyHelpers.option;
 
   config = lib.mkIf cfg.enable {
+    # termbg detects the terminal background via OSC 11 for TERM_THEME below.
+    dotnix.hm.packages = [pkgs-unstable.termbg];
+
     home-manager = dotnix-utils.hm.hmConfig {
       programs.fish = {
         enable = true;
@@ -131,11 +134,25 @@ in {
         # generator, and packages that want fish completions ship them natively
         # under share/fish/vendor_completions.d/, which fish auto-loads.
         generateCompletions = false;
-        interactiveShellInit = ''
-          set fish_greeting
+        interactiveShellInit = lib.mkMerge [
+          (lib.mkOrder 700 ''
+            # Detect the terminal's color scheme via OSC 11. The query is
+            # answered by the terminal emulator itself, so it works over SSH;
+            # inside tmux it relies on `allow-passthrough on`. Exported for
+            # theme-aware tools (starship, tmux); falls back to dark when
+            # detection fails.
+            if ${pkgs-unstable.termbg}/bin/termbg 2>/dev/null | string match -qrg 'Theme:\s*Light'
+                set -gx TERM_THEME light
+            else
+                set -gx TERM_THEME dark
+            end
+          '')
+          ''
+            set fish_greeting
 
-          export GITHUB_TOKEN="$(cat ${config.age.secrets.github-cli-access-token.path})"
-        '';
+            export GITHUB_TOKEN="$(cat ${config.age.secrets.github-cli-access-token.path})"
+          ''
+        ];
         plugins = [
           {
             name = "foreign-env";

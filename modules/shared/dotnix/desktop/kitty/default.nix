@@ -124,6 +124,8 @@
     if c == ""
     then ""
     else builtins.substring 0 1 (lib.toUpper c) + builtins.substring 1 (builtins.stringLength c - 1) c;
+
+  toThemeFile = t: lib.strings.concatStringsSep "-" (builtins.map capitalize (lib.strings.splitString "-" t));
 in {
   options.dotnix.desktop.kitty = {
     enable = lib.mkEnableOption "Enable kitty terminal";
@@ -135,7 +137,9 @@ in {
         enable = true;
         package = pkgs.kitty;
 
-        themeFile = lib.strings.concatStringsSep "-" (builtins.map capitalize (lib.strings.splitString "-" termCfg.theme));
+        # Base theme, used as fallback when the OS reports no color-scheme
+        # preference. The *-theme.auto.conf files below override it.
+        themeFile = toThemeFile termCfg.theme.dark;
         settings = {
           font_family = termCfg.font-family;
           font_size = termCfg.font-size;
@@ -274,6 +278,16 @@ in {
 
       # session files
       xdg.configFile = {
+        # kitty >= 0.38 natively switches between these themes following the
+        # OS color scheme; their colors override all other color settings.
+        "kitty/light-theme.auto.conf" = {
+          text = "include ${pkgs.kitty-themes}/share/kitty-themes/themes/${toThemeFile termCfg.theme.light}.conf\n";
+        };
+
+        "kitty/dark-theme.auto.conf" = {
+          text = "include ${pkgs.kitty-themes}/share/kitty-themes/themes/${toThemeFile termCfg.theme.dark}.conf\n";
+        };
+
         "kitty/sessions" = {
           source = ./sessions;
           force = true;

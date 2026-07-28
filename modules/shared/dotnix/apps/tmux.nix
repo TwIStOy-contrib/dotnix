@@ -27,6 +27,21 @@ in {
 
   config = lib.mkIf cfg.enable {
     home-manager = dotnix-utils.hm.hmConfig {
+      # Sync a running tmux server's flavor with the terminal theme. tmux.conf
+      # cannot reliably read the starting shell's env at parse time, so the
+      # flavor is driven by the @term_theme option instead: store TERM_THEME
+      # into it and re-source the config (re-evaluating the %if on
+      # @term_theme) whenever the two diverge.
+      programs.fish.interactiveShellInit = ''
+        if set -q TMUX
+            set -l tmux_theme (tmux show -gv @term_theme 2>/dev/null)
+            if test "$tmux_theme" != "$TERM_THEME"
+                tmux set -g @term_theme "$TERM_THEME"
+                tmux source-file ~/.config/tmux/tmux.conf
+            end
+        end
+      '';
+
       programs.tmux = {
         enable = true;
         package = pkgs-unstable.tmux;
@@ -51,8 +66,14 @@ in {
         plugins = [
           {
             plugin = tmux-catppuccin;
+            # The flavor follows the @term_theme user option (written by the
+            # fish hook below from TERM_THEME); defaults to mocha when unset.
             extraConfig = ''
+              %if #{==:#{@term_theme},light}
+              set -g @catppuccin_flavor "latte"
+              %else
               set -g @catppuccin_flavor "mocha"
+              %endif
               set -g @catppuccin_window_status_style "rounded"
             '';
           }
@@ -64,6 +85,10 @@ in {
           set -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colours - needs tmux-3.0
 
           set -g set-clipboard on
+
+          # Let DCS-wrapped escape sequences (e.g. OSC 11 background-color
+          # queries from termbg) pass through to the outer terminal.
+          set -g allow-passthrough on
 
           setw -g xterm-keys on
           set -s escape-time 1                      # faster command sequences

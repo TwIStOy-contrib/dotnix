@@ -20,7 +20,10 @@
     then ""
     else builtins.substring 0 1 (lib.toUpper c) + builtins.substring 1 (builtins.stringLength c - 1) c;
 
-  theme = lib.strings.concatStringsSep " " (builtins.map capitalize (lib.strings.splitString "-" termCfg.theme));
+  toThemeName = t: lib.strings.concatStringsSep " " (builtins.map capitalize (lib.strings.splitString "-" t));
+
+  # ghostty natively follows the OS color scheme when given both a dark and a light theme
+  theme = "dark:${toThemeName termCfg.theme.dark},light:${toThemeName termCfg.theme.light}";
 
   simpleSettings =
     {

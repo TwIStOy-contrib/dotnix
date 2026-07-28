@@ -109,13 +109,24 @@ in {
       '';
     };
 
-    theme = lib.mkOption {
-      type = lib.types.str;
-      default = "catppuccin-mocha";
-      example = "catppuccin-mocha";
-      description = ''
-        The theme to use in the terminal.
-      '';
+    theme = {
+      dark = lib.mkOption {
+        type = lib.types.str;
+        default = "catppuccin-mocha";
+        example = "catppuccin-mocha";
+        description = ''
+          The theme to use in the terminal when the system is in dark mode.
+        '';
+      };
+
+      light = lib.mkOption {
+        type = lib.types.str;
+        default = "catppuccin-latte";
+        example = "catppuccin-latte";
+        description = ''
+          The theme to use in the terminal when the system is in light mode.
+        '';
+      };
     };
 
     map-nerdfont-ranges = lib.mkOption {
