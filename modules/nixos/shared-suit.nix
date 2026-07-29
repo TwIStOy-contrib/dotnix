@@ -17,8 +17,6 @@ in {
       system-tools = enabled;
       nixos-shared = enabled;
       services.mihomo = enabled;
-      # TUI Telegram client (github:FedericoBruzzone/tgt)
-      apps.tgt = enabled;
     };
   };
 }
