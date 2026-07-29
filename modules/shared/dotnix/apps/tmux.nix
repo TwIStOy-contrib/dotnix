@@ -115,6 +115,7 @@ in {
           set -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colours - needs tmux-3.0
 
           set -g set-clipboard on
+          set -g get-clipboard request
 
           # Let DCS-wrapped escape sequences (e.g. OSC 11 background-color
           # queries from termbg) pass through to the outer terminal.
