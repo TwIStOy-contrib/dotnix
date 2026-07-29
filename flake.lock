@@ -1204,6 +1204,7 @@
         "nur-hawtian": "nur-hawtian",
         "pre-commit-hooks": "pre-commit-hooks",
         "secrets-hawtian": "secrets-hawtian",
+        "tgt": "tgt",
         "vscode-server": "vscode-server"
       }
     },
@@ -1386,6 +1387,26 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tgt": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785244874,
+        "narHash": "sha256-kL2XNdsSrIgqp3vVNkKvlPLsnBHKP27w9lTnQP/I05w=",
+        "owner": "FedericoBruzzone",
+        "repo": "tgt",
+        "rev": "b73155564e82cf28b3ce2b2cfde6fdfd717cc00d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "FedericoBruzzone",
+        "repo": "tgt",
         "type": "github"
       }
     },

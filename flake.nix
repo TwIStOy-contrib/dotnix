@@ -102,6 +102,11 @@
       };
     };
 
+    tgt = {
+      url = "github:FedericoBruzzone/tgt";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hunk = {
       url = "github:modem-dev/hunk";
       # Hunk's package.nix sets dontFixup = true, so its bun-compiled binary
