@@ -199,10 +199,10 @@ in {
           # by ghostty/kitty and re-reported on OS appearance change) and fires
           # these hooks. See catppuccin/tmux README and tmux CHANGES (3.6).
           set-hook -g client-dark-theme {
-          ${applyFlavor "mocha"}
+            ${applyFlavor "mocha"}
           }
           set-hook -g client-light-theme {
-          ${applyFlavor "latte"}
+            ${applyFlavor "latte"}
           }
 
           # The hooks above only fire on a theme *change* event, so a server
