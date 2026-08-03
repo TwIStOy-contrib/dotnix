@@ -18,6 +18,10 @@ in {
       term = enabled;
     };
 
+    # Headless Obsidian Sync/Publish client (`ob` CLI). Cross-platform,
+    # so every host gets it; most useful on the headless NIXOS servers.
+    dotnix.apps.obsidian-headless = enabled;
+
     # RunCat icon font (icomoon, U+E900-U+E904) for the pi-runcat
     # loading indicator. Installed on every host so the codepoint maps
     # in kitty/ghostty always resolve.
