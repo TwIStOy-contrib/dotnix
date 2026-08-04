@@ -41,6 +41,7 @@
     BRAVE_API_KEY = "$(cat /run/agenix/brave-api-token)";
     TAVILY_API_KEY = "$(cat /run/agenix/tavily-api-token)";
     FIRECRAWL_API_KEY = "$(cat /run/agenix/firecrawl-api-token)";
+    KIMI_CODE_API_KEY = "$(cat /run/agenix/kimi-code-api-key)";
   };
 in {
   inherit mkWrappedProgram llmApiKeys;
