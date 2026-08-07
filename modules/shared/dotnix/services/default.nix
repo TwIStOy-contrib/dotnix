@@ -2,6 +2,7 @@
   imports =
     [
       ./github-runner.nix
+      ./htw.nix
       ./tailscale.nix
     ]
     ++ (
