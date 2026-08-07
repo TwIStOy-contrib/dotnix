@@ -29,12 +29,17 @@ in {
         "codex"
         "hat"
         "herdr"
+        "htw"
         "hunk"
         "moshi-hook"
         "opencode"
         "pi"
         "todoist"
       ];
+
+      # htw agent-sessions daemon: systemd user service on NixOS,
+      # launchd agent on macOS (see modules/shared/dotnix/services/htw.nix).
+      services.htw = enabled;
 
       development = {
         build-tools = {
