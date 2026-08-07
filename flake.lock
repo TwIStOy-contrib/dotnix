@@ -608,6 +608,30 @@
         "type": "github"
       }
     },
+    "htw": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786087710,
+        "narHash": "sha256-TEeJwHSkUvr9tOASm+mcpV4lQMm35Yq7NTPCr8jJc+w=",
+        "ref": "refs/heads/master",
+        "rev": "0c9ccda01a439920f518de4c618ee6022f02d197",
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/TwIStOy/htw.git"
+      },
+      "original": {
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/TwIStOy/htw.git"
+      }
+    },
     "hunk": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -1209,6 +1233,7 @@
         "hat": "hat",
         "herdr": "herdr",
         "home-manager": "home-manager",
+        "htw": "htw",
         "hunk": "hunk",
         "llm-agents": "llm-agents",
         "neovim-nightly-overlay": "neovim-nightly-overlay",

@@ -102,6 +102,14 @@
       };
     };
 
+    htw = {
+      url = "git+ssh://git@github.com/TwIStOy/htw.git?shallow=1";
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
     hunk = {
       url = "github:modem-dev/hunk";
       # Hunk's package.nix sets dontFixup = true, so its bun-compiled binary
