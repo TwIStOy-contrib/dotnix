@@ -3,6 +3,7 @@
   lib,
   dotnix-utils,
   pkgs,
+  pkgs-unstable,
   ...
 }: let
   cfg = config.dotnix.apps.lazygit;
@@ -26,7 +27,15 @@ in {
     home-manager = dotnix-utils.hm.hmConfig {
       programs.lazygit = {
         enable = true;
-        package = pkgs.lazygit;
+        # Use the same channel (nixos-unstable) as the lazygit bundled in
+        # `ne` (dotvim's toggleterm/snacks). lazygit shows a hardcoded
+        # "Breaking Changes" popup whenever its running version is newer than
+        # the `lastversion` recorded in state.yml; if the two sources drift
+        # (stable 0.56.x vs unstable 0.6x), every switch between `lg` and ne
+        # re-triggers it. Both channels land above the latest breaking-change
+        # entry (0.62.0), so aligning them kills the popup permanently. See
+        # lazygit pkg/gui/gui.go showBreakingChangesMessage().
+        package = pkgs-unstable.lazygit;
         settings = {
           # lazygit's theme uses ANSI color names (green/blue/cyan/...), no hex,
           # so it adapts automatically via the terminal's (catppuccin) palette.
