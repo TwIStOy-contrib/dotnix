@@ -60,6 +60,17 @@ in {
       shellEnv = llmApiKeys;
     };
 
+    opencode2 = mkWrappedProgram {
+      name = "opencode2";
+      package = llm-agents.opencode2;
+      env = {
+        NODE_TLS_REJECT_UNAUTHORIZED = "0";
+        VISUAL = editorBin;
+        EDITOR = editorBin;
+      };
+      shellEnv = llmApiKeys;
+    };
+
     pi = mkWrappedProgram {
       name = "pi";
       package = llm-agents.pi;

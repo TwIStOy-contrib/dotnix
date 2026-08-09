@@ -52,14 +52,13 @@ in {
             commit = {
               signOff = true;
             };
-            pagers = [
+            diffRenderers = [
               {
-                pager = "lazygit-delta";
+                command = "lazygit-delta";
               }
               {
-                # difft picks up DFT_BACKGROUND (set in dotnix.apps.fish) from
-                # the env lazygit inherits.
-                externalDiffCommand = "difft --color=always";
+                command = "difft --color=always";
+                type = "extDiff";
               }
             ];
           };
