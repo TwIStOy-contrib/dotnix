@@ -63,6 +63,7 @@ in {
 
     apps.boring = {
       enable = true;
+      autoStart = true;
       tunnels = [
         {
           name = "dev-work";
