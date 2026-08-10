@@ -60,13 +60,13 @@
         };
       };
     };
-    plugin = ["${homeDir}/dotcode/plugin/dist/dotcode.js"];
+    plugin = ["${homeDir}/dotcode/dist/index.js"];
   };
 
   tuiConfig = {
     "$schema" = "https://opencode.ai/tui.json";
     theme = "catppuccin";
-    plugin = ["${homeDir}/dotcode/plugin/dist/dotcode-tui.js"];
+    plugin = ["${homeDir}/dotcode/dist/dotcode-tui.js"];
   };
 
   # fetch claude skills repo
@@ -142,9 +142,9 @@ in {
         if [ ! -d "${homeDir}/dotcode" ]; then
           $DRY_RUN_CMD git clone git@github.com:TwIStOy/dotcode.git "${homeDir}/dotcode"
         fi
-        if [ ! -f "${homeDir}/dotcode/plugin/dist/dotcode.js" ]; then
-          $DRY_RUN_CMD ${pkgs.bun}/bin/bun install --cwd "${homeDir}/dotcode/plugin"
-          $DRY_RUN_CMD ${pkgs.bun}/bin/bun run --cwd "${homeDir}/dotcode/plugin" build
+        if [ ! -f "${homeDir}/dotcode/dist/index.js" ]; then
+          $DRY_RUN_CMD ${pkgs.bun}/bin/bun install --cwd "${homeDir}/dotcode"
+          $DRY_RUN_CMD ${pkgs.bun}/bin/bun run --cwd "${homeDir}/dotcode" build
         fi
       '';
     };
