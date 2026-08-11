@@ -14,7 +14,7 @@
   # (that environment is only refreshed on reboot; on long-uptime hosts
   # a stale user manager keeps serving the old proxy long after
   # networking.proxy.default was bumped via `switch`).
-  proxyUrl = config.networking.proxy.default;
+  proxyUrl = cfg.proxyUrl;
   proxyEnv = lib.optionalAttrs (proxyUrl != null) {
     http_proxy = proxyUrl;
     https_proxy = proxyUrl;
@@ -30,6 +30,21 @@ in {
       default = moshi-hook;
       defaultText = lib.literalExpression "moshi-hook";
       description = "Package providing the moshi binary to run serve with.";
+    };
+
+    proxyUrl = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      # `or null` keeps this evaluable on darwin, where networking.proxy
+      # does not exist.
+      default = config.networking.proxy.default or null;
+      defaultText = lib.literalExpression "config.networking.proxy.default";
+      description = ''
+        HTTP/SOCKS proxy URL injected into the moshi service environment.
+        Defaults to the system-wide networking.proxy.default. Set it
+        explicitly (e.g. to a local mihomo port) to route moshi through a
+        different proxy without exporting one system-wide. Set to null to
+        connect directly.
+      '';
     };
   };
 

@@ -15,6 +15,9 @@ _: {
     };
     services.moshi = {
       enable = true;
+      # Route through the local mihomo mixed port (127.0.0.1:7893) instead
+      # of the LAN proxy on poi.
+      proxyUrl = "http://127.0.0.1:7893";
     };
 
     services.tailscale = {
