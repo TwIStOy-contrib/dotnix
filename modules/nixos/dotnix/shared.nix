@@ -20,6 +20,8 @@ in {
         matchBlocks = {
           "github.com" = {
             identityFile = config.age.secrets.remote-sign-key.path;
+            # never consult the agent; a forwarded/broken SSH_AUTH_SOCK must not affect git
+            identityAgent = "none";
             identitiesOnly = true;
           };
         };
