@@ -12,8 +12,6 @@ in {
 
   config = lib.mkIf cfg.enable {
     dotnix.hm.packages = with llm-agents; [
-      # Claude Code Cli
-      claude-code
     ];
   };
 }
