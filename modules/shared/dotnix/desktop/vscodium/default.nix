@@ -8,7 +8,7 @@
   ...
 }: let
   cfg = config.dotnix.desktop.vscodium;
-  extensions = inputs.nix-vscode-extensions.extensions.${pkgs.system};
+  extensions = inputs.nix-vscode-extensions.extensions.${pkgs.stdenv.hostPlatform.system};
 in {
   options.dotnix.desktop.vscodium = {
     enable = lib.mkEnableOption "VSCodium";

@@ -23,7 +23,7 @@ in {
     home-manager =
       dotnix-utils.hm.hmConfig
       (
-        if pkgs.stdenv.isDarwin
+        if pkgs.stdenv.hostPlatform.isDarwin
         then {
           home.file."Library/Application Support/tealdeer/config.toml".source = configFile;
         }

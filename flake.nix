@@ -68,13 +68,7 @@
     };
 
     # fix vscode server on nixos
-    vscode-server = {
-      url = "github:nix-community/nixos-vscode-server";
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
 
     # use more vscode extensions
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";

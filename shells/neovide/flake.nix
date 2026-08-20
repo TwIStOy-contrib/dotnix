@@ -31,7 +31,7 @@
                 pkg-config
                 libiconv
               ]
-              ++ lib.lists.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
+              ++ lib.lists.optionals stdenv.hostPlatform.isDarwin (with darwin.apple_sdk.frameworks; [
                 AppKit
                 ApplicationServices
                 CoreVideo

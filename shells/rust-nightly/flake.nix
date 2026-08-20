@@ -46,7 +46,7 @@
                 cargo-nextest
                 cargo-expand
               ]
-              ++ lib.lists.optionals stdenv.isDarwin (
+              ++ lib.lists.optionals stdenv.hostPlatform.isDarwin (
                 darwinFrameworks
                 ++ [
                   pkgs-unstable.fixDarwinDylibNames
@@ -55,16 +55,16 @@
 
             # set environment variables
             env = with pkgs;
-              (lib.optionalAttrs stdenv.isDarwin {
+              (lib.optionalAttrs stdenv.hostPlatform.isDarwin {
                 # fix issue from https://github.com/cachix/devenv/pull/532
                 DYLD_LIBRARY_PATH = "${config.env.DEVENV_PROFILE}/lib";
               })
-              // (lib.optionalAttrs stdenv.isLinux {
+              // (lib.optionalAttrs stdenv.hostPlatform.isLinux {
                 LD_LIBRARY_PATH = "${config.env.DEVENV_PROFILE}/lib";
               })
               # FIXME(hawtian): currently only try to fix this on x86_64 darwin,
               # aarch64 darwin seems to work fine without this
-              // (lib.optionalAttrs (stdenv.isDarwin && stdenv.isx86_64) {
+              // (lib.optionalAttrs (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isx86_64) {
                 COREAUDIO_SDK_PATH = pkgs.symlinkJoin {
                   name = "sdk";
                   paths = darwinFrameworks;

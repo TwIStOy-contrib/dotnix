@@ -82,7 +82,7 @@ in {
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = pkgs.stdenv.isDarwin;
+        assertion = pkgs.stdenv.hostPlatform.isDarwin;
         message = "Espanso is currently configured only for macOS in this module";
       }
     ];

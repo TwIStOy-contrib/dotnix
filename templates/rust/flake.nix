@@ -28,7 +28,7 @@
                 # language-server for toml files
                 taplo
               ]
-              ++ lib.lists.optionals stdenv.isDarwin (
+              ++ lib.lists.optionals stdenv.hostPlatform.isDarwin (
                 [
                   libiconv
                 ]
@@ -41,11 +41,11 @@
 
             # set environment variables
             env = with pkgs;
-              (lib.optionalAttrs stdenv.isDarwin {
+              (lib.optionalAttrs stdenv.hostPlatform.isDarwin {
                 # fix issue from https://github.com/cachix/devenv/pull/532
                 DYLD_LIBRARY_PATH = "${config.env.DEVENV_PROFILE}/lib";
               })
-              // lib.optionalAttrs stdenv.isLinux {
+              // lib.optionalAttrs stdenv.hostPlatform.isLinux {
                 LD_LIBRARY_PATH = "${config.env.DEVENV_PROFILE}/lib";
               };
 

@@ -17,7 +17,7 @@ in {
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = pkgs.stdenv.isDarwin;
+        assertion = pkgs.stdenv.hostPlatform.isDarwin;
         message = "yabai is only available on macOS";
       }
     ];

@@ -11,7 +11,7 @@
   settingsFormat = pkgs.formats.toml {};
   genConfig = opts: settingsFormat.generate "config.toml" opts;
   neovideBin =
-    if pkgs.stdenv.isDarwin
+    if pkgs.stdenv.hostPlatform.isDarwin
     then
       # https://github.com/neovide/neovide/issues/915
       "/Applications/Neovide.app/Contents/MacOS/neovide"
@@ -118,7 +118,7 @@ in {
       )
       # neovideWrappers
       ++ (lib.lists.forEach cfg.createRemoteHostWrappers mkNeovideWrapper)
-      ++ (lib.lists.optional pkgs.stdenv.isDarwin (
+      ++ (lib.lists.optional pkgs.stdenv.hostPlatform.isDarwin (
         pkgs.writeShellScriptBin "neovide" ''
           #!/bin/bash
           ${neovideBin} $@

@@ -8,7 +8,7 @@
   ...
 }: let
   cfg = config.dotnix.apps.herdr;
-  herdr = inputs.herdr.packages.${pkgs.system}.default;
+  herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
   settingsFormat = pkgs.formats.toml {};
   fish = pkgs-unstable.fish;
   herdrConfig = {

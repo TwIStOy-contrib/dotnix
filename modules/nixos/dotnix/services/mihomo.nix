@@ -66,8 +66,8 @@ in {
       # `mihomo-config` agenix secret and is never placed in the nix store.
       configFile = config.age.secrets."mihomo-config".path;
       # Resolve mihomo + webui from unstable to match the unstable module.
-      package = lib.mkDefault nixos-unstable.legacyPackages.${pkgs-unstable.system}.mihomo;
-      webui = lib.mkDefault nixos-unstable.legacyPackages.${pkgs-unstable.system}.metacubexd;
+      package = lib.mkDefault nixos-unstable.legacyPackages.${pkgs-unstable.stdenv.hostPlatform.system}.mihomo;
+      webui = lib.mkDefault nixos-unstable.legacyPackages.${pkgs-unstable.stdenv.hostPlatform.system}.metacubexd;
     };
 
     networking.firewall.allowedTCPPorts = [cfg.controllerPort];

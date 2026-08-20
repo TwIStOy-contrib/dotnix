@@ -6,7 +6,7 @@
   ...
 }: let
   cfg = config.dotnix.apps.htw;
-  htw = inputs.htw.packages.${pkgs.system}.default;
+  htw = inputs.htw.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in {
   options.dotnix.apps.htw = {
     enable = lib.mkEnableOption "htw, the developer environment manager CLI";
@@ -14,7 +14,7 @@ in {
     package = lib.mkOption {
       type = lib.types.package;
       default = htw;
-      defaultText = lib.literalExpression "inputs.htw.packages.\${pkgs.system}.default";
+      defaultText = lib.literalExpression "inputs.htw.packages.\${pkgs.stdenv.hostPlatform.system}.default";
       description = "Package providing the htw binary.";
     };
   };

@@ -68,7 +68,7 @@ in {
           net-tools
           eternal-terminal
         ])
-        ++ (with inputs.dotvim.packages.${pkgs.system}; [
+        ++ (with inputs.dotvim.packages.${pkgs.stdenv.hostPlatform.system}; [
           default
         ]);
     };

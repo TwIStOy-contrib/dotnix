@@ -8,7 +8,7 @@
   ...
 }: let
   cfg = config.dotnix.apps.hat;
-  hat = inputs.hat.packages.${pkgs.system}.default;
+  hat = inputs.hat.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in {
   options.dotnix.apps.hat = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.hat";

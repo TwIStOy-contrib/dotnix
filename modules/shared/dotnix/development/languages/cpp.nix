@@ -49,12 +49,12 @@ in {
       ])
       ++ [
         # format cmake files
-        nur-hawtian.packages.${pkgs.system}.gersemi
+        nur-hawtian.packages.${pkgs.stdenv.hostPlatform.system}.gersemi
       ];
     # generate clangd user configuration file
 
     home-manager = dotnix-utils.hm.hmConfig (
-      if pkgs.stdenv.isDarwin
+      if pkgs.stdenv.hostPlatform.isDarwin
       then {
         home.file."Library/Preferences/clangd/config.yaml" = {
           text = globalClangdConfigContent;

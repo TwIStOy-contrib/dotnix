@@ -16,7 +16,7 @@ in {
       ollama
     ];
 
-    services = lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
+    services = lib.optionalAttrs (!pkgs.stdenv.hostPlatform.isDarwin) {
       ollama = {
         enable = true;
         package = pkgs-unstable.ollama;

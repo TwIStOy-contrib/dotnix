@@ -28,7 +28,7 @@ in {
             gpg.format = "ssh";
             core.excludesfile = "~/.config/git/ignore";
           }
-          // (lib.optionalAttrs pkgs.stdenv.isDarwin {
+          // (lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
             "gpg \"ssh\"".program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
           });
 
@@ -36,7 +36,7 @@ in {
           # darwin: sign with the main key held by 1Password;
           # elsewhere: sign with the dedicated key decrypted by agenix
           key =
-            if pkgs.stdenv.isDarwin
+            if pkgs.stdenv.hostPlatform.isDarwin
             then "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG92SyvgOOe9pGPGHEY9VbDBWwqaRgm9tg1RJUxlfdCN"
             else config.age.secrets.remote-sign-key.path;
           signByDefault = true;

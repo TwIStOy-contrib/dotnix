@@ -50,7 +50,7 @@ in {
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = pkgs.stdenv.isDarwin;
+        assertion = pkgs.stdenv.hostPlatform.isDarwin;
         message = "Hammerspoon only works on macOS";
       }
     ];

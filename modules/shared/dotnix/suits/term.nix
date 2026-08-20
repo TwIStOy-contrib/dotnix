@@ -71,7 +71,7 @@ in {
           jc
           smug
         ];
-        nurPackages = [nur-hawtian.packages.${pkgs.system}.rime-ls];
+        nurPackages = [nur-hawtian.packages.${pkgs.stdenv.hostPlatform.system}.rime-ls];
       in
         stablePkgs ++ unstablePkgs ++ nurPackages;
     };

@@ -21,7 +21,7 @@ in {
       todoist
     ];
 
-    homebrew = lib.optionalAttrs pkgs.stdenv.isDarwin {
+    homebrew = lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       casks = ["todoist"];
     };
   };

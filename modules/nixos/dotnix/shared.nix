@@ -17,6 +17,10 @@ in {
       home.homeDirectory = lib.mkForce "/home/${user.name}";
       programs.ssh = {
         enable = true;
+        # home-manager's defaults (forwardAgent=false, compression=false,
+        # controlMaster="no", ...) are just OpenSSH's built-in defaults;
+        # skip writing them and silence the removal warning.
+        enableDefaultConfig = false;
         matchBlocks = {
           "github.com" = {
             identityFile = config.age.secrets.remote-sign-key.path;

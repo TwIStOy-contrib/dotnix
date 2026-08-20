@@ -7,7 +7,7 @@
   ...
 }: let
   cfg = config.dotnix.apps.hunk;
-  hunk = inputs.hunk.packages.${pkgs.system}.default;
+  hunk = inputs.hunk.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in {
   options.dotnix.apps.hunk = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.hunk";

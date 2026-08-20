@@ -33,7 +33,7 @@ in {
       neovide = {
         enable = true;
         package =
-          if pkgs.stdenv.isDarwin
+          if pkgs.stdenv.hostPlatform.isDarwin
           then "homebrew"
           else "unstable";
         skipPackage = true;
@@ -50,7 +50,7 @@ in {
             idle = true;
             neovim-bin = neovim-pkgs.default;
           }
-          // (lib.optionalAttrs pkgs.stdenv.isDarwin {
+          // (lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
             frame = "transparent";
           });
         extraSettings = {

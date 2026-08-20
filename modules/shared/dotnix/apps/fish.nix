@@ -7,7 +7,7 @@
   ...
 }: let
   cfg = config.dotnix.apps.fish;
-  isLinux = !pkgs.stdenv.isDarwin;
+  isLinux = !pkgs.stdenv.hostPlatform.isDarwin;
 
   # Proxy helpers are NixOS-only: they point at the local mihomo mixed-port
   # which only runs on the NixOS hosts. Darwin shells have no local proxy, so

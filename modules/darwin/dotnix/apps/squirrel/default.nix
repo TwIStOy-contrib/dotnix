@@ -36,7 +36,7 @@ in {
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = pkgs.stdenv.isDarwin;
+        assertion = pkgs.stdenv.hostPlatform.isDarwin;
         message = "Squirrel only works on macOS";
       }
     ];

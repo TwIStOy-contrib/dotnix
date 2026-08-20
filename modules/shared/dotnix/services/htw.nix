@@ -9,7 +9,7 @@
   ...
 }: let
   cfg = config.dotnix.services.htw;
-  htw = inputs.htw.packages.${pkgs.system}.default;
+  htw = inputs.htw.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   daemonArgs = [
     "daemon"
@@ -25,7 +25,7 @@ in {
     package = lib.mkOption {
       type = lib.types.package;
       default = htw;
-      defaultText = lib.literalExpression "inputs.htw.packages.\${pkgs.system}.default";
+      defaultText = lib.literalExpression "inputs.htw.packages.\${pkgs.stdenv.hostPlatform.system}.default";
       description = "Package providing the htw binary to run the daemon with.";
     };
 

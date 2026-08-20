@@ -12,7 +12,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     dotnix.hm.packages =
-      if pkgs.stdenv.isDarwin
+      if pkgs.stdenv.hostPlatform.isDarwin
       then
         with pkgs; [
           dart
