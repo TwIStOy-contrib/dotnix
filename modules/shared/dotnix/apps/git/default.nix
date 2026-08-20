@@ -33,7 +33,12 @@ in {
           });
 
         signing = {
-          key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG92SyvgOOe9pGPGHEY9VbDBWwqaRgm9tg1RJUxlfdCN";
+          # darwin: sign with the main key held by 1Password;
+          # elsewhere: sign with the dedicated key decrypted by agenix
+          key =
+            if pkgs.stdenv.isDarwin
+            then "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG92SyvgOOe9pGPGHEY9VbDBWwqaRgm9tg1RJUxlfdCN"
+            else config.age.secrets.remote-sign-key.path;
           signByDefault = true;
         };
       };

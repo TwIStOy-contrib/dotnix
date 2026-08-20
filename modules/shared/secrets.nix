@@ -85,6 +85,11 @@ in {
       owner = user.name;
       mode = "444";
     };
+    remote-sign-key = ageSecret {
+      file = "remote-sign-key.age";
+      owner = user.name;
+      mode = "600";
+    };
     openrouter-api-key = ageSecret {
       file = "openrouter-api-key.age";
       owner = user.name;

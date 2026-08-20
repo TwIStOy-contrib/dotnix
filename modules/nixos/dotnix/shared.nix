@@ -17,6 +17,12 @@ in {
       home.homeDirectory = lib.mkForce "/home/${user.name}";
       programs.ssh = {
         enable = true;
+        matchBlocks = {
+          "github.com" = {
+            identityFile = config.age.secrets.remote-sign-key.path;
+            identitiesOnly = true;
+          };
+        };
       };
     };
 

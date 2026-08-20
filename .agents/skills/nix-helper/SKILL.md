@@ -134,6 +134,18 @@ my-secret = (ageSecret {
 };
 ```
 
+#### The `.age` file must exist before eval
+
+`age.secrets` entries reference `${self}/secrets/<file>` — if the `.age` file is missing (or not `git add`ed), **every** host evaluation fails, not just the consuming one. When the real value isn't ready yet (e.g. a key the user still needs to generate), encrypt a placeholder first to keep eval green:
+
+```bash
+cd secrets
+echo "PLACEHOLDER" | EDITOR="cp /dev/stdin" agenix -e my-secret.age
+git add my-secret.age
+```
+
+`agenix -e` on an existing file decrypts and re-opens it, so injecting the real value later is one command: `EDITOR="cp /path/to/real-value" agenix -e my-secret.age`.
+
 #### Quick checklist
 
 | # | File | Action |
