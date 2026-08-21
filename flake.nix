@@ -25,14 +25,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nur-hawtian = {
-      url = "github:TwIStOy/nur-packages";
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs-unstable";
-      };
-    };
-
     llm-agents.url = "github:numtide/llm-agents.nix";
 
     secrets-hawtian = {

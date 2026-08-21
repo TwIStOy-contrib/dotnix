@@ -440,24 +440,6 @@
         "nixpkgs-lib": "nixpkgs-lib_3"
       },
       "locked": {
-        "lastModified": 1768135262,
-        "narHash": "sha256-PVvu7OqHBGWN16zSi6tEmPwwHQ4rLPU9Plvs8/1TUBY=",
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "rev": "80daad04eddbbf5a4d883996a73f3f542fa437ac",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "type": "github"
-      }
-    },
-    "flake-parts_8": {
-      "inputs": {
-        "nixpkgs-lib": "nixpkgs-lib_4"
-      },
-      "locked": {
         "lastModified": 1772408722,
         "narHash": "sha256-rHuJtdcOjK7rAHpHphUb1iCvgkU3GpfvicLMwwnfMT0=",
         "owner": "hercules-ci",
@@ -938,21 +920,6 @@
     },
     "nixpkgs-lib_3": {
       "locked": {
-        "lastModified": 1765674936,
-        "narHash": "sha256-k00uTP4JNfmejrCLJOwdObYC9jHRrr/5M/a/8L2EIdo=",
-        "owner": "nix-community",
-        "repo": "nixpkgs.lib",
-        "rev": "2075416fcb47225d9b68ac469a5c4801a9c4dd85",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nixpkgs.lib",
-        "type": "github"
-      }
-    },
-    "nixpkgs-lib_4": {
-      "locked": {
         "lastModified": 1772328832,
         "narHash": "sha256-e+/T/pmEkLP6BHhYjx6GmwP5ivonQQn0bJdH9YrRB+Q=",
         "owner": "nix-community",
@@ -1163,30 +1130,6 @@
         "type": "github"
       }
     },
-    "nur-hawtian": {
-      "inputs": {
-        "flake-parts": "flake-parts_7",
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs-unstable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1768294837,
-        "narHash": "sha256-gU2Brx23fozXp/nw79Sz3tEHW7lY+KBmMvdfdiREKOU=",
-        "owner": "TwIStOy",
-        "repo": "nur-packages",
-        "rev": "fab1217921ed2461fe61f5a3ae14c00a15e316f5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "TwIStOy",
-        "repo": "nur-packages",
-        "type": "github"
-      }
-    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat_3",
@@ -1230,7 +1173,6 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_10",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "nur-hawtian": "nur-hawtian",
         "pre-commit-hooks": "pre-commit-hooks",
         "secrets-hawtian": "secrets-hawtian",
         "vscode-server": "vscode-server"
@@ -1503,7 +1445,7 @@
     },
     "vscode-server": {
       "inputs": {
-        "flake-parts": "flake-parts_8"
+        "flake-parts": "flake-parts_7"
       },
       "locked": {
         "lastModified": 1784312229,

@@ -1,17 +1,8 @@
 {
   pkgs-unstable,
-  nur-hawtian,
   config,
   ...
 }: {
-  disabledModules = [
-    "services/networking/frp.nix"
-  ];
-
-  imports = [
-    "${nur-hawtian}/modules/services/networking/frp.nix"
-  ];
-
   environment.etc = {
     "frp/frp-server-auth.toml" = {
       source = config.age.secrets."frp-server-auth.toml".path;

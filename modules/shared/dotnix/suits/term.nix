@@ -3,7 +3,6 @@
   lib,
   pkgs,
   pkgs-unstable,
-  nur-hawtian,
   dotnix-utils,
   ...
 }: let
@@ -64,6 +63,8 @@ in {
           fswatch
 
           ffmpeg-full
+
+          rime-ls
         ];
         unstablePkgs = with pkgs-unstable; [
           curl
@@ -71,9 +72,8 @@ in {
           jc
           smug
         ];
-        nurPackages = [nur-hawtian.packages.${pkgs.stdenv.hostPlatform.system}.rime-ls];
       in
-        stablePkgs ++ unstablePkgs ++ nurPackages;
+        stablePkgs ++ unstablePkgs;
     };
 
     home-manager = dotnix-utils.hm.hmConfig {

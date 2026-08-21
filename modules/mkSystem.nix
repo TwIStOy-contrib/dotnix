@@ -122,8 +122,8 @@ in
         inherit neovim-pkgs;
         # llm-agents
         inherit llm-agents;
-        # my nur channel
-        inherit (inputs) nur-hawtian secrets-hawtian;
+        # private secret store (non-flake)
+        inherit (inputs) secrets-hawtian;
         # self!
         inherit self;
         # inject `inputs`

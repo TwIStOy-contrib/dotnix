@@ -3,7 +3,6 @@
   pkgs,
   pkgs-unstable,
   lib,
-  nur-hawtian,
   dotnix-utils,
   ...
 }: let
@@ -46,11 +45,9 @@ in {
       ++ (with pkgs-unstable; [
         cmake-language-server
         llvmPackages_19.clang-tools
-      ])
-      ++ [
         # format cmake files
-        nur-hawtian.packages.${pkgs.stdenv.hostPlatform.system}.gersemi
-      ];
+        gersemi
+      ]);
     # generate clangd user configuration file
 
     home-manager = dotnix-utils.hm.hmConfig (
