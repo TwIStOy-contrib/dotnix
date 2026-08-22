@@ -27,6 +27,15 @@
 
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    # rime-ls only: the nixpkgs rime-ls does not support aarch64-darwin
+    nur-hawtian = {
+      url = "github:TwIStOy/nur-packages";
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs-unstable";
+      };
+    };
+
     secrets-hawtian = {
       url = "git+ssh://git@github.com/TwIStOy/nix-secret.git?shallow=1";
       flake = false;

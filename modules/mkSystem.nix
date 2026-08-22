@@ -122,6 +122,8 @@ in
         inherit neovim-pkgs;
         # llm-agents
         inherit llm-agents;
+        # my nur channel (rime-ls only: nixpkgs rime-ls lacks aarch64-darwin)
+        inherit (inputs) nur-hawtian;
         # private secret store (non-flake)
         inherit (inputs) secrets-hawtian;
         # self!
