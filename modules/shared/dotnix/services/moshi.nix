@@ -21,6 +21,11 @@
     all_proxy = proxyUrl;
     no_proxy = "127.0.0.1,localhost";
   };
+  serviceEnv =
+    proxyEnv
+    // {
+      MOSHI_SOCKET_PATH = "/tmp/moshi-hook.sock";
+    };
 in {
   options.dotnix.services.moshi = {
     enable = lib.mkEnableOption "Enable module dotnix.services.moshi";
@@ -49,11 +54,11 @@ in {
   };
 
   # moshi-hook serve is a per-user daemon: it binds a Unix socket in
-  # $XDG_RUNTIME_DIR, reads that user's agent hook configs (~/.codex,
+  # /tmp, reads that user's agent hook configs (~/.codex,
   # ~/.pi, ~/.config/opencode) and writes state to ~/.local/state/mosi.
   # A root system service has none of that, so this must run as the user
-  # via home-manager, with lingering enabled so the user manager (and
-  # /run/user/<uid>) exists at boot.
+  # via home-manager, with lingering enabled so the user manager exists
+  # at boot.
   config = lib.mkIf cfg.enable {
     # Start the user systemd manager at boot so the service can run
     # without an active login session.
@@ -66,7 +71,7 @@ in {
         };
         Service = {
           ExecStart = "${lib.getExe cfg.package} serve";
-          Environment = lib.mapAttrsToList (n: v: "${n}=${v}") proxyEnv;
+          Environment = lib.mapAttrsToList (n: v: "${n}=${v}") serviceEnv;
           # `always` (not `on-failure`): moshi-hook catches SIGTERM and
           # exits 0 on graceful shutdown, which systemd treats as success —
           # `on-failure` would therefore not restart it after a plain `kill`.
