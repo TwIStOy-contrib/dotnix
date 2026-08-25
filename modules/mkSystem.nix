@@ -107,6 +107,7 @@ in
     dotvim-ne = inputs.dotvim.packages.${system}.default;
     dotnix-pkgs = buildDotnixPkgs {
       inherit pkgs-unstable llm-agents dotvim-ne;
+      htw = inputs.htw.packages.${system}.default;
     };
   in
     {
