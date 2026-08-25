@@ -12,6 +12,21 @@
   piAgentKeybindings = {
     "app.session.rename" = "";
   };
+
+  enforcedConfig = {
+    retry = {
+      maxRetries = 100;
+    };
+    tuiMode = "fullscreen";
+    terminal = {
+      showTerminalProgress = true;
+    };
+    enableInstallTelemetry = false;
+    defaultProjectTrust = "always";
+  };
+  recommendedConfig = {
+    theme = "catppuccin-mocha";
+  };
 in {
   options.dotnix.apps.pi = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.pi";
