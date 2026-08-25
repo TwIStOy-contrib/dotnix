@@ -401,11 +401,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785627969,
-        "narHash": "sha256-4dtXQk/NMePegK/nWp5NSeuZKLATItOq61lpEvmXqGw=",
+        "lastModified": 1787559586,
+        "narHash": "sha256-onL0VLf9vPllmT0H/OlURIU5r5t5WIEl7t4tVNKT0Nw=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "427bf4bd9435fdf21321c8cc628c24efc14c0f7a",
+        "rev": "9d0d87172c374f89da73c1cfe6d81ae62feac1f1",
         "type": "github"
       },
       "original": {
@@ -556,10 +556,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1784796599,
-        "narHash": "sha256-StliqgJozWO97tZwt8450dDNjmmv5VrgpQgjIXOBSCQ=",
+        "lastModified": 1787634069,
+        "narHash": "sha256-NSHwm3rkJ0d7/sJsv3Anjxki2HJ3omKUp78zayls/d0=",
         "ref": "refs/heads/master",
-        "rev": "016dc8977e42b557ca88095a83795f1d9e92772d",
+        "rev": "da979f6c4bcb2b2b5b0b019f6738c8b1550cf747",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/TwIStOy/hat.git"
@@ -681,11 +681,11 @@
         "treefmt-nix": "treefmt-nix_3"
       },
       "locked": {
-        "lastModified": 1787444939,
-        "narHash": "sha256-83WkVUiLWbclHSz8m7v9bVvcUb60fbTmP+IJk8t65ow=",
+        "lastModified": 1787632720,
+        "narHash": "sha256-HR+GKxQuLbrpWJuJlbZxMWV9ECSs9WHSGoKtI1Dc3BU=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "b44f002a50d8fe0235285e9211d821fe3bc76e83",
+        "rev": "88dccae0669e6581694b930c5c2903f1ceb60c7e",
         "type": "github"
       },
       "original": {
