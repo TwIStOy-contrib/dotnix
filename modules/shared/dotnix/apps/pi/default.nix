@@ -40,7 +40,6 @@ in {
   config = lib.mkIf cfg.enable {
     dotnix.hm.packages = [
       dotnix-pkgs.wrapped-programs.pi
-      dotnix-pkgs.wrapped-programs.piReal
     ];
 
     home-manager = dotnix-utils.hm.hmConfig {

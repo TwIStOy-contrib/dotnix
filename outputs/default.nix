@@ -28,49 +28,39 @@
   };
 
   recursiveMergeAttrs = attrs: builtins.foldl' (acc: ext: nixpkgs.lib.attrsets.recursiveUpdate acc ext) {} attrs;
-  preCommitChecks = flake-utils.lib.eachDefaultSystem (system: let
-    pkgs = import nixpkgs {inherit system;};
-  in {
-    checks =
-      {
-        pre-commit-check =
-          inputs.pre-commit-hooks.lib.${system}.run
-          {
-            src = ../.;
-            hooks = {
-              actionlint.enable = true;
+  preCommitChecks = flake-utils.lib.eachDefaultSystem (system: {
+    checks = {
+      pre-commit-check =
+        inputs.pre-commit-hooks.lib.${system}.run
+        {
+          src = ../.;
+          hooks = {
+            actionlint.enable = true;
 
-              statix = {
-                enable = true;
-              };
-
-              alejandra = {
-                enable = true;
-                excludes = [
-                  "hardware-configuration.*.nix"
-                  ".*vim-template.*"
-                ];
-              };
+            statix = {
+              enable = true;
             };
 
-            settings = {
-              # Work around for `statix`,
-              # issue: https://github.com/cachix/pre-commit-hooks.nix/issues/288
-              statix.ignore = [
-                "hardware-configuration.nix"
-                ".vim-template:*.nix"
-                ".vim-template:default.nix"
+            alejandra = {
+              enable = true;
+              excludes = [
+                "hardware-configuration.*.nix"
+                ".*vim-template.*"
               ];
             };
           };
-      }
-      // nixpkgs.lib.optionalAttrs (system != "x86_64-darwin") {
-        pi-wrapper = import ../tests/pi-wrapper.nix {
-          inherit pkgs;
-          htw = inputs.htw.packages.${system}.default;
-          lib = nixpkgs.lib;
+
+          settings = {
+            # Work around for `statix`,
+            # issue: https://github.com/cachix/pre-commit-hooks.nix/issues/288
+            statix.ignore = [
+              "hardware-configuration.nix"
+              ".vim-template:*.nix"
+              ".vim-template:default.nix"
+            ];
+          };
         };
-      };
+    };
   });
   deployChecks = {
     checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) inputs.deploy-rs.lib;

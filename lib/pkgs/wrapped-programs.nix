@@ -2,7 +2,6 @@
   pkgs-unstable,
   llm-agents,
   dotvim-ne,
-  htw,
 }: let
   pkgs = pkgs-unstable;
   mkEnvExports = env:
@@ -32,11 +31,6 @@
       exec ${package}/bin/${executable} "$@"
     '';
 
-  mkPiWrapper = import ./pi-wrapper.nix {
-    inherit (pkgs) lib;
-    inherit pkgs;
-  };
-
   llmApiKeys = {
     ZAI_API_KEY = "$(cat /run/agenix/z-ai-api-key)";
     DEEPSEEK_API_KEY = "$(cat /run/agenix/deepseek-api-key)";
@@ -54,16 +48,6 @@ in {
 
   wrappedPrograms = let
     editorBin = "${dotvim-ne}/bin/ne";
-    piReal = mkWrappedProgram {
-      name = "pi-real";
-      package = llm-agents.pi;
-      executable = "pi";
-      env = {
-        VISUAL = editorBin;
-        EDITOR = editorBin;
-      };
-      shellEnv = llmApiKeys;
-    };
   in {
     opencode = mkWrappedProgram {
       name = "opencode";
@@ -87,11 +71,14 @@ in {
       shellEnv = llmApiKeys;
     };
 
-    inherit piReal;
-
-    pi = mkPiWrapper {
-      htwExecutable = pkgs.lib.getExe htw;
-      realPiExecutable = "${piReal}/bin/pi-real";
+    pi = mkWrappedProgram {
+      name = "pi";
+      package = llm-agents.pi;
+      env = {
+        VISUAL = editorBin;
+        EDITOR = editorBin;
+      };
+      shellEnv = llmApiKeys;
     };
   };
 }
