@@ -88,7 +88,7 @@
 
     dotvim.url = "github:TwIStOy/dotvim";
 
-    herdr.url = "github:ogulcancelik/herdr/v0.8.2";
+    herdr.url = "github:ogulcancelik/herdr";
 
     hat = {
       url = "git+ssh://git@github.com/TwIStOy/hat.git?shallow=1";
