@@ -129,7 +129,7 @@ in {
           setw -q -g utf8 on
 
           set -sg extended-keys on
-          set -as terminal-features 'xterm*:extkeys'
+          set -as terminal-features 'xterm*:extkeys:hyperlinks'
           set -g extended-keys-format csi-u
 
           setw -g automatic-rename on   # rename window to reflect current program
