@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   pkgs-unstable,
   ...
@@ -14,6 +15,11 @@
     # ssh agent socket manager for tmux (keeps SSH_AUTH_SOCK pointed at the
     # active tmux client across multiple simultaneous SSH/ET connections).
     apps.socklink.enable = true;
+    # herdr v0.8.2 depends on the `wmi` Windows-only crate (0.18.4) which is
+    # no longer downloadable from any Nix crate mirror (returns 403). Poi is a
+    # headless Linux server where herdr is not needed, so disable it here until
+    # upstream resolves the yanked crate.
+    apps.herdr.enable = lib.mkForce false;
     services.tailscale = {
       enable = true;
       extraUpFlags = [
