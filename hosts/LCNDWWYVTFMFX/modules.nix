@@ -58,6 +58,9 @@ in {
             "--server"
             "{{SOCKET_PATH}}"
           ];
+          nvim-cmd = [
+            "/etc/profiles/per-user/hawtian/bin/ne"
+          ];
         };
 
         servers."dev.work.local".nvim-cmd = [
