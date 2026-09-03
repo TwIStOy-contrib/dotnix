@@ -13,6 +13,8 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    dotnix.apps.nvrh.enable = true;
+
     # sketchybar-app-font ligature symbol font (TwIStOy fork). Desktop-only:
     # the font is only consumed by sketchybar on graphical hosts.
     dotnix.fonts.sketchybar-app-font.enable = true;
