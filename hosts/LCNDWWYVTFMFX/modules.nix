@@ -41,6 +41,31 @@ in {
       ];
     };
 
+    services.tailscale = {
+      enable = true;
+      extraUpFlags = [
+        "--advertise-tags=tag:desktop"
+        "--accept-routes"
+      ];
+    };
+
+    apps.nvrh = {
+      settings = {
+        default = {
+          ssh-path = "internal";
+          local-editor = [
+            "/etc/profiles/per-user/wanghaot/bin/neovide"
+            "--server"
+            "{{SOCKET_PATH}}"
+          ];
+        };
+
+        servers."dev.work".nvim-cmd = [
+          "/home/wanghaot/.nix-profile/bin/ne"
+        ];
+      };
+    };
+
     apps.zed = {
       buffer_font_size = 18;
       ui_font_size = 16;
@@ -50,14 +75,6 @@ in {
           projects = [
           ];
         }
-      ];
-    };
-
-    services.tailscale = {
-      enable = true;
-      extraUpFlags = [
-        "--advertise-tags=tag:desktop"
-        "--accept-routes"
       ];
     };
 
