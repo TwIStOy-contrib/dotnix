@@ -52,7 +52,7 @@ in {
     apps.nvrh = {
       settings = {
         default = {
-          ssh-path = "internal";
+          ssh-path = "binary";
           local-editor = [
             "/etc/profiles/per-user/wanghaot/bin/neovide"
             "--server"
@@ -60,7 +60,7 @@ in {
           ];
         };
 
-        servers."dev.work".nvim-cmd = [
+        servers."dev.work.local".nvim-cmd = [
           "/home/wanghaot/.nix-profile/bin/ne"
         ];
       };
