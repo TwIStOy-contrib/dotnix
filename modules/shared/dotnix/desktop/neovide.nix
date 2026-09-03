@@ -131,7 +131,7 @@ in {
           "neovide/remote-hosts/${host}" = {
             source = pkgs.writeShellScript host ''
               #!/bin/bash
-              ssh ${host} "fish -l -c \"nvim $@\""
+              ssh ${host} "fish -l -c \"ne $@\""
             '';
             force = true;
             executable = true;
@@ -144,7 +144,7 @@ in {
               "neovide/config.toml" = {
                 source = genConfig ({
                     inherit (cfg.settings) maximized frame srgb idle;
-                    neovim-bin = "${cfg.settings.neovim-bin}/bin/nvim";
+                    neovim-bin = "${cfg.settings.neovim-bin}/bin/ne";
                   }
                   // cfg.extraSettings);
                 force = true;
