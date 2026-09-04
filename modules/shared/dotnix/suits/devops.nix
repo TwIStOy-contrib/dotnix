@@ -16,21 +16,19 @@ in {
     home-manager = dotnix-utils.hm.hmConfig {
       home.packages =
         (with pkgs; [
-          lazydocker # docker TUI
           dive # explore layers in docker images
           kubernetes-helm
           fluxcd
           # ansible
-          fluxcd
         ])
         ++ (
           with pkgs-unstable; [
             minikube # k8s
             kubectx
             kubelogin-oidc
-            flyctl
             ncdu
             nh
+            witr
           ]
         )
         ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [
