@@ -12,7 +12,7 @@
   settingsFormat = pkgs.formats.toml {};
   fish = pkgs-unstable.fish;
   herdrConfig = {
-    on_boarding = false;
+    onboarding = false;
     terminal = {
       default_shell = "${fish}/bin/fish";
       new_cwd = "follow";
