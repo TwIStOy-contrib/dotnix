@@ -645,10 +645,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1789027575,
-        "narHash": "sha256-2fBGEUxP+KZ/DWpC8IYdXDXK08Ml7Wlt0qBktgOPwNE=",
+        "lastModified": 1789212984,
+        "narHash": "sha256-d23qsmDSFHwnPHNXQ/DnJj540dkFqxLyl2n/zrJVSg8=",
         "ref": "refs/heads/master",
-        "rev": "f93f6225b98386818a7457d47d3d609298b8e0c6",
+        "rev": "a74980a52da08d383161cfde4cc25f6c46e0487d",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/TwIStOy/htw.git"

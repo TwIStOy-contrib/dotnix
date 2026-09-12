@@ -69,7 +69,6 @@ in {
           curl
           grpcurl
           jc
-          smug
         ];
         nurPackages = [nur-hawtian.packages.${pkgs.stdenv.hostPlatform.system}.rime-ls];
       in
