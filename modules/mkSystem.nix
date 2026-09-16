@@ -102,7 +102,7 @@ in
     dotnix-utils = buildDotnixUtils {
       inherit inputs dotnix-constants;
     };
-    # The dotvim editor package (ships /bin/ne). Surfaced to modules via
+    # The dotvim editor package (`meta.mainProgram` = `ne`). Surfaced to modules via
     # specialArgs so e.g. yazi / neovide can launch it directly.
     dotvim-ne = inputs.dotvim.packages.${system}.default;
     dotnix-pkgs = buildDotnixPkgs {

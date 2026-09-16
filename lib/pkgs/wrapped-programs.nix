@@ -47,7 +47,7 @@ in {
   inherit mkWrappedProgram llmApiKeys;
 
   wrappedPrograms = let
-    editorBin = "${dotvim-ne}/bin/ne";
+    editorBin = pkgs.lib.getExe dotvim-ne;
   in {
     opencode = mkWrappedProgram {
       name = "opencode";

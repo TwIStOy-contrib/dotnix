@@ -78,7 +78,7 @@ in {
         type = lib.types.package;
         default = dotvim-ne;
         description = ''
-          Path to the neovim binary to use.
+          Package providing the neovim entry point. Resolved via `meta.mainProgram`.
         '';
       };
     };
@@ -144,7 +144,7 @@ in {
               "neovide/config.toml" = {
                 source = genConfig ({
                     inherit (cfg.settings) maximized frame srgb idle;
-                    neovim-bin = "${cfg.settings.neovim-bin}/bin/ne";
+                    neovim-bin = lib.getExe cfg.settings.neovim-bin;
                   }
                   // cfg.extraSettings);
                 force = true;

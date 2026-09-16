@@ -8,9 +8,9 @@
 }: let
   cfg = config.dotnix.apps.yazi;
 
-  # The dotvim editor entry point. `dotvim-ne` ships /bin/ne, a wrapper that
+  # The dotvim editor entry point. `meta.mainProgram` is `ne`, a wrapper that
   # sets NVIM_APPNAME and execs the underlying nixvim nvim binary.
-  editorBin = "${dotvim-ne}/bin/ne";
+  editorBin = lib.getExe dotvim-ne;
 
   # File name globs that yazi opens with the `text` (dotvim-ne) opener.
   # yazi v25.12.29 (#3034) renamed the `name` matcher to `url` to support the
