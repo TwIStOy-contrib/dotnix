@@ -3,7 +3,6 @@
   lib,
   pkgs,
   pkgs-unstable,
-  neovim-pkgs,
   ...
 }: let
   cfg = config.dotnix.suits.desktop;
@@ -50,7 +49,6 @@ in {
             maximized = false;
             srgb = true;
             idle = true;
-            neovim-bin = neovim-pkgs.default;
           }
           // (lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
             frame = "transparent";
