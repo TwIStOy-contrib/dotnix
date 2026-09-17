@@ -102,11 +102,123 @@ in {
 
   config = lib.mkIf cfg.enable {
     dotnix.hm.packages = let
-      # Adding "--wsl" to the neovide command line is a HACK to make neovide use local clipboard instead of remote.
+      # Remote hosts are reached through a persistent nvim --listen plus an et
+      # tunnel, instead of pretending ssh is a neovim binary. et reconnects the
+      # tunnel on its own, so a dropped link doesn't kill the remote server or
+      # force neovide to spawn a new nvim.
+      #
+      # "--wsl" is a HACK that makes neovide use the local clipboard.
       mkNeovideWrapper = host:
         pkgs.writeShellScriptBin "neovide-${host}" ''
-          #!/bin/bash
-          ${neovideBin} --neovim-bin "$XDG_CONFIG_HOME/neovide/remote-hosts/${host}" $@ --wsl
+          set -euo pipefail
+
+          host=${lib.escapeShellArg host}
+          # Stable per-host port so a later launch reattaches to the same nvim
+          # instead of starting another one. TCP rather than a unix socket:
+          # forwarding a socket path needs et 7, and the NixOS hosts still
+          # run 6.2. Both ends stay on 127.0.0.1.
+          remote_port=$(printf '%s' "$host" | cksum | awk '{print 40000 + ($1 % 20000)}')
+
+          state_dir="''${XDG_STATE_HOME:-$HOME/.local/state}/neovide-remote/$host"
+          mkdir -p "$state_dir"
+
+          port_file="$state_dir/port"
+          pid_file="$state_dir/et.pid"
+          log_file="$state_dir/et.log"
+
+          py=${pkgs.python3}/bin/python3
+
+          pick_port() {
+            "$py" -c 'import socket; s = socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()'
+          }
+
+          et_alive() {
+            [[ -f "$pid_file" ]] || return 1
+            kill -0 "$(cat "$pid_file")" 2>/dev/null
+          }
+
+          port_open() {
+            "$py" -c 'import socket, sys; s = socket.socket(); s.settimeout(0.2); raise SystemExit(s.connect_ex(("127.0.0.1", int(sys.argv[1]))))' "$1"
+          }
+
+          # Login fish can print a greeting, so the port comes back on a
+          # marked line. nohup + disown so ssh exiting doesn't take nvim down.
+          marked=$(ssh "$host" fish -l -c '
+            set port $argv[1]
+            function listening
+              bash -c "echo >/dev/tcp/127.0.0.1/$argv[1]" >/dev/null 2>&1
+            end
+            if not listening $port
+              nohup ne --listen 127.0.0.1:$port --headless >/tmp/neovide-server.log 2>&1 &
+              disown
+              set ok 0
+              for i in (seq 1 50)
+                if listening $port
+                  set ok 1
+                  break
+                end
+                sleep 0.1
+              end
+              if test $ok -eq 0
+                echo "remote nvim did not start listening on 127.0.0.1:$port" >&2
+                exit 1
+              end
+            end
+            echo NEOVIDE_PORT=$port
+          ' "$remote_port")
+          remote_port=$(printf '%s\n' "$marked" | sed -n 's/^NEOVIDE_PORT=//p' | tail -1)
+          if [[ -z "$remote_port" ]]; then
+            echo "neovide-${host}: remote nvim server did not report a port" >&2
+            printf '%s\n' "$marked" >&2
+            exit 1
+          fi
+
+          if et_alive && [[ -f "$port_file" ]] && port_open "$(cat "$port_file")"; then
+            local_port="$(cat "$port_file")"
+          else
+            rm -f "$pid_file"
+            local_port="$(pick_port)"
+            echo "$local_port" > "$port_file"
+            # -N: no remote shell, just the forward. et itself reconnects it
+            # across network drops. Needs a 7.x client; the server can be older.
+            et "$host" -N -t "$local_port:$remote_port" >> "$log_file" 2>&1 &
+            echo $! > "$pid_file"
+          fi
+
+          for _ in $(seq 1 50); do
+            port_open "$local_port" && break
+            sleep 0.1
+          done
+
+          if ! port_open "$local_port"; then
+            echo "neovide-${host}: et forward 127.0.0.1:$local_port -> $host:$remote_port did not come up" >&2
+            echo "see $log_file" >&2
+            exit 1
+          fi
+
+          # Neovide follows the listen address from :restart. That address is
+          # on the remote host, so a local relay holds the port Neovide dials
+          # and opens a new et forward when the address changes.
+          relay_port="$(pick_port)"
+          "$py" ${./neovide-relay.py} \
+            --listen "127.0.0.1:$relay_port" \
+            --upstream "127.0.0.1:$local_port" \
+            --remote-port "$remote_port" \
+            --host "$host" &
+          relay_pid=$!
+
+          for _ in $(seq 1 50); do
+            port_open "$relay_port" && break
+            sleep 0.05
+          done
+          if ! port_open "$relay_port"; then
+            kill "$relay_pid" 2>/dev/null || true
+            echo "neovide-${host}: local reconnect relay did not come up" >&2
+            exit 1
+          fi
+
+          trap 'kill "$relay_pid" 2>/dev/null || true' EXIT
+          exec ${neovideBin} --server "127.0.0.1:$relay_port" --wsl "$@"
         '';
     in
       (
@@ -116,43 +228,22 @@ in {
         then [pkgs-unstable.neovide]
         else []
       )
-      # neovideWrappers
       ++ (lib.lists.forEach cfg.createRemoteHostWrappers mkNeovideWrapper)
       ++ (lib.lists.optional pkgs.stdenv.hostPlatform.isDarwin (
         pkgs.writeShellScriptBin "neovide" ''
-          #!/bin/bash
-          ${neovideBin} $@
+          exec ${neovideBin} "$@"
         ''
       ));
 
     home-manager = dotnix-utils.hm.hmConfig {
-      xdg.configFile = let
-        mkRemoteNvimBin = host: {
-          "neovide/remote-hosts/${host}" = {
-            source = pkgs.writeShellScript host ''
-              #!/bin/bash
-              ssh ${host} "fish -l -c \"ne $@\""
-            '';
-            force = true;
-            executable = true;
-          };
-        };
-      in
-        lib.mkMerge (
-          [
-            {
-              "neovide/config.toml" = {
-                source = genConfig ({
-                    inherit (cfg.settings) maximized frame srgb idle;
-                    neovim-bin = lib.getExe cfg.settings.neovim-bin;
-                  }
-                  // cfg.extraSettings);
-                force = true;
-              };
-            }
-          ]
-          ++ (lib.lists.forEach cfg.createRemoteHostWrappers mkRemoteNvimBin)
-        );
+      xdg.configFile."neovide/config.toml" = {
+        source = genConfig ({
+            inherit (cfg.settings) maximized frame srgb idle;
+            neovim-bin = lib.getExe cfg.settings.neovim-bin;
+          }
+          // cfg.extraSettings);
+        force = true;
+      };
     };
   };
 }
