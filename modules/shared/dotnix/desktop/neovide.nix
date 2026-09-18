@@ -102,14 +102,21 @@ in {
 
   config = lib.mkIf cfg.enable {
     dotnix.hm.packages = let
+      # Adding "--wsl" to the neovide command line is a HACK to make neovide use local clipboard instead of remote.
+      mkNeovideWrapper = host:
+        pkgs.writeShellScriptBin "neovide-${host}" ''
+          #!/bin/bash
+          ${neovideBin} --neovim-bin "$XDG_CONFIG_HOME/neovide/remote-hosts/${host}" $@ --wsl
+        '';
+
       # Remote hosts are reached through a persistent nvim --listen plus an et
       # tunnel, instead of pretending ssh is a neovim binary. et reconnects the
       # tunnel on its own, so a dropped link doesn't kill the remote server or
       # force neovide to spawn a new nvim.
       #
       # "--wsl" is a HACK that makes neovide use the local clipboard.
-      mkNeovideWrapper = host:
-        pkgs.writeShellScriptBin "neovide-${host}" ''
+      mkNeovideRelayWrapper = host:
+        pkgs.writeShellScriptBin "neovide-${host}-relay" ''
           set -euo pipefail
 
           host=${lib.escapeShellArg host}
@@ -168,7 +175,7 @@ in {
           ' "$remote_port")
           remote_port=$(printf '%s\n' "$marked" | sed -n 's/^NEOVIDE_PORT=//p' | tail -1)
           if [[ -z "$remote_port" ]]; then
-            echo "neovide-${host}: remote nvim server did not report a port" >&2
+            echo "neovide-${host}-relay: remote nvim server did not report a port" >&2
             printf '%s\n' "$marked" >&2
             exit 1
           fi
@@ -191,7 +198,7 @@ in {
           done
 
           if ! port_open "$local_port"; then
-            echo "neovide-${host}: et forward 127.0.0.1:$local_port -> $host:$remote_port did not come up" >&2
+            echo "neovide-${host}-relay: et forward 127.0.0.1:$local_port -> $host:$remote_port did not come up" >&2
             echo "see $log_file" >&2
             exit 1
           fi
@@ -213,7 +220,7 @@ in {
           done
           if ! port_open "$relay_port"; then
             kill "$relay_pid" 2>/dev/null || true
-            echo "neovide-${host}: local reconnect relay did not come up" >&2
+            echo "neovide-${host}-relay: local reconnect relay did not come up" >&2
             exit 1
           fi
 
@@ -229,6 +236,7 @@ in {
         else []
       )
       ++ (lib.lists.forEach cfg.createRemoteHostWrappers mkNeovideWrapper)
+      ++ (lib.lists.forEach cfg.createRemoteHostWrappers mkNeovideRelayWrapper)
       ++ (lib.lists.optional pkgs.stdenv.hostPlatform.isDarwin (
         pkgs.writeShellScriptBin "neovide" ''
           exec ${neovideBin} "$@"
@@ -236,14 +244,33 @@ in {
       ));
 
     home-manager = dotnix-utils.hm.hmConfig {
-      xdg.configFile."neovide/config.toml" = {
-        source = genConfig ({
-            inherit (cfg.settings) maximized frame srgb idle;
-            neovim-bin = lib.getExe cfg.settings.neovim-bin;
-          }
-          // cfg.extraSettings);
-        force = true;
-      };
+      xdg.configFile = let
+        mkRemoteNvimBin = host: {
+          "neovide/remote-hosts/${host}" = {
+            source = pkgs.writeShellScript host ''
+              #!/bin/bash
+              ssh ${host} "fish -l -c \"ne $@\""
+            '';
+            force = true;
+            executable = true;
+          };
+        };
+      in
+        lib.mkMerge (
+          [
+            {
+              "neovide/config.toml" = {
+                source = genConfig ({
+                    inherit (cfg.settings) maximized frame srgb idle;
+                    neovim-bin = lib.getExe cfg.settings.neovim-bin;
+                  }
+                  // cfg.extraSettings);
+                force = true;
+              };
+            }
+          ]
+          ++ (lib.lists.forEach cfg.createRemoteHostWrappers mkRemoteNvimBin)
+        );
     };
   };
 }
