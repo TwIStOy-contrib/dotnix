@@ -58,4 +58,5 @@ in {
   "firecrawl-api-token.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "mihomo-config.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "kimi-code-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "typesafe-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }

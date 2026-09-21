@@ -158,6 +158,10 @@ in {
       file = "kimi-code-api-key.age";
       owner = user.name;
     };
+    typesafe-api-key = ageSecret {
+      file = "typesafe-api-key.age";
+      owner = user.name;
+    };
     mihomo-config = ageSecret {
       file = "mihomo-config.age";
       owner = "root";
