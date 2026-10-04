@@ -19,6 +19,8 @@ in {
     dotnix.fonts.sketchybar-app-font.enable = true;
 
     dotnix.desktop = {
+      zen.enable = true;
+
       kitty = {
         enable = true;
       };
