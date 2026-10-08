@@ -2,6 +2,7 @@
   config,
   lib,
   dotnix-utils,
+  dotnix-pkgs,
   inputs,
   pkgs,
   pkgs-unstable,
@@ -66,8 +67,12 @@ in {
         ])
         ++ (with pkgs-unstable; [
           net-tools
-          eternal-terminal
         ])
+        ++ [
+          # pinned master build; see lib/pkgs/et.nix for why not
+          # pkgs-unstable.eternal-terminal
+          dotnix-pkgs.eternal-terminal-master
+        ]
         ++ (with inputs.dotvim.packages.${pkgs.stdenv.hostPlatform.system}; [
           default
         ]);
