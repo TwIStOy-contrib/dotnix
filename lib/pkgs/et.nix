@@ -25,8 +25,16 @@
     # a normal runner, not the sandbox); upstream CI on this exact commit is
     # green across gcc 13-16 and sanitizers. LargeInputNoDeadlock is the
     # flaky test upstream nixpkgs already excludes.
+    #
+    # "HtmServer automatic-renames window from pane command" fails only on
+    # darwin: the pane's `sleep` resolves through the build PATH to nixpkgs'
+    # multicall coreutils (bin/sleep -> coreutils), and macOS proc_name()
+    # reports the resolved binary name ("coreutils"), so htm never sees
+    # "sleep" and the rename wait times out. Linux reads /proc/<pid>/comm,
+    # which keeps the invoked symlink name, so it passes there. Upstream
+    # master (as of 8f667391) still behaves this way — no pin bump fixes it.
     checkPhase = ''
-      ctest --output-on-failure -E 'et-test\.(LargeInputNoDeadlock|RouterRestartRealPtySurvives|et -G -F -o prints resolved keywords without connecting|et -G applies -o Hostname/User with spaces around =|Control-mode PTY: SIGKILL of htm lets htmd accept a new client|Control-mode PTY: detach leaves htmd running|sessionHasEnded without master EOF while descendant holds PTY slave)'
+      ctest --output-on-failure -E 'et-test\.(LargeInputNoDeadlock|RouterRestartRealPtySurvives|et -G -F -o prints resolved keywords without connecting|et -G applies -o Hostname/User with spaces around =|Control-mode PTY: SIGKILL of htm lets htmd accept a new client|Control-mode PTY: detach leaves htmd running|sessionHasEnded without master EOF while descendant holds PTY slave|HtmServer automatic-renames window from pane command)'
     '';
     # master's project() still reports 7.0.0, so the recipe's versionCheckHook
     # keeps passing untouched.
