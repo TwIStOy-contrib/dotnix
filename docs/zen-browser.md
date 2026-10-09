@@ -35,14 +35,14 @@ keeping that policy:
 brew install --cask zen
 ```
 
-The module provides this minimal profile. Customize it in
+The default profile requests Chinese with an English fallback. Customize it in
 `hosts/<host>/home.nix`, which is Home Manager scope:
 
 ```nix
 programs.zen-browser.profiles.default = {
   id = 0;
   isDefault = true;
-  settings = { };
+  settings."intl.locale.requested" = "zh-CN,en-US";
   userChrome = "";
   userContent = "";
 };
@@ -79,13 +79,19 @@ The shared configuration is organized as follows:
 
 ```text
 modules/shared/dotnix/desktop/zen/
+├── containers.nix      # Managed public containers and their stable IDs
 ├── default.nix         # Browser installation and the default profile
 └── spaces/
     ├── default.nix     # Discovers and merges the space definitions
-    └── work.nix        # Add your own files here
+    └── personal.nix    # Personal workspace
 ```
 
-Create `zen/spaces/work.nix` with a plain attribute set:
+`personal.nix` declares the `Personal` space with a home icon, position
+`1000`, and a stable UUID. Its `container = 1` selects the Personal container.
+It starts without pins. Add personal pins under `personal.pins` in that file
+when needed, with `container = 1` for the same login context.
+
+To add another space, create `zen/spaces/work.nix` with a plain attribute set:
 
 ```nix
 {
@@ -93,7 +99,7 @@ Create `zen/spaces/work.nix` with a plain attribute set:
     id = "7a1e60b2-3c4d-4e5f-8a90-b1c2d3e4f567";
     name = "Work";
     icon = "💼";
-    position = 1000;
+    position = 2000;
     pins.docs = {
       id = "027df9a7-c5f4-4a32-98d1-24b7e4c0b011";
       url = "https://nixos.org/manual/nix/stable/";
@@ -132,6 +138,53 @@ module skips session updates while Zen is running. `spacesForce` and
 those defaults in place unless you intend Nix to control the entire collection.
 Removing a definition file does not delete its existing space with
 `spacesForce = false`.
+
+### Spaces, containers, and pins
+
+These are separate concepts within a browser profile:
+
+| Object | Purpose | Relationship |
+| --- | --- | --- |
+| Space | Organizes a workspace's tabs and pins | Can select a default container with `container = <id>` |
+| Container | Isolates cookies and site storage for separate logins | Can be used by tabs and pins across spaces |
+| Pin | Keeps a site as a persistent tab | Selects a workspace and, independently, a container |
+
+Declare containers in `programs.zen-browser.profiles.default.containers`;
+their IDs are integers. Space and pin IDs are stable UUIDs. A container is
+not a folder of websites, and assigning one does not pin a site.
+
+`zen/containers.nix` manages the four public containers from the browser's
+default configuration:
+
+| Key | Display name | ID | Icon | Color |
+| --- | --- | --- | --- | --- |
+| `personal` | Personal | 1 | `fingerprint` | `blue` |
+| `work` | Work | 2 | `briefcase` | `orange` |
+| `banking` | Banking | 3 | `dollar` | `green` |
+| `shopping` | Shopping | 4 | `cart` | `pink` |
+
+Keep these IDs stable to retain the existing login contexts. Home Manager
+uses explicit display names in place of the browser's localized `l10nId`
+fields and supplies its own internal identities; only public containers
+belong in this option.
+
+The pinned Home Manager emits JSON version 5. Zen's Firefox 156 base migrates
+it to version 6 without changing container IDs and treats a missing
+`siteAssociations` field as empty. The generated metadata and internal IDs
+therefore differ from a fresh browser-generated file.
+
+`containersForce = true` makes Home Manager replace `containers.json` with
+the declared container configuration on activation, including after Zen
+rewrites the managed file. Additional containers created in the browser
+must also be declared here to survive the next activation. This controls
+the entire file, unlike the space and pin merge options.
+
+Space-scoped pins inherit only `workspace`. In the pinned module,
+`personal.pins.<name>.container` defaults to `null`, which generates
+`userContextId = 0` (the ordinary browsing context), even if
+`personal.container` is set. Set a pin's `container` explicitly when it
+needs a particular login context. `isEssential = true` marks a pin as an
+Essential; it does not select or create a container.
 
 ## Finding configuration options
 
@@ -232,6 +285,8 @@ Sources:
 - [Upstream package and policy integration](https://github.com/0xc000022070/zen-browser-flake/blob/90424e159acc21e53ea76780a3ad9cb5acef7cba/hm-module/package.nix)
 - [Homebrew Zen cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/z/zen.rb)
 - [Home Manager 25.11 Firefox module factory](https://github.com/nix-community/home-manager/blob/release-25.11/modules/programs/firefox/mkFirefoxModule.nix)
+- [Firefox container JSON migration](https://github.com/mozilla-firefox/firefox/blob/FIREFOX_156_0_1_RELEASE/toolkit/components/contextualidentity/ContextualIdentityService.sys.mjs)
 - [Zen Home Manager option search](https://zen-browser-flake.nshard.com/)
 - [Space definitions and scoped pins](https://github.com/0xc000022070/zen-browser-flake/blob/90424e159acc21e53ea76780a3ad9cb5acef7cba/hm-module/session/spaces.nix)
+- [Pin serialization and container assignment](https://github.com/0xc000022070/zen-browser-flake/blob/90424e159acc21e53ea76780a3ad9cb5acef7cba/hm-module/session/pins.nix)
 - [Mozilla enterprise policy reference](https://mozilla.github.io/policy-templates/)
