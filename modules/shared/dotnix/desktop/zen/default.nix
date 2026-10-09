@@ -47,8 +47,13 @@ in {
           };
         };
 
-        profiles.default.settings = {
-          "intl.locale.requested" = "zh-CN,en-US";
+        profiles."default" = {
+          settings = {
+            "intl.locale.requested" = "zh-CN,en-US";
+          };
+          pinsForce = true;
+          pinsForceAction = "remove";
+          spaceRouting.force = true;
         };
       };
     };
