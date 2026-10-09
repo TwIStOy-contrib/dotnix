@@ -50,6 +50,16 @@ in {
               installation_mode = "force_installed";
               install_url = "https://addons.mozilla.org/firefox/downloads/latest/tampermonkey/latest.xpi";
             };
+            # Vimium
+            "{d7742d87-e61d-4b78-b8a1-b469842139fa}" = {
+              installation_mode = "force_installed";
+              install_url = "https://addons.mozilla.org/firefox/downloads/latest/vimium-ff/latest.xpi";
+            };
+            # Refined GitHub
+            "{a4c4eda4-fb84-4a84-b4a1-f7c1cbf2a1ad}" = {
+              installation_mode = "force_installed";
+              install_url = "https://addons.mozilla.org/firefox/downloads/latest/refined-github-/latest.xpi";
+            };
           };
           EnableTrackingProtection = {
             Value = true;
