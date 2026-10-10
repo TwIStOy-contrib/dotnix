@@ -16,7 +16,7 @@
 # versioned checksums.txt, convert with `nix hash to-sri --type sha256 <hex>`,
 # and update `hashes` below.
 let
-  version = "0.3.20";
+  version = "0.4.22";
 
   # Map nixpkgs platform -> (os, arch) used in the upstream asset name.
   # Mirrors the install.sh logic (uname -s -> Linux/Darwin, uname -m -> x86_64/arm64).
@@ -32,10 +32,10 @@ let
   # sha256 (SRI) per asset, sourced from the official checksums.txt at
   # https://cdn.getmoshi.app/hook/v<version>/checksums.txt
   hashes = {
-    "Linux-x86_64" = "sha256-v7npl4Nj+ksZabIZuJmHn5V2u/oTCW/UbcGRB90zCWc=";
-    "Linux-arm64" = "sha256-D35dUHcJIn7aEWRVcSwa/PKxRZhCxjFe/6zKR4JhTXA=";
-    "Darwin-x86_64" = "sha256-W0vPcabEImXcFmGZit3gFZrL2EHmTJU8meG3PJH/gJ8=";
-    "Darwin-arm64" = "sha256-43cdiCaInPpTn8yM0bQiD2WiOFFfgUhVyaWlbsnjlyY=";
+    "Linux-x86_64" = "sha256-AjcauxiWzo9PIvC/WnnbWDRtHzNTW8n4EWWm41YsXg4=";
+    "Linux-arm64" = "sha256-Ne0jTeOVI8upkxG+3zWZ3o4yCAu4BBfPaRSiUZbEf34=";
+    "Darwin-x86_64" = "sha256-JZobczH9uv8rQr0wsKFELdTYQR1AuC9o/+rjT608Gs0=";
+    "Darwin-arm64" = "sha256-zeV71GTG9ZhKO6CQ8QMuTdRQq/WC9x/pD4Oap0E0feI=";
   };
   key = "${os}-${arch}";
   hash =
