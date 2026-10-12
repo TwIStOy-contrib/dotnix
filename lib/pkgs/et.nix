@@ -18,6 +18,21 @@
       # them empty.
       fetchSubmodules = true;
     };
+    # Malformed addresses keep resolution-failure tests independent of DNS proxies.
+    postPatch =
+      (old.postPatch or "")
+      + ''
+        substituteInPlace test/unit_tests/TcpSocketHandlerTest.cpp \
+          --replace-fail 'nonexistent.invalid' 'invalid::address'
+        substituteInPlace test/unit_tests/TerminalServerMainTest.cpp \
+          --replace-fail 'not-a-host.invalid' 'invalid::address'
+      '';
+    # Prevent upstream's Xcode SDK fallback from bypassing the Nix toolchain.
+    preConfigure =
+      (old.preConfigure or "")
+      + pkgs-unstable.lib.optionalString pkgs-unstable.stdenv.hostPlatform.isDarwin ''
+        cmakeFlagsArray+=("-DCMAKE_OSX_SYSROOT=$SDKROOT")
+      '';
     # recipe's preBuild copies the packaged Catch2 v2 single-include header
     # into external_imported; master vendors Catch2 v3 itself.
     preBuild = "";
