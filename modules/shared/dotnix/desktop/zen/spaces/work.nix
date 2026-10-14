@@ -29,5 +29,11 @@
         position = 1020;
       };
     };
+
+    # matchType defaults to "contains"; openIn/id are derived from the space.
+    routes = {
+      github-fw.reference = "github-fw.tesla.com";
+      teslamotors.reference = "teslamotors.com";
+    };
   };
 }
