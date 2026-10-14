@@ -43,7 +43,7 @@ dotnix/
 5. **Prefer `pkgs-unstable`** over `pkgs` for package sources.
 6. For macOS GUI apps, also add the homebrew cask via `homebrew = lib.optionalAttrs pkgs.stdenv.isDarwin { casks = ["app-name"]; };`.
 
-**Looking up package names:** Do NOT use `nix search` — it is extremely slow and often hangs. Instead, use WebFetch on `https://search.nixos.org/packages?channel=25.11&query=<term>` to find package names.
+**Looking up package names:** Do NOT use `nix search` — it is extremely slow and often hangs. Instead, use WebFetch on `https://search.nixos.org/packages?channel=26.05&query=<term>` to find package names.
 
 See `references/package-management.md` for module structure patterns.
 
@@ -80,7 +80,7 @@ Add the new `.age` file to the public keys list. This defines **which hosts can 
 ```
 
 - `homeServers` = `[ poi taihou ]` (NixOS hosts)
-- `desktops` = `[ yukikaze yamato LCNDWWYVTFMFX ]` (macOS hosts)
+- `desktops` = `[ yukikaze LCNDWWYVTFMFX ]` (ARM macOS hosts)
 - `mkSecrets` adds the user keys on top of the host list
 - Adjust the host groups if the secret should only be available on specific hosts
 

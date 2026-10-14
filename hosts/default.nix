@@ -67,11 +67,9 @@
       inherit name system;
       path = ./${name};
     };
-  mkIntelDarwinSystem = mkSimpleSystem flake-utils.lib.system.x86_64-darwin;
   mkArmDarwinSystem = mkSimpleSystem flake-utils.lib.system.aarch64-darwin;
   mkX64LinuxSystem = mkSimpleSystem flake-utils.lib.system.x86_64-linux;
 
-  yamato = mkIntelDarwinSystem "yamato";
   yukikaze = mkArmDarwinSystem "yukikaze";
   LCNDWWYVTFMFX = makeSystemDrv {
     name = "LCNDWWYVTFMFX";
@@ -100,7 +98,6 @@
   recursiveMergeAttrs = attrs: builtins.foldl' (acc: ext: nixpkgs.lib.attrsets.recursiveUpdate acc ext) {} attrs;
 in
   recursiveMergeAttrs [
-    yamato
     yukikaze
     LCNDWWYVTFMFX
     poi

@@ -1,6 +1,12 @@
 {self, ...} @ inputs: let
   inherit (inputs) flake-utils nixpkgs;
 
+  supportedSystems = [
+    "aarch64-darwin"
+    "aarch64-linux"
+    "x86_64-linux"
+  ];
+
   dotnixConstants = import ../lib/constants;
 
   buildDotnixUtils = import ../lib/utils;
@@ -12,7 +18,7 @@
     // inputs
   );
 
-  formatter = import ./formatter.nix inputs;
+  formatter = import ./formatter.nix (inputs // {inherit supportedSystems;});
 
   hostsConfiguration = import ../hosts {
     inherit (inputs) flake-utils nixpkgs deploy-rs;
@@ -28,7 +34,7 @@
   };
 
   recursiveMergeAttrs = attrs: builtins.foldl' (acc: ext: nixpkgs.lib.attrsets.recursiveUpdate acc ext) {} attrs;
-  preCommitChecks = flake-utils.lib.eachDefaultSystem (system: {
+  preCommitChecks = flake-utils.lib.eachSystem supportedSystems (system: {
     checks = {
       pre-commit-check =
         inputs.pre-commit-hooks.lib.${system}.run
@@ -63,7 +69,7 @@
     };
   });
   deployChecks = {
-    checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) inputs.deploy-rs.lib;
+    checks = nixpkgs.lib.genAttrs supportedSystems (system: inputs.deploy-rs.lib.${system}.deployChecks self.deploy);
   };
   checks = recursiveMergeAttrs [
     preCommitChecks

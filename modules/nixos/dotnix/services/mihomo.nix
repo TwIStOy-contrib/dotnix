@@ -7,17 +7,9 @@
 }: let
   cfg = config.dotnix.services.mihomo;
 
-  # The stable nixpkgs this flake builds against (nixos-25.11) ships an older
-  # `services.mihomo` that lacks `tunMode` / `processesInfo`. Pull the newer
-  # module from the unstable nixpkgs input so we get the full option set, and
-  # resolve the binary from the same source to keep module + package in sync.
+  # Resolve mihomo and its web UI from the same unstable package set.
   nixos-unstable = inputs.nixpkgs-unstable;
-  unstableMihomoModule = "${nixos-unstable}/nixos/modules/services/networking/mihomo.nix";
 in {
-  # Replace the stable mihomo module with the unstable one.
-  disabledModules = ["services/networking/mihomo.nix"];
-  imports = [unstableMihomoModule];
-
   options.dotnix.services.mihomo = {
     enable = lib.mkEnableOption "mihomo (Clash.Meta core) proxy on this host.";
 
@@ -65,7 +57,6 @@ in {
       # The config (subscription url/token + web UI secret) lives in the
       # `mihomo-config` agenix secret and is never placed in the nix store.
       configFile = config.age.secrets."mihomo-config".path;
-      # Resolve mihomo + webui from unstable to match the unstable module.
       package = lib.mkDefault nixos-unstable.legacyPackages.${pkgs-unstable.stdenv.hostPlatform.system}.mihomo;
       webui = lib.mkDefault nixos-unstable.legacyPackages.${pkgs-unstable.stdenv.hostPlatform.system}.metacubexd;
     };

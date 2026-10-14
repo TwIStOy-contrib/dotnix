@@ -4,10 +4,10 @@ in {
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks."*" = {
-      forwardAgent = true;
-      serverAliveInterval = 10;
-      serverAliveCountMax = 60;
+    settings."*" = {
+      ForwardAgent = true;
+      ServerAliveInterval = 10;
+      ServerAliveCountMax = 60;
     };
     extraOptionOverrides = {
       IdentityAgent = one-password-agent;

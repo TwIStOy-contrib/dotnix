@@ -111,6 +111,7 @@ in {
       programs.yazi = {
         enable = true;
         package = pkgs-unstable.yazi;
+        shellWrapperName = "yy";
         enableBashIntegration = true;
         enableFishIntegration = true;
 

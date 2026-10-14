@@ -33,7 +33,7 @@ in {
 
       hm.packages = let
         stablePkgs = with pkgs; [
-          neofetch
+          fastfetch
           xdg-utils
 
           # decompress

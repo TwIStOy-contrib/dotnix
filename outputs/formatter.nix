@@ -1,8 +1,9 @@
 {
   flake-utils,
   nixpkgs-unstable,
+  supportedSystems,
   ...
 }:
-flake-utils.lib.eachDefaultSystem (system: {
+flake-utils.lib.eachSystem supportedSystems (system: {
   formatter = nixpkgs-unstable.legacyPackages.${system}.alejandra;
 })

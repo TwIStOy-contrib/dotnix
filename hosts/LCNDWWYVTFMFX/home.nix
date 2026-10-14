@@ -1,25 +1,21 @@
 _: {
   programs.ssh = {
-    matchBlocks = {
+    settings = {
       "dev.work.local" = {
-        hostname = "10.114.192.14";
-        user = "wanghaot";
-        forwardAgent = true;
-        forwardX11 = true;
-        extraOptions = {
-          KeepAlive = "yes";
-        };
+        HostName = "10.114.192.14";
+        User = "wanghaot";
+        ForwardAgent = true;
+        ForwardX11 = true;
+        KeepAlive = "yes";
       };
       "dev.work.local.tmux" = {
-        hostname = "10.114.192.14";
-        user = "wanghaot";
-        forwardAgent = true;
-        forwardX11 = true;
-        extraOptions = {
-          KeepAlive = "yes";
-          RequestTTY = "yes";
-          RemoteCommand = "tmux new -A -s dev";
-        };
+        HostName = "10.114.192.14";
+        User = "wanghaot";
+        ForwardAgent = true;
+        ForwardX11 = true;
+        KeepAlive = "yes";
+        RequestTTY = "yes";
+        RemoteCommand = "tmux new -A -s dev";
       };
     };
   };

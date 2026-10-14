@@ -4,7 +4,7 @@ This document provides essential guidelines for AI coding agents working in this
 
 ## Repository Overview
 
-Multi-host, multi-platform NixOS/nix-darwin configuration with 161+ .nix files across 7 hosts (3 macOS, 3 NixOS, 1 ISO). All configuration lives under the `dotnix.*` namespace using a modular architecture.
+Multi-host, multi-platform NixOS/nix-darwin configuration across 5 targets (2 ARM macOS hosts, 2 NixOS hosts, 1 ISO). All configuration lives under the `dotnix.*` namespace using a modular architecture.
 
 ## Build, Test & Validation Commands
 
@@ -224,7 +224,7 @@ Set in `hosts/<hostname>/default.nix`:
 2. **Never skip** `.vim-template*` files in operations
 3. **Always run** `just check` before committing
 4. **Format before commit** with `just fmt`
-5. **Use nixos-25.11** channel (stable), `pkgs-unstable` for bleeding-edge
+5. **Use nixos-26.05** channel (stable), `pkgs-unstable` for bleeding-edge
 6. **Test on target platform** (darwin vs nixos have different modules)
 7. **Secrets via agenix** - never commit plaintext secrets
 

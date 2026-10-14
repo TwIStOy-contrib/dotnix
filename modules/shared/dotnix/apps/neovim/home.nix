@@ -97,6 +97,8 @@ in {
   programs.neovim = {
     enable = true;
     package = neovim-pkgs.default;
+    withPython3 = true;
+    withRuby = true;
     plugins = builtins.attrValues plugins;
   };
 

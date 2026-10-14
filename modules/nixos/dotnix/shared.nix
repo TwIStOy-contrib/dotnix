@@ -21,12 +21,12 @@ in {
         # controlMaster="no", ...) are just OpenSSH's built-in defaults;
         # skip writing them and silence the removal warning.
         enableDefaultConfig = false;
-        matchBlocks = {
+        settings = {
           "github.com" = {
-            identityFile = config.age.secrets.remote-sign-key.path;
+            IdentityFile = config.age.secrets.remote-sign-key.path;
             # never consult the agent; a forwarded/broken SSH_AUTH_SOCK must not affect git
-            identityAgent = "none";
-            identitiesOnly = true;
+            IdentityAgent = "none";
+            IdentitiesOnly = true;
           };
         };
       };

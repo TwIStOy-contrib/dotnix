@@ -21,7 +21,7 @@ in {
   };
   environment.systemPackages = with pkgs; [
     neovim
-    neofetch
+    fastfetch
     zip
     xz
     unzip

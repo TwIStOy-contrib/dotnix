@@ -7,8 +7,8 @@ Enable Zen with `dotnix.desktop.zen.enable`. The shared module at
 The pinned `nixpkgs-unstable` has no Zen package, so Linux uses
 `0xc000022070/zen-browser-flake`. Its `nixpkgs` input follows
 `nixpkgs-unstable`, and its `home-manager` input follows `home-manager`.
-Home Manager `release-25.11` has no native Zen module; the upstream module
-uses its `mkFirefoxModule` factory. The reference configuration linked below
+The upstream module uses Home Manager's `mkFirefoxModule` factory.
+The reference configuration linked below
 uses `homeModules.twilight`; this repository selects beta.
 
 - **Linux:** the upstream module's default package installs Zen through Nix.
@@ -284,7 +284,7 @@ Sources:
 - [Upstream Home Manager module](https://github.com/0xc000022070/zen-browser-flake/blob/90424e159acc21e53ea76780a3ad9cb5acef7cba/hm-module/default.nix)
 - [Upstream package and policy integration](https://github.com/0xc000022070/zen-browser-flake/blob/90424e159acc21e53ea76780a3ad9cb5acef7cba/hm-module/package.nix)
 - [Homebrew Zen cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/z/zen.rb)
-- [Home Manager 25.11 Firefox module factory](https://github.com/nix-community/home-manager/blob/release-25.11/modules/programs/firefox/mkFirefoxModule.nix)
+- [Home Manager 26.05 Firefox module factory](https://github.com/nix-community/home-manager/blob/release-26.05/modules/programs/firefox/mkFirefoxModule.nix)
 - [Firefox container JSON migration](https://github.com/mozilla-firefox/firefox/blob/FIREFOX_156_0_1_RELEASE/toolkit/components/contextualidentity/ContextualIdentityService.sys.mjs)
 - [Zen Home Manager option search](https://zen-browser-flake.nshard.com/)
 - [Space definitions and scoped pins](https://github.com/0xc000022070/zen-browser-flake/blob/90424e159acc21e53ea76780a3ad9cb5acef7cba/hm-module/session/spaces.nix)
