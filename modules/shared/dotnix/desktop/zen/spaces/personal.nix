@@ -15,5 +15,16 @@
 
     # matchType defaults to "contains"; openIn/id are derived from the space.
     routes.github.reference = "github.com";
+
+    # GitHub kinds reuse the browser's logged-in github.com session, no token.
+    liveFolders."Pull Requests" = {
+      id = "c6b697fd-f2c4-4eb8-9b9b-5c3fce7b2f05";
+      kind = "github:pull-requests";
+      position = 1010;
+      github = {
+        assignedMe = true;
+        reviewRequested = true;
+      };
+    };
   };
 }
