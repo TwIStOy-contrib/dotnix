@@ -21,19 +21,14 @@
   # custom icon ligatures (e.g. ":pi:") on top of upstream v2.0.62. The fork
   # carries no release tags, so we pin to a commit.
   #
-  # The fork ships a pnpm-workspace.yaml that only declares `allowBuilds`
-  # (a pnpm 11+ field) with no `packages:` list. pnpm 9 (which both
-  # fetchPnpmDeps and the build use) treats the file's presence as a workspace
-  # root and aborts with "packages field missing or empty". The field is
-  # meaningless under nix's --ignore-scripts fetch, so we strip the file from
-  # the src that pnpm sees.
+  # The fork's pnpm-workspace.yaml only declares lifecycle-script approvals.
+  # Strip it from this single-package build; fetchPnpmDeps disables scripts.
   rawSrc = pkgs.fetchFromGitHub {
     owner = "TwIStOy";
     repo = "sketchybar-app-font";
     rev = "e64d04646596b60828e30db9705f9fe9696717bb";
     hash = "sha256-bjb3POT7iUsHcR71W2XxUtm3xbcefLF/3WuY8LT6Lxc=";
   };
-  # Strip pnpm-workspace.yaml so pnpm 9 does not enter workspace mode.
   src = pkgs.runCommand "sketchybar-app-font-src" {} ''
     cp -r ${rawSrc} $out
     chmod -R u+w $out
@@ -41,6 +36,7 @@
   '';
 
   remapToPua = ./remap_to_pua.py;
+  pnpm = pkgs.pnpm_11;
 
   sketchybar-app-font = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "sketchybar-app-font";
@@ -49,15 +45,15 @@
 
     pnpmDeps = pkgs.fetchPnpmDeps {
       inherit (finalAttrs) pname version src;
-      pnpm = pkgs.pnpm_9;
-      fetcherVersion = 1;
-      hash = "sha256-43VIPcLNPCUMxDmWnt3fRuriOKFp7w5rzxVHdjEz3lU=";
+      inherit pnpm;
+      fetcherVersion = 4;
+      hash = "sha256-zFheFcVSCZWDrThn5PnxhJscRhLG/psSI8Q8g48nXNU=";
     };
 
     nativeBuildInputs = [
       pkgs.nodejs
       pkgs.pnpmConfigHook
-      pkgs.pnpm_9
+      pnpm
       (pkgs.python3.withPackages (ps: [ps.fonttools]))
     ];
 
