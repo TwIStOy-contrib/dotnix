@@ -228,11 +228,11 @@
         "nixvim": "nixvim"
       },
       "locked": {
-        "lastModified": 1789546290,
-        "narHash": "sha256-UB7ul3i+OeUqvWetZZGJZuE99zS4OGZLQqVZ6PmRbk4=",
+        "lastModified": 1793005032,
+        "narHash": "sha256-F0vOO3eTgtb3iDyVKCTEjRpMSa/g8Vi9DOwj8+df/tw=",
         "owner": "TwIStOy",
         "repo": "dotvim",
-        "rev": "cf40a7f9fdbb709fc3406929f117a4af6f29ef53",
+        "rev": "759f2521c0d75d956989b54cf57bf3f3ea094aee",
         "type": "github"
       },
       "original": {
@@ -573,16 +573,16 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1790708764,
-        "narHash": "sha256-uu452Xe23pSvFk7w7fKPjiaqY5QenUIljao2SFAxpc0=",
+        "lastModified": 1791993401,
+        "narHash": "sha256-N7e7oCKxeCoxek6UT8Lweq16rSsQQi34QMb7C2iNpm8=",
         "owner": "ogulcancelik",
         "repo": "herdr",
-        "rev": "7b116c05bfda646af39d2524c54e70c751f57ee8",
+        "rev": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
         "type": "github"
       },
       "original": {
         "owner": "ogulcancelik",
-        "ref": "v0.9.3",
+        "ref": "v0.9.5",
         "repo": "herdr",
         "type": "github"
       }
