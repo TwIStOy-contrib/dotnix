@@ -167,5 +167,9 @@ in {
       owner = "root";
       mode = "600";
     };
+    # env-file format (MAGPIE_WEB_KEY=...) for oci-containers environmentFiles
+    magpie-web-key = ageSecret {
+      file = "magpie-web-key.age";
+    };
   };
 }

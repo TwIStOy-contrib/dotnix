@@ -57,4 +57,5 @@ in {
   "mihomo-config.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "kimi-code-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "typesafe-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "magpie-web-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }
