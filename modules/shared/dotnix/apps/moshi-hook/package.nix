@@ -18,7 +18,7 @@
 # release. The CDN only retains a few recent releases (v0.4.24--v0.4.28 are
 # already 404), so a stale pin breaks every build that pulls this derivation.
 let
-  version = "0.4.33";
+  version = "0.4.38";
 
   # Map nixpkgs platform -> (os, arch) used in the upstream asset name.
   # Mirrors the install.sh logic (uname -s -> Linux/Darwin, uname -m -> x86_64/arm64).
@@ -34,10 +34,10 @@ let
   # sha256 (SRI) per asset, sourced from the official checksums.txt at
   # https://cdn.getmoshi.app/hook/v<version>/checksums.txt
   hashes = {
-    "Linux-x86_64" = "sha256-8sn2TX9a+ndAXPWEnoDh+F1PMFUdlpj0dzls/nzzivU=";
-    "Linux-arm64" = "sha256-snV75WkFLDGDE+hPf6O4ifcZR6YK06NiDs523EwFz3s=";
-    "Darwin-x86_64" = "sha256-aRLJ0mdrjr4wI5ifM2vArRtP/qGpxYydGILC9QJnupE=";
-    "Darwin-arm64" = "sha256-pNUI/m0djixlXEn9pw+0oop8wzOGuH/gcHCB2PLOMQc=";
+    "Linux-x86_64" = "sha256-bjtGFmwQ+j2rsARB8YBSeU3B2vyDHCu8oo4RutYNd1M=";
+    "Linux-arm64" = "sha256-/YAVIthHT8BBRPwdZrpZq8601wJ30lWCU/U9d7hzE8A=";
+    "Darwin-x86_64" = "sha256-V/zoRPt49as9d51fCagUEo6O0PSivPlZ6cCuMXLbx+U=";
+    "Darwin-arm64" = "sha256-BpZh3NzwiYw3LUKjYd2iRzZcr+8lBt7ADhq1Oler3Ms=";
   };
   key = "${os}-${arch}";
   hash =
