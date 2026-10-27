@@ -21,7 +21,6 @@ in {
       ])
       ++ (with pkgs; [
         bun
-        mise
       ]);
 
     home-manager = dotnix-utils.hm.hmConfig {};

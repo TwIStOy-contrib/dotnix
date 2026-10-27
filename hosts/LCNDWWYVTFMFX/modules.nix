@@ -49,26 +49,6 @@ in {
       ];
     };
 
-    apps.nvrh = {
-      settings = {
-        default = {
-          ssh-path = "binary";
-          local-editor = [
-            "/etc/profiles/per-user/wanghaot/bin/neovide"
-            "--server"
-            "{{SOCKET_PATH}}"
-          ];
-          nvim-cmd = [
-            "/etc/profiles/per-user/hawtian/bin/ne"
-          ];
-        };
-
-        servers."dev.work.local".nvim-cmd = [
-          "/home/wanghaot/.nix-profile/bin/ne"
-        ];
-      };
-    };
-
     apps.zed = {
       buffer_font_size = 18;
       ui_font_size = 16;
