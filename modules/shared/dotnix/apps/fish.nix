@@ -126,6 +126,9 @@ in {
     // (lib.optionalAttrs isLinux
       (proxyHelpers.option
         // {
+          # Implemented in modules/nixos/dotnix/apps/fish.nix (NixOS platform
+          # layer): programs.fish.* differs from nix-darwin's vendored fish
+          # module, so the config block must not exist in shared modules.
           loginShell = lib.mkEnableOption "fish as the account's login shell (NixOS only)";
         }));
 
@@ -209,22 +212,5 @@ in {
         };
       };
     }
-    (lib.mkIf (isLinux && cfg.loginShell) {
-      # The standard NixOS login-shell wiring. generateCompletions must be
-      # off: fish 4.x (the Rust rewrite) dropped
-      # share/fish/tools/create_manpage_completions.py, which this generator
-      # still invokes (the same breakage that forced generateCompletions =
-      # false in home-manager above). With it off, the module generates
-      # /etc/fish/config.fish + nixos-env-preinit so login fish sources the
-      # full NixOS environment, and registers the shell in /etc/shells.
-      # package stays the single pkgs-unstable.fish derivation so the login
-      # shell, the home-manager package and tmux panes share one store path.
-      programs.fish = {
-        enable = true;
-        package = fishPkg;
-        generateCompletions = false;
-      };
-      users.users."${dotnix-constants.user.name}".shell = fishPkg;
-    })
   ]);
 }
