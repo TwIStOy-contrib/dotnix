@@ -19,9 +19,16 @@
 }: let
   cfg = config.dotnix.apps.rex;
   terminal = config.dotnix.desktop.terminal;
+  inherit (dotnix-constants) user;
+  homeDir = config.users.users."${user.name}".home;
   # Same layout on darwin as on NixOS: absolute path for Rex-launched
   # commands, because the bundled server's PATH may lack the HM profile.
-  hmProfileBin = "/etc/profiles/per-user/${dotnix-constants.user.name}/bin";
+  hmProfileBin = "/etc/profiles/per-user/${user.name}/bin";
+  hmConfigDir = "${homeDir}/.config";
+  # The app-bundled CLI (Versions/Current is an app-maintained symlink);
+  # darwin has no HM-profile rex.
+  rexBin = "${homeDir}/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex";
+  rexServer = "unix://${homeDir}/Library/Application%20Support/rex/server.sock";
 in {
   options.dotnix.apps.rex = {
     enable = lib.mkEnableOption "Rex terminal GUI preferences";
@@ -107,20 +114,22 @@ in {
       }
       // cfg.extra-settings;
 
-    # init.lua for the local bundled server (read from ~/.config/rex/init.lua;
-    # the app sets REX_SERVER to the local socket). Same shared file as
-    # taihou's system server, so local sessions get the same actions and
-    # bindings. Apply after activation with
+    # init.lua + font-fit.lua for the local bundled server (read from
+    # ~/.config/rex/; the app sets REX_SERVER to the local socket). Same
+    # shared files as taihou's system server, so local sessions get the
+    # same actions and bindings. Apply after activation with
     # `rex config check && rex config reload`.
     home-manager = dotnix-utils.hm.hmConfig {
       xdg.configFile."rex/init.lua" = {
         text =
           lib.replaceStrings
-          ["@hmProfileBin@"]
-          [hmProfileBin]
+          ["@hmProfileBin@" "@rexBin@" "@hmConfigDir@" "@rexServer@"]
+          [hmProfileBin rexBin hmConfigDir rexServer]
           (builtins.readFile ../../../shared/dotnix/rex/init.lua);
         force = true;
       };
+      xdg.configFile."rex/font-fit.lua".text =
+        builtins.readFile ../../../shared/dotnix/rex/font-fit.lua;
     };
   };
 }

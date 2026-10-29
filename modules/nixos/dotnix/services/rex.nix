@@ -12,6 +12,7 @@
   # only the systemd defaults, so anything from the HM profile (fish, pi,
   # git, ...) must be reached through a login shell started by path.
   hmProfileBin = "/etc/profiles/per-user/${user.name}/bin";
+  hmConfigDir = "/home/${user.name}/.config";
 in {
   imports = [inputs.rex.nixosModules.default];
 
@@ -69,9 +70,18 @@ in {
       # connections.
       programs.rex.config =
         lib.replaceStrings
-        ["@hmProfileBin@"]
-        [hmProfileBin]
+        ["@hmProfileBin@" "@rexBin@" "@hmConfigDir@" "@rexServer@"]
+        [hmProfileBin "${hmProfileBin}/rex" hmConfigDir "unix:///run/rex/server.sock"]
         (builtins.readFile ../../../shared/dotnix/rex/init.lua);
+
+      # Stepping logic for the font_fit action. Font actions act on the
+      # client's focused pane only (verified: block_id is ignored), so each
+      # pane is focused server-side, given time to settle, then stepped one
+      # point at a time with verification; two ineffective steps in a row
+      # abort instead of changing some other pane (the client's focus moved,
+      # e.g. the user switched windows mid-run).
+      xdg.configFile."rex/font-fit.lua".text =
+        builtins.readFile ../../../shared/dotnix/rex/font-fit.lua;
       # HM fish rewrites PATH on startup, which can push the server's own rex
       # binary behind the system one inside Rex terminals (Rex docs, "PATH").
       programs.fish.interactiveShellInit = ''
