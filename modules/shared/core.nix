@@ -17,6 +17,12 @@ in {
     experimental-features = ["nix-command" "flakes"];
     trusted-users = [user.name];
 
+    # Credentials for authenticated flake inputs (Rex's pkgs.superlogical.com
+    # channel). The file is the nix-netrc agenix secret; owned by the deploy
+    # user because `just` evaluates as a normal user while the root daemon
+    # bypasses file permissions.
+    netrc-file = "/etc/nix/netrc";
+
     substituters = [
       # "https://mirror.sjtu.edu.cn/nix-channels/store"
       # "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"

@@ -44,6 +44,17 @@
       };
     };
 
+    # Rex (superlogical's programmable terminal). The channel URL redirects to
+    # an immutable per-release URL which flake.lock records, so locked
+    # evaluations stay stable; `nix flake update rex` moves to the newest
+    # snapshot. Downloads need the netrc secret at /etc/nix/netrc.
+    rex = {
+      url = "https://pkgs.superlogical.com/rex/nix/snapshot.tar.gz";
+      # Rex only needs stdenvNoCC/fetchurl/patchelf; reuse our unstable pin
+      # instead of its own channels.nixos.org tarball download.
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     secrets-hawtian = {
       url = "git+ssh://git@github.com/TwIStOy/nix-secret.git?shallow=1";
       flake = false;

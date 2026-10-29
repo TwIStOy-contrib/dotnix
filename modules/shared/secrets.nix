@@ -122,6 +122,14 @@ in {
       file = "nix-secret-conf.age";
       owner = user.name;
     };
+    # Written to /etc/nix/netrc (see nix.settings.netrc-file) so client-side
+    # flake evaluation can authenticate against pkgs.superlogical.com.
+    nix-netrc =
+      (ageSecret {
+        file = "nix-netrc.age";
+        owner = user.name;
+      })
+      // {path = "/etc/nix/netrc";};
     cachix-auth-token = ageSecret {
       file = "cachix-auth-token.age";
       owner = user.name;

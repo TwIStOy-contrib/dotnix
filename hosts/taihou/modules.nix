@@ -92,5 +92,8 @@ in {
     services.eternal-terminal = {
       enable = true;
     };
+    services.rex = {
+      enable = true;
+    };
   };
 }
