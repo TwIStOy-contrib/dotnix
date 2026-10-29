@@ -7,8 +7,9 @@
 #
 # App-owned keys must NOT be declared, or activation fights the app:
 # RexSync.servers, Workspace.lastFocusedSession, Workspace.programActivitySeen,
-# rex.local-server.cached-route.v1, NSWindow Frame*, NSStatusItem*, Onboarding.*,
-# SU* (Sparkle updater).
+# rex.local-server.cached-route.v1, rex.sync.hosts-migrated.v1,
+# Workspace.tabIconCount, rex.server.* (local bundled-server state),
+# NSWindow Frame*, NSStatusItem*, Onboarding.*, SU* (Sparkle updater).
 {
   config,
   lib,
@@ -23,7 +24,7 @@ in {
 
     dark-theme = lib.mkOption {
       type = lib.types.str;
-      default = "whitby-bay";
+      default = "ink-meridian";
       description = ''
         Theme ID used when the system is in dark mode.
       '';
@@ -81,8 +82,8 @@ in {
       {
         "Workspace.terminalFontName" = terminal.font-family;
         "Workspace.terminalFontPointSize" = terminal.font-size;
-        "Workspace.terminalFontSmoothing" = false;
-        "Workspace.terminalCursorStyle" = "bar";
+        "Workspace.terminalFontSmoothing" = true;
+        "Workspace.terminalCursorStyle" = "block";
         "Workspace.darkThemeID" = cfg.dark-theme;
         "Workspace.lightThemeID" = cfg.light-theme;
         "Workspace.paneDensity" = cfg.pane-density;
@@ -90,14 +91,14 @@ in {
         "Workspace.sidebarPosition" = cfg.sidebar-position;
         "Workspace.terminalCopyOnSelect" = false;
         "Workspace.terminalCopyAnimation" = true;
-        "Workspace.terminalUsesDisplayP3" = false;
+        "Workspace.terminalUsesDisplayP3" = true;
         "Workspace.terminalSmoothScrolling" = true;
         "Workspace.terminalFallbackFontNames" = ["icomoon"];
         "Workspace.terminalStartupCommand" = "/etc/profiles/per-user/${dotnix-constants.user.name}/bin/fish";
         "Workspace.inactivePaneFadeMode" = "both";
         "Workspace.usesStandardInactiveWindowPaneStyles" = true;
         "Workspace.tabIconTintMode" = "off";
-        "Workspace.notificationPosition" = "top-right";
+        "Workspace.notificationPosition" = "bottom-right";
         "rex.client.remoteControl" = true;
       }
       // cfg.extra-settings;
