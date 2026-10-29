@@ -4,10 +4,17 @@
   pkgs,
   pkgs-unstable,
   dotnix-utils,
+  dotnix-constants,
   ...
 }: let
   cfg = config.dotnix.apps.fish;
   isLinux = !pkgs.stdenv.hostPlatform.isDarwin;
+
+  # The single fish derivation used by every consumer in this module and
+  # elsewhere (tmux's default-shell references pkgs-unstable.fish too), so
+  # the login shell, the home-manager package and tmux panes all resolve to
+  # the same store path.
+  fishPkg = pkgs-unstable.fish;
 
   # Proxy helpers are NixOS-only: they point at the local mihomo mixed-port
   # which only runs on the NixOS hosts. Darwin shells have no local proxy, so
@@ -116,85 +123,108 @@ in {
     {
       enable = lib.mkEnableOption "Enable module dotnix.apps.fish";
     }
-    // lib.optionalAttrs isLinux proxyHelpers.option;
+    // (lib.optionalAttrs isLinux
+      (proxyHelpers.option
+        // {
+          loginShell = lib.mkEnableOption "fish as the account's login shell (NixOS only)";
+        }));
 
-  config = lib.mkIf cfg.enable {
-    home-manager = dotnix-utils.hm.hmConfig {
+  config = lib.mkIf cfg.enable (lib.mkMerge [
+    {
+      home-manager = dotnix-utils.hm.hmConfig {
+        programs.fish = {
+          enable = true;
+          package = fishPkg;
+          # pkgs-unstable.fish is 4.x (the Rust rewrite), which dropped
+          # share/fish/tools/create_manpage_completions.py entirely. Home-manager's
+          # default generateCompletions builds a `<pkg>-fish-completions` derivation
+          # per home.packages entry that invokes that script, so it fails for every
+          # package (e.g. bat). Disable it: fish 4.x has no manpage->completion
+          # generator, and packages that want fish completions ship them natively
+          # under share/fish/vendor_completions.d/, which fish auto-loads.
+          generateCompletions = false;
+          interactiveShellInit = lib.mkMerge [
+            (lib.mkOrder 700 ''
+              # TERM_THEME follows fish 4.x's native $fish_terminal_color_theme.
+              # That variable is read-only and only populated at the FIRST prompt
+              # (not during interactiveShellInit), so it can't be read inline —
+              # react via an --on-variable handler (the same mechanism fish uses
+              # for its own syntax highlighting). It fires at first prompt and on
+              # every later change (live OS appearance switches). Default dark.
+              set -gx TERM_THEME dark
+              function _dotnix_sync_term_theme --on-variable fish_terminal_color_theme
+                  if test "$fish_terminal_color_theme" = light
+                      set -gx TERM_THEME light
+                  else if test "$fish_terminal_color_theme" = dark
+                      set -gx TERM_THEME dark
+                  else if set -q TMUX
+                      if test (tmux display-message -p "#{client_theme}" 2>/dev/null) = light
+                          set -gx TERM_THEME light
+                      else
+                          set -gx TERM_THEME dark
+                      end
+                  else
+                      set -gx TERM_THEME dark
+                  end
+              end
+            '')
+            ''
+              set fish_greeting
+
+              export GITHUB_TOKEN="$(cat ${config.age.secrets.github-cli-access-token.path})"
+            ''
+          ];
+          plugins = [
+            {
+              name = "foreign-env";
+              src = pkgs.fetchFromGitHub {
+                owner = "oh-my-fish";
+                repo = "plugin-foreign-env";
+                rev = "3ee95536106c11073d6ff466c1681cde31001383";
+                sha256 = "sha256-vyW/X2lLjsieMpP9Wi2bZPjReaZBkqUbkh15zOi8T4Y=";
+              };
+            }
+          ];
+          shellAliases = {
+            ll = "eza -l --icons -a --group-directories-first --git";
+            glr = "git pull --rebase";
+            gco = "git checkout";
+            gst = "git status";
+            gd = "git diff";
+            glg = "git log --graph";
+            gaa = "git add --all";
+            gcm = "git commit -m";
+            gp = "git push";
+            nvi = "nvim";
+            v = "nvim";
+            j = "just";
+            lg = "lazygit";
+            tdev = "tmux atta -t dev || tmux new -s dev";
+            goto = "kitten ssh --kitten forward_remote_control=yes";
+            ts = "tailscale";
+          };
+          functions =
+            {}
+            // lib.optionalAttrs isLinux proxyHelpers.functions;
+        };
+      };
+    }
+    (lib.mkIf (isLinux && cfg.loginShell) {
+      # The standard NixOS login-shell wiring. generateCompletions must be
+      # off: fish 4.x (the Rust rewrite) dropped
+      # share/fish/tools/create_manpage_completions.py, which this generator
+      # still invokes (the same breakage that forced generateCompletions =
+      # false in home-manager above). With it off, the module generates
+      # /etc/fish/config.fish + nixos-env-preinit so login fish sources the
+      # full NixOS environment, and registers the shell in /etc/shells.
+      # package stays the single pkgs-unstable.fish derivation so the login
+      # shell, the home-manager package and tmux panes share one store path.
       programs.fish = {
         enable = true;
-        package = pkgs-unstable.fish;
-        # pkgs-unstable.fish is 4.x (the Rust rewrite), which dropped
-        # share/fish/tools/create_manpage_completions.py entirely. Home-manager's
-        # default generateCompletions builds a `<pkg>-fish-completions` derivation
-        # per home.packages entry that invokes that script, so it fails for every
-        # package (e.g. bat). Disable it: fish 4.x has no manpage->completion
-        # generator, and packages that want fish completions ship them natively
-        # under share/fish/vendor_completions.d/, which fish auto-loads.
+        package = fishPkg;
         generateCompletions = false;
-        interactiveShellInit = lib.mkMerge [
-          (lib.mkOrder 700 ''
-            # TERM_THEME follows fish 4.x's native $fish_terminal_color_theme.
-            # That variable is read-only and only populated at the FIRST prompt
-            # (not during interactiveShellInit), so it can't be read inline —
-            # react via an --on-variable handler (the same mechanism fish uses
-            # for its own syntax highlighting). It fires at first prompt and on
-            # every later change (live OS appearance switches). Default dark.
-            set -gx TERM_THEME dark
-            function _dotnix_sync_term_theme --on-variable fish_terminal_color_theme
-                if test "$fish_terminal_color_theme" = light
-                    set -gx TERM_THEME light
-                else if test "$fish_terminal_color_theme" = dark
-                    set -gx TERM_THEME dark
-                else if set -q TMUX
-                    if test (tmux display-message -p "#{client_theme}" 2>/dev/null) = light
-                        set -gx TERM_THEME light
-                    else
-                        set -gx TERM_THEME dark
-                    end
-                else
-                    set -gx TERM_THEME dark
-                end
-            end
-          '')
-          ''
-            set fish_greeting
-
-            export GITHUB_TOKEN="$(cat ${config.age.secrets.github-cli-access-token.path})"
-          ''
-        ];
-        plugins = [
-          {
-            name = "foreign-env";
-            src = pkgs.fetchFromGitHub {
-              owner = "oh-my-fish";
-              repo = "plugin-foreign-env";
-              rev = "3ee95536106c11073d6ff466c1681cde31001383";
-              sha256 = "sha256-vyW/X2lLjsieMpP9Wi2bZPjReaZBkqUbkh15zOi8T4Y=";
-            };
-          }
-        ];
-        shellAliases = {
-          ll = "eza -l --icons -a --group-directories-first --git";
-          glr = "git pull --rebase";
-          gco = "git checkout";
-          gst = "git status";
-          gd = "git diff";
-          glg = "git log --graph";
-          gaa = "git add --all";
-          gcm = "git commit -m";
-          gp = "git push";
-          nvi = "nvim";
-          v = "nvim";
-          j = "just";
-          lg = "lazygit";
-          tdev = "tmux atta -t dev || tmux new -s dev";
-          goto = "kitten ssh --kitten forward_remote_control=yes";
-          ts = "tailscale";
-        };
-        functions =
-          {}
-          // lib.optionalAttrs isLinux proxyHelpers.functions;
       };
-    };
-  };
+      users.users."${dotnix-constants.user.name}".shell = fishPkg;
+    })
+  ]);
 }
