@@ -1,7 +1,7 @@
 # Rex (https://superlogical.com/rex) GUI preferences, written to the
-# com.superlogical.rex UserDefaults domain. Only the client-side
-# appearance/behavior keys are declared here; the server-side Lua config
-# (~/.config/rex/init.lua) is a separate concern.
+# com.superlogical.rex UserDefaults domain, plus the init.lua for the
+# app's local bundled server (run-mode=bundled, socket in
+# ~/Library/Application Support/rex/server.sock).
 #
 # The app itself is installed manually (Rex Beta.app, no homebrew cask).
 #
@@ -14,10 +14,14 @@
   config,
   lib,
   dotnix-constants,
+  dotnix-utils,
   ...
 }: let
   cfg = config.dotnix.apps.rex;
   terminal = config.dotnix.desktop.terminal;
+  # Same layout on darwin as on NixOS: absolute path for Rex-launched
+  # commands, because the bundled server's PATH may lack the HM profile.
+  hmProfileBin = "/etc/profiles/per-user/${dotnix-constants.user.name}/bin";
 in {
   options.dotnix.apps.rex = {
     enable = lib.mkEnableOption "Rex terminal GUI preferences";
@@ -102,5 +106,21 @@ in {
         "rex.client.remoteControl" = true;
       }
       // cfg.extra-settings;
+
+    # init.lua for the local bundled server (read from ~/.config/rex/init.lua;
+    # the app sets REX_SERVER to the local socket). Same shared file as
+    # taihou's system server, so local sessions get the same actions and
+    # bindings. Apply after activation with
+    # `rex config check && rex config reload`.
+    home-manager = dotnix-utils.hm.hmConfig {
+      xdg.configFile."rex/init.lua" = {
+        text =
+          lib.replaceStrings
+          ["@hmProfileBin@"]
+          [hmProfileBin]
+          (builtins.readFile ../../../shared/dotnix/rex/init.lua);
+        force = true;
+      };
+    };
   };
 }
