@@ -49,6 +49,8 @@ in {
       ];
     };
 
+    apps.rex = enabled;
+
     apps.zed = {
       buffer_font_size = 18;
       ui_font_size = 16;
