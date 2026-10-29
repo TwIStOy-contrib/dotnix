@@ -42,6 +42,10 @@
         hostname = name;
         profiles.system = {
           sshUser = constants.user.name;
+          # deploy-rs defaults `user` to sshUser when unset, which runs the
+          # activation as hawtian and switch-to-configuration refuses (needs
+          # root). sudo -u root is passwordless (wheelNeedsPassword = false).
+          user = "root";
           activationTimeout = 6000;
           path = activateFn systemDrv;
         };
