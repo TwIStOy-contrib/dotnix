@@ -26,6 +26,14 @@
     };
   };
 
+  # Live ISO boots into RAM; placeholder root following the
+  # installation-cd-base pattern (satisfies the fileSystems assertion).
+  fileSystems."/" = {
+    device = "tmpfs";
+    fsType = "tmpfs";
+    options = ["mode=0755"];
+  };
+
   users.mutableUsers = false;
   users.users.root = {
     openssh.authorizedKeys.keys = [
