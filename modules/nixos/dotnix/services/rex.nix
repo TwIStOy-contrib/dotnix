@@ -8,6 +8,10 @@
 }: let
   inherit (dotnix-constants) user;
   cfg = config.dotnix.services.rex;
+  # Absolute path for Rex-launched commands: the rex server's PATH carries
+  # only the systemd defaults, so anything from the HM profile (fish, pi,
+  # git, ...) must be reached through a login shell started by path.
+  hmProfileBin = "/etc/profiles/per-user/${user.name}/bin";
 in {
   imports = [inputs.rex.nixosModules.default];
 
@@ -57,6 +61,35 @@ in {
     home-manager = dotnix-utils.hm.hmConfig {
       imports = [inputs.rex.homeManagerModules.default];
       programs.rex.enable = true;
+      # init.lua is read by the Rex server only; it pushes the merged keymap
+      # and actions to connected clients (palette + any future rex.bind on
+      # the Mac app). Apply changes with `rex config reload` on this host —
+      # it is refused over remote connections.
+      programs.rex.config = ''
+        local shell = "com.superlogical.terminal.shell"
+
+        rex.action{
+          name  = "pi_split",
+          title = "Open Pi Agent in Right Split",
+          run   = function(ctx, args)
+            local split, err = rex.session.new_split{
+              direction = "horizontal", -- left-right axis
+              side      = "after",      -- new pane to the right
+              focus     = true,
+              layout    = rex.layout.block{
+                flavor  = shell,
+                options = {
+                  -- Login fish restores the full user PATH (git, rg, ...);
+                  -- `exec pi` then lands on the HM-profile pi wrapper that
+                  -- injects the LLM API keys and EDITOR.
+                  command = { "${hmProfileBin}/fish", "-l", "-c", "exec pi" },
+                },
+              },
+            }
+            if err ~= nil then error(err, 0) end
+          end,
+        }
+      '';
       # HM fish rewrites PATH on startup, which can push the server's own rex
       # binary behind the system one inside Rex terminals (Rex docs, "PATH").
       programs.fish.interactiveShellInit = ''
