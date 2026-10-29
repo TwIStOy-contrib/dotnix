@@ -8,6 +8,8 @@ in {
     desktop.neovide.extraSettings.font.size = 18;
     desktop.terminal.font-size = 18;
 
+    apps.rex = enabled;
+
     apps.zed.buffer_font_size = 18;
     apps.zed.ui_font_size = 16;
 
