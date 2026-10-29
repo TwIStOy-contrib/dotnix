@@ -15,13 +15,13 @@
     systemDrv = mkSystem {
       inherit system env;
     } (import "${path}");
-    constants = vars.varFor env;
+    constants = vars.varsFor env;
 
     pkgs = import nixpkgs {inherit system;};
     deployPkgs = import nixpkgs {
       inherit system;
       overlays = [
-        deploy-rs.overlay
+        deploy-rs.overlays.default
         (self: super: {
           deploy-rs = {
             inherit (pkgs) deploy-rs;
@@ -41,7 +41,7 @@
       deploy.nodes."${name}" = {
         hostname = name;
         profiles.system = {
-          sshUser = constants.user.user.name;
+          sshUser = constants.user.name;
           activationTimeout = 6000;
           path = activateFn systemDrv;
         };
