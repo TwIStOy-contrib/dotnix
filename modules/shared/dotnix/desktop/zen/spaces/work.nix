@@ -34,6 +34,8 @@
     routes = {
       github-fw.reference = "github-fw.tesla.com";
       teslamotors.reference = "teslamotors.com";
+      tesla.reference = "tesla.com";
+      tesla-cn.reference = "tesla.cn";
     };
   };
 }
