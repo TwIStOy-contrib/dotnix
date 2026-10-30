@@ -74,12 +74,9 @@ in {
         [hmProfileBin "${hmProfileBin}/rex" hmConfigDir "unix:///run/rex/server.sock"]
         (builtins.readFile ../../../shared/dotnix/rex/init.lua);
 
-      # Stepping logic for the font_fit action. Font actions act on the
-      # client's focused pane only (verified: block_id is ignored), so each
-      # pane is focused server-side, given time to settle, then stepped one
-      # point at a time with verification; two ineffective steps in a row
-      # abort instead of changing some other pane (the client's focus moved,
-      # e.g. the user switched windows mid-run).
+      # Remote actions require display metadata supplied by the target Mac.
+      # The Mac's rex-font-fit command can also run this script locally
+      # against this server, without installing a display helper on Linux.
       xdg.configFile."rex/font-fit.lua".text =
         builtins.readFile ../../../shared/dotnix/rex/font-fit.lua;
       # HM fish rewrites PATH on startup, which can push the server's own rex

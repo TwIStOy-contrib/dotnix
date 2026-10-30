@@ -6,7 +6,7 @@
 --   @rexBin@        absolute rex CLI path for server-side exec (font_fit)
 --   @hmConfigDir@   config dir holding the sibling font-fit.lua
 --   @rexServer@     REX_SERVER socket URL for exec'd scripts
--- Sibling scripts (font-fit.lua) are shared verbatim.
+-- macOS also installs display-info.js next to font-fit.lua.
 -- Apply with `rex config check && rex config reload` on the machine that
 -- owns the server (reload is refused over remote connections).
 
@@ -35,27 +35,29 @@ rex.action{
   end,
 }
 
--- Steps per-pane fonts through the font-fit.lua script: font zoom
--- is per-pane, only the client's focused pane can be stepped, and
--- the stepping needs sleeps that config-file actions cannot do.
--- client.perform from outside the app requires Remote Control on.
+-- Remote servers need display metadata collected on the target Mac.
+-- client.perform requires Remote Control in the app's server settings.
 rex.action{
   name  = "font_fit",
-  title = "Fit Font to Window",
-  description = "One font size for every pane in the window, picked from its width.",
-  args  = { size = "number?" },
+  title = "Fit Font to Display",
+  description = "Use the Mac display's size for every pane. For remote sessions, run rex-font-fit on the Mac.",
+  args  = { size = "number?", display = "object?", native_window = "integer?", dry_run = "boolean?" },
   run   = function(ctx, args)
     if ctx.client_id == nil then
       error("font_fit runs inside the app, or from the CLI with -C <client>", 0)
     end
+    if ctx.session_id == nil then error("font_fit requires a session", 0) end
+    local script_args = {
+      session = ctx.session_id, client = ctx.client_id,
+      size = args.size, display = args.display,
+      native_window = args.native_window, dry_run = args.dry_run,
+    }
+    local encoded, encode_err = rex.json.encode(script_args)
+    if encode_err ~= nil then error(encode_err, 0) end
     local argv = {
       "@rexBin@", "do", "@hmConfigDir@/rex/font-fit.lua",
-      "session=" .. ctx.session_id,
-      "client=" .. ctx.client_id,
+      "--args", encoded,
     }
-    if args.size ~= nil then
-      argv[#argv + 1] = "size=" .. tostring(args.size)
-    end
     local r, err = rex.exec(argv, {
       env = { REX_SERVER = "@rexServer@" },
       timeout = 120,
@@ -63,7 +65,7 @@ rex.action{
     if err ~= nil then error(err, 0) end
     if not r.ok then error("font-fit.lua: " .. r.stderr, 0) end
     local out, jerr = rex.json.decode((r.stdout:gsub("%s+$", "")))
-    if jerr ~= nil then return {raw = r.stdout} end
+    if jerr ~= nil then error("font-fit.lua returned invalid JSON: " .. jerr, 0) end
     return out
   end,
 }

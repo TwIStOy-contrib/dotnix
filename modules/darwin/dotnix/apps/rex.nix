@@ -14,6 +14,7 @@
 {
   config,
   lib,
+  pkgs,
   dotnix-constants,
   dotnix-utils,
   ...
@@ -34,6 +35,29 @@
 in {
   options.dotnix.apps.rex = {
     enable = lib.mkEnableOption "Rex terminal GUI preferences";
+
+    fontFitOnFocus = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Fit visible Rex panes to the display when its native window gains focus, using Hammerspoon.";
+    };
+
+    fontFitHotkey = lib.mkOption {
+      type = lib.types.nullOr (lib.types.submodule {
+        options = {
+          modifiers = lib.mkOption {
+            type = lib.types.listOf (lib.types.enum ["cmd" "alt" "ctrl" "shift"]);
+            default = ["cmd" "alt" "shift"];
+          };
+          key = lib.mkOption {
+            type = lib.types.str;
+            default = "F";
+          };
+        };
+      });
+      default = {};
+      description = "Hammerspoon shortcut for fitting all visible Rex panes; active only while Rex is focused.";
+    };
 
     dark-theme = lib.mkOption {
       type = lib.types.str;
@@ -88,6 +112,29 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    dotnix.apps.hammerspoon = lib.mkIf (cfg.fontFitOnFocus || cfg.fontFitHotkey != null) {
+      enable = true;
+      extraConfig = ''
+        rexFontFit = dofile(${builtins.toJSON "${hmConfigDir}/rex/focus-font-fit.lua"}).start({
+          rex = ${builtins.toJSON rexBin},
+          server = ${builtins.toJSON rexServer},
+          script = ${builtins.toJSON "${hmConfigDir}/rex/font-fit.lua"},
+          onFocus = ${lib.boolToString cfg.fontFitOnFocus},
+          hotkey = ${
+          if cfg.fontFitHotkey == null
+          then "nil"
+          else ''{modifiers = {${lib.concatMapStringsSep ", " builtins.toJSON cfg.fontFitHotkey.modifiers}}, key = ${builtins.toJSON cfg.fontFitHotkey.key}}''
+        },
+        })
+      '';
+    };
+
+    dotnix.hm.packages = [
+      (pkgs.writeShellScriptBin "rex-font-fit" ''
+        exec ${lib.escapeShellArg rexBin} do ${lib.escapeShellArg "${hmConfigDir}/rex/font-fit.lua"} "$@"
+      '')
+    ];
+
     # Font family/size follow dotnix.desktop.terminal so Rex stays in sync
     # with ghostty/kitty/neovide. The family string must match the installed
     # font's family name exactly (modules/darwin/font.nix installs it).
@@ -157,6 +204,10 @@ in {
       };
       xdg.configFile."rex/font-fit.lua".text =
         builtins.readFile ../../../shared/dotnix/rex/font-fit.lua;
+      xdg.configFile."rex/display-info.js".text =
+        builtins.readFile ../../../shared/dotnix/rex/display-info.js;
+      xdg.configFile."rex/focus-font-fit.lua".text =
+        builtins.readFile ../../../shared/dotnix/rex/focus-font-fit.lua;
     };
   };
 }

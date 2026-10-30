@@ -45,6 +45,11 @@
 in {
   options.dotnix.apps.hammerspoon = {
     enable = lib.mkEnableOption "Hammerspoon";
+    extraConfig = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+      description = "Additional Hammerspoon Lua configuration.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -72,15 +77,18 @@ in {
         file = {
           "${homeDir}/.hammerspoon/init.lua" = {
             text =
-              if (pkgs.stdenv.isAarch32 || pkgs.stdenv.isAarch64)
-              then ''
-                ${init-ipc-aarch}
-                ${init-stackline}
-              ''
-              else ''
-                ${init-ipc-x86}
-                ${init-stackline}
-              '';
+              (
+                if (pkgs.stdenv.isAarch32 || pkgs.stdenv.isAarch64)
+                then ''
+                  ${init-ipc-aarch}
+                  ${init-stackline}
+                ''
+                else ''
+                  ${init-ipc-x86}
+                  ${init-stackline}
+                ''
+              )
+              + cfg.extraConfig;
             force = true;
           };
           "${homeDir}/.hammerspoon/stackline" = {
