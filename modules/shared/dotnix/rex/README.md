@@ -18,9 +18,12 @@ and set Rex's default font size in Settings.
 Hammerspoon fits on native-window focus and binds **Cmd+Alt+Shift+F** while Rex is
 focused. It must be installed, running, and have Accessibility access. Configure
 `dotnix.apps.rex.fontFitOnFocus` and `dotnix.apps.rex.fontFitHotkey`; use `false`
-and `null`, respectively, to disable them. Focus events are debounced, concurrent
-runs are suppressed, and unchanged successful plans are skipped. The shortcut
-forces a fit; newly created panes are included on the next focus or shortcut.
+and `null`, respectively, to disable them. Focus events are debounced and runs are
+serialized. Successful fits are remembered per pane, so returning to a fitted
+tab skips its panes and adding a split only fits the new pane. A focus event during
+a running fit is retried afterward. The shortcut forces all visible panes to fit;
+use it after manually changing font sizes, which Rex does not expose for reading.
+The cache lasts until Hammerspoon reloads or the native window closes.
 
 The trigger enters through the local server with `current=true`. It reads the
 app-owned `Workspace.lastFocusedSession` preference and resolves remote server

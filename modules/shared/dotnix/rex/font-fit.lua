@@ -175,6 +175,26 @@ local report = {
 }
 if report.dry_run then return report end
 
+if args.plan ~= nil then
+  local plan = args.plan
+  if type(plan) ~= "table" or type(plan.display) ~= "table" or type(plan.panes) ~= "table" or
+      plan.client_id ~= client_id or plan.session_id ~= session_id or plan.window_id ~= window.window_id or
+      plan.target_pt ~= target or plan.display.default_font_pt ~= baseline then
+    error("The font-fit plan changed; stopped font_fit", 0)
+  end
+  local visible = {}
+  for _, pane in ipairs(panes) do visible[pane.block_id] = pane end
+  panes = {}
+  for _, pane in ipairs(plan.panes) do
+    local current = visible[pane.block_id]
+    if current == nil then error("The visible panes changed; stopped font_fit", 0) end
+    panes[#panes + 1] = current
+    visible[pane.block_id] = nil
+  end
+  report.panes = panes
+  if #panes == 0 then return report end
+end
+
 if not foreground_only then
   local _, select_err = api.call("client.perform", {
     client_id = client_id, action = "session.select",
@@ -184,11 +204,13 @@ if not foreground_only then
   rex.sleep(0.3)
 end
 
-local last_focused
+local last_focused = window.focused_block_id
 local function focus(block_id)
+  if block_id == last_focused then return false end
   local _, err = api.session.focus_block{session_id = session_id, block_id = block_id}
   if err ~= nil then error(err, 0) end
   last_focused = block_id
+  return true
 end
 
 local function perform(action, block_id, allow_disabled_reset)
@@ -216,14 +238,9 @@ end
 local ok, failure = pcall(function()
   for _, pane in ipairs(panes) do
     if foreground_only then check_foreground() end
-    focus(pane.block_id)
-    rex.sleep(0.3)
-    if not perform("client.font.reset", pane.block_id, true) then
-      -- Reset is disabled at the default size; move away and require a successful reset.
-      perform("client.font.increase", pane.block_id)
-      rex.sleep(0.15)
-      perform("client.font.reset", pane.block_id)
-    end
+    if focus(pane.block_id) then rex.sleep(0.3) end
+    -- Reset is disabled when already at the default; no font change is needed.
+    perform("client.font.reset", pane.block_id, true)
     for _ = 1, pane.steps do
       rex.sleep(0.15)
       perform(delta > 0 and "client.font.increase" or "client.font.decrease", pane.block_id)
