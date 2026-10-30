@@ -6,11 +6,9 @@ local session_id = args.session or rex.session_id
 local foreground_only = args.foreground_only == true or args.current == true
 local terminal = "com.superlogical.terminal"
 local tiers = {
-  {w = 2400, pt = 28},
-  {w = 1800, pt = 25},
-  {w = 1300, pt = 21},
-  {w = 900, pt = 17},
-  {w = 0, pt = 14},
+  {w = 2400, pt = 18},
+  {w = 1500, pt = 12},
+  {w = 0, pt = 10},
 }
 
 local function number(value, name, minimum, maximum)
