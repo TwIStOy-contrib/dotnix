@@ -4,6 +4,7 @@ local args = rex.args
 local api = rex
 local session_id = args.session or rex.session_id
 local foreground_only = args.foreground_only == true or args.current == true
+local active_only = args.active_only == true
 local terminal = "com.superlogical.terminal"
 local tiers = {
   {w = 2400, pt = 18},
@@ -20,7 +21,7 @@ end
 
 local display = args.display
 local measured_locally = display == nil
-local function read_display(activate)
+local function read_display(activate, focus_only)
   local source = debug.getinfo(1, "S").source:gsub("^@", "")
   local directory = source:match("^(.*[/\\])") or "./"
   local helper = directory .. "display-info.js"
@@ -31,8 +32,10 @@ local function read_display(activate)
   file:close()
   local argv = {"/usr/bin/osascript", "-l", "JavaScript", helper}
   local native_window = args.native_window or (display and display.window_id)
-  if native_window ~= nil then argv[#argv + 1] = tostring(native_window) end
-  if activate then argv[#argv + 1] = "activate" end
+  if native_window ~= nil then argv[#argv + 1] = tostring(native_window)
+  elseif activate or focus_only then argv[#argv + 1] = "" end
+  if activate then argv[#argv + 1] = "activate"
+  elseif focus_only then argv[#argv + 1] = "focus" end
   local result, err = rex.exec(argv, {timeout = 10})
   if err ~= nil then error("Read the display on the target Mac: " .. err, 0) end
   if not result.ok then error("Cannot read the Rex display: " .. result.stderr, 0) end
@@ -41,10 +44,12 @@ local function read_display(activate)
   if err ~= nil then error(err, 0) end
   return measured
 end
-if measured_locally then display = read_display(false) end
+if measured_locally then display = read_display(false, args.size ~= nil) end
 if type(display) ~= "table" then error("display must be an object", 0) end
-number(display.width_pt, "display.width_pt", 1, 100000)
-number(display.height_pt, "display.height_pt", 1, 100000)
+if args.size == nil then
+  number(display.width_pt, "display.width_pt", 1, 100000)
+  number(display.height_pt, "display.height_pt", 1, 100000)
+end
 
 local function current_session(measured)
   return measured.focused_session and measured.focused_session.sessionID
@@ -72,7 +77,7 @@ if args.current == true then
 end
 
 local function check_foreground()
-  local current = read_display(false)
+  local current = read_display(false, true)
   if not current.frontmost or current.front_window_id ~= display.window_id or
       current_session(current) ~= current_session(display) or current_server(current) ~= current_server(display) then
     error("Rex focus changed; stopped font_fit", 0)
@@ -163,17 +168,18 @@ local panes = {}
 for _, layer in ipairs(window.layers) do
   for _, block in ipairs(layer.blocks or {}) do
     if block.creator_name == terminal and
+        (not active_only or window.focused_block_id == block.block_id) and
         (window.zoomed_block_id == nil or window.zoomed_block_id == block.block_id) then
       panes[#panes + 1] = {block_id = block.block_id, steps = math.abs(delta)}
     end
   end
 end
-if #panes == 0 then error("The active window has no visible terminal panes", 0) end
+if #panes == 0 and not active_only then error("The active window has no visible terminal panes", 0) end
 local report = {
   client_id = client_id, session_id = session_id, window_id = window.window_id,
   display = display, target_pt = target, panes = panes, dry_run = args.dry_run == true,
 }
-if report.dry_run then return report end
+if report.dry_run or #panes == 0 then return report end
 
 if args.plan ~= nil then
   local plan = args.plan
@@ -204,17 +210,7 @@ if not foreground_only then
   rex.sleep(0.3)
 end
 
-local last_focused = window.focused_block_id
-local function focus(block_id)
-  if block_id == last_focused then return false end
-  local _, err = api.session.focus_block{session_id = session_id, block_id = block_id}
-  if err ~= nil then error(err, 0) end
-  last_focused = block_id
-  return true
-end
-
-local function perform(action, block_id, allow_disabled_reset)
-  if foreground_only then check_foreground() end
+local function check_pane(block_id)
   local current, err = api.session.view{session_id = session_id}
   if err ~= nil then error(err, 0) end
   if current.active_window_id ~= window.window_id then error("The active tab changed; stopped font_fit", 0) end
@@ -223,6 +219,21 @@ local function perform(action, block_id, allow_disabled_reset)
       error("The focused pane changed; stopped font_fit", 0)
     end
   end
+end
+
+local last_focused = window.focused_block_id
+local function focus(block_id)
+  if block_id == last_focused then return false end
+  check_pane(last_focused)
+  local _, err = api.session.focus_block{session_id = session_id, block_id = block_id}
+  if err ~= nil then error(err, 0) end
+  last_focused = block_id
+  return true
+end
+
+local function perform(action, block_id, allow_disabled_reset)
+  if foreground_only then check_foreground() end
+  check_pane(block_id)
   local _, action_err = api.call("client.perform", {
     client_id = client_id, session_id = session_id, block_id = block_id,
     action = action, timeout_ms = 3000,
@@ -238,7 +249,7 @@ end
 local ok, failure = pcall(function()
   for _, pane in ipairs(panes) do
     if foreground_only then check_foreground() end
-    if focus(pane.block_id) then rex.sleep(0.3) end
+    if not active_only and focus(pane.block_id) then rex.sleep(0.3) end
     -- Reset is disabled when already at the default; no font change is needed.
     perform("client.font.reset", pane.block_id, true)
     for _ = 1, pane.steps do
@@ -248,6 +259,7 @@ local ok, failure = pcall(function()
   end
 end)
 local restored, restore_err = pcall(function()
+  if active_only then return end
   if foreground_only and not pcall(check_foreground) then return end
   local current, err = api.session.view{session_id = session_id}
   if err ~= nil then error(err, 0) end

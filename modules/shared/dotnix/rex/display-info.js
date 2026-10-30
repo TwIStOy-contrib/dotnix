@@ -34,7 +34,7 @@ function run(argv) {
   var apps = $.NSRunningApplication.runningApplicationsWithBundleIdentifier("com.superlogical.rex");
   if (Number(apps.count) !== 1) throw new Error("Expected one running Rex application");
   var pid = Number(apps.objectAtIndex(0).processIdentifier);
-  var windowId = argv.length ? Number(argv[0]) : undefined;
+  var windowId = argv.length && argv[0] !== "" ? Number(argv[0]) : undefined;
   if (windowId !== undefined && (!Number.isInteger(windowId) || windowId <= 0)) {
     throw new Error("native_window must be a positive window ID");
   }
@@ -59,29 +59,32 @@ function run(argv) {
     throw new Error("Bring the selected native Rex window to the front before running font_fit");
   }
 
-  var screens = $.NSScreen.screens;
-  var primaryHeight = Number(screens.objectAtIndex(0).frame.size.height);
-  var displays = [];
-  for (var i = 0; i < Number(screens.count); i++) {
-    var screen = screens.objectAtIndex(i);
-    var frame = screen.frame;
-    displays.push({
-      display_id: Number(ObjC.unwrap(screen.deviceDescription.objectForKey("NSScreenNumber"))),
-      name: ObjC.unwrap(screen.localizedName),
-      width_pt: Number(frame.size.width),
-      height_pt: Number(frame.size.height),
-      scale: Number(screen.backingScaleFactor),
-      // CoreGraphics window coordinates start at the primary screen's top left.
-      bounds: {
-        x: Number(frame.origin.x),
-        y: primaryHeight - Number(frame.origin.y) - Number(frame.size.height),
-        width: Number(frame.size.width),
-        height: Number(frame.size.height),
-      },
-    });
+  var display = {};
+  if (argv[1] !== "focus") {
+    var screens = $.NSScreen.screens;
+    var primaryHeight = Number(screens.objectAtIndex(0).frame.size.height);
+    var displays = [];
+    for (var i = 0; i < Number(screens.count); i++) {
+      var screen = screens.objectAtIndex(i);
+      var frame = screen.frame;
+      displays.push({
+        display_id: Number(ObjC.unwrap(screen.deviceDescription.objectForKey("NSScreenNumber"))),
+        name: ObjC.unwrap(screen.localizedName),
+        width_pt: Number(frame.size.width),
+        height_pt: Number(frame.size.height),
+        scale: Number(screen.backingScaleFactor),
+        // CoreGraphics window coordinates start at the primary screen's top left.
+        bounds: {
+          x: Number(frame.origin.x),
+          y: primaryHeight - Number(frame.origin.y) - Number(frame.size.height),
+          width: Number(frame.size.width),
+          height: Number(frame.size.height),
+        },
+      });
+    }
+    display = selectDisplay(displays, window);
+    delete display.bounds;
   }
-  var display = selectDisplay(displays, window);
-  delete display.bounds;
   display.window_id = window.id;
   display.front_window_id = windows[0].id;
   display.pid = pid;

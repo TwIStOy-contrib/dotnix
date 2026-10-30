@@ -39,7 +39,7 @@ in {
     fontFitOnFocus = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Fit visible Rex panes to the display when its native window gains focus, using Hammerspoon.";
+      description = "Remember the display's font size on native-window focus and fit the active Rex pane on selection changes, using Hammerspoon.";
     };
 
     fontFitHotkey = lib.mkOption {
