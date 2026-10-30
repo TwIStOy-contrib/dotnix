@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  pkgs-unstable,
   dotnix-constants,
   dotnix-utils,
   ...
@@ -11,28 +10,10 @@
   cfg = config.dotnix.apps.hammerspoon;
   inherit (dotnix-constants) user;
   homeDir = config.users.users."${user.name}".home;
-  inherit (pkgs-unstable) yabai;
 
   hammerspoon = pkgs.writeShellScriptBin "hs" ''
     #!${pkgs.bash}/bin/bash
     /opt/homebrew/bin/hs "$@"
-  '';
-
-  stackline-src = pkgs.fetchFromGitHub {
-    owner = "TwIStOy";
-    repo = "stackline";
-    rev = "master";
-    sha256 = "sha256-x7SIgKR6rwkoVVbaAvjFr1N7wTF3atni/d6xGLBBRN4=";
-  };
-
-  init-stackline = ''
-    local stackline = require "stackline"
-    stackline:init({
-      paths = {
-        yabai = "${yabai}/bin/yabai",
-      }
-    })
-    stackline.config:set('appearance.size', 40)
   '';
 
   init-ipc-aarch = ''
@@ -73,26 +54,15 @@ in {
           hammerspoon
         ];
 
-        # TODO(hawtian): link stackline and init-stackline
         file = {
           "${homeDir}/.hammerspoon/init.lua" = {
             text =
               (
                 if (pkgs.stdenv.isAarch32 || pkgs.stdenv.isAarch64)
-                then ''
-                  ${init-ipc-aarch}
-                  ${init-stackline}
-                ''
-                else ''
-                  ${init-ipc-x86}
-                  ${init-stackline}
-                ''
+                then init-ipc-aarch
+                else init-ipc-x86
               )
               + cfg.extraConfig;
-            force = true;
-          };
-          "${homeDir}/.hammerspoon/stackline" = {
-            source = stackline-src;
             force = true;
           };
         };

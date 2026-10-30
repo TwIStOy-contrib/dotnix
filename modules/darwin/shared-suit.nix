@@ -16,7 +16,6 @@ in {
       shared-suit = enabled;
       suits.desktop = enabled;
       apps = enableModules [
-        "aerospace"
         "espanso"
         "hammerspoon"
         "karabiner"
