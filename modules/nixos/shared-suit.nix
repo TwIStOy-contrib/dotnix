@@ -16,6 +16,7 @@ in {
       shared-suit = enabled;
       system-tools = enabled;
       nixos-shared = enabled;
+      apps.terminal-browser = enabled;
       services.mihomo = enabled;
     };
   };
