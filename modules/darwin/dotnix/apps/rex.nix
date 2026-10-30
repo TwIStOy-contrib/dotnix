@@ -1,6 +1,7 @@
 # Rex (https://superlogical.com/rex) GUI preferences, written to the
-# com.superlogical.rex UserDefaults domain, plus the init.lua for the
-# app's local bundled server (run-mode=bundled, socket in
+# com.superlogical.rex UserDefaults domain, GUI shortcut overrides in
+# Application Support, plus the init.lua for the app's local bundled
+# server (run-mode=bundled, socket in
 # ~/Library/Application Support/rex/server.sock).
 #
 # The app itself is installed manually (Rex Beta.app, no homebrew cask).
@@ -21,13 +22,14 @@
   terminal = config.dotnix.desktop.terminal;
   inherit (dotnix-constants) user;
   homeDir = config.users.users."${user.name}".home;
+  rexAppSupportDir = "Library/Application Support/com.superlogical.rex";
   # Same layout on darwin as on NixOS: absolute path for Rex-launched
   # commands, because the bundled server's PATH may lack the HM profile.
   hmProfileBin = "/etc/profiles/per-user/${user.name}/bin";
   hmConfigDir = "${homeDir}/.config";
   # The app-bundled CLI (Versions/Current is an app-maintained symlink);
   # darwin has no HM-profile rex.
-  rexBin = "${homeDir}/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex";
+  rexBin = "${homeDir}/${rexAppSupportDir}/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex";
   rexServer = "unix://${homeDir}/Library/Application%20Support/rex/server.sock";
 in {
   options.dotnix.apps.rex = {
@@ -120,6 +122,31 @@ in {
     # same actions and bindings. Apply after activation with
     # `rex config check && rex config reload`.
     home-manager = dotnix-utils.hm.hmConfig {
+      home.file."${rexAppSupportDir}/Shortcuts/shortcuts.json" = {
+        # Replace the GUI-written file when first adopting it into Nix.
+        force = true;
+        text = builtins.toJSON {
+          version = 1;
+          migrations = ["bracket-characters"];
+          layer = {
+            name = "settings";
+            bindings = [
+              {
+                action = "client.tab.new";
+                keys = ["cmd+n"];
+                source = "settings";
+              }
+            ];
+            removals = [
+              {
+                action = "client.window.new";
+                keys = ["cmd+n"];
+              }
+            ];
+          };
+        };
+      };
+
       xdg.configFile."rex/init.lua" = {
         text =
           lib.replaceStrings
