@@ -5,6 +5,14 @@
   lib,
   ...
 }: let
+  mapleMono = pkgs-unstable.maple-mono.NF-CN-unhinted.overrideAttrs (finalAttrs: _: {
+    version = "8.0-beta.3";
+    src = pkgs-unstable.fetchurl {
+      url = "https://github.com/subframe7536/maple-font/releases/download/v${finalAttrs.version}/${finalAttrs.pname}.zip";
+      hash = "sha256-ZvaxraUJE+ipzoE06RqwvNPYTgd+MCF0c1hFKvhDpBc=";
+    };
+  });
+
   monolisa = pkgs.stdenv.mkDerivation {
     pname = "monolisa";
     version = "2.015";
@@ -62,7 +70,7 @@ in {
       akzidenz-grotesk
       readex-pro
 
-      pkgs-unstable.maple-mono.NF-CN-unhinted
+      mapleMono
       pkgs-unstable.monaspace
       pkgs-unstable.lxgw-wenkai-screen
     ]
