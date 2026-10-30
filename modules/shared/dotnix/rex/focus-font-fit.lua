@@ -77,7 +77,7 @@ function M.start(options)
     hotkey = hs.hotkey.new(options.hotkey.modifiers, options.hotkey.key, function() fit(true) end)
   end
   filter = hs.window.filter.new(function(window)
-    local app = window:application()
+    local app = window and window:application()
     return app ~= nil and app:bundleID() == "com.superlogical.rex"
   end)
   filter:subscribe(hs.window.filter.windowFocused, on_focus)
