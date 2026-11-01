@@ -9,7 +9,6 @@
       if (!isDarwin)
       then [
         ./fava.nix
-        ./moshi.nix
       ]
       else []
     );

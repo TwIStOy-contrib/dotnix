@@ -32,7 +32,6 @@ in {
         "herdr"
         "htw"
         "hunk"
-        "moshi-hook"
         "opencode"
         "pi"
         "todoist"
