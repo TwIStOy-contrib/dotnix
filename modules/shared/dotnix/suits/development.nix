@@ -2,7 +2,6 @@
   config,
   lib,
   dotnix-utils,
-  dotnix-pkgs,
   inputs,
   pkgs,
   pkgs-unstable,
@@ -66,12 +65,10 @@ in {
         ])
         ++ (with pkgs-unstable; [
           net-tools
+          # ships 7.0.0 with the C++20 patches (nixpkgs PR #569401),
+          # which made the old master pin unnecessary
+          eternal-terminal
         ])
-        ++ [
-          # pinned master build; see lib/pkgs/et.nix for why not
-          # pkgs-unstable.eternal-terminal
-          dotnix-pkgs.eternal-terminal-master
-        ]
         ++ (with inputs.dotvim.packages.${pkgs.stdenv.hostPlatform.system}; [
           default
         ]);
