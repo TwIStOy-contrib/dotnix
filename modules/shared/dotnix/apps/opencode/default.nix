@@ -101,12 +101,6 @@ in {
         force = true;
       };
 
-      xdg.configFile."opencode/plugins" = {
-        source = ./plugins;
-        recursive = true;
-        force = true;
-      };
-
       xdg.configFile."dotcode/config.toml" = {
         text = ''
           [database]
