@@ -8,6 +8,7 @@ in {
     backend = "docker";
     containers.magpie = {
       image = "ghcr.io/yetone/magpie:latest";
+      pull = "always";
       ports = [
         "${tailscaleIp}:3425:3425"
         "${tailscaleIp}:3430:3430"
