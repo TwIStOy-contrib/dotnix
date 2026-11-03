@@ -40,7 +40,7 @@ jobs:
                 core.info(`PR #${pr.number} is not from TwIStOy-bot, skipping`);
                 continue;
               }
-              if (pr.title.trim() !== 'Update Nix flake inputs') {
+              if (pr.title.trim() !== 'Update Nix flake inputs' && pr.title.trim() !== 'Update Nix flake: llm-agents') {
                 core.info(`PR #${pr.number} title "${pr.title}" does not match, skipping`);
                 continue;
               }

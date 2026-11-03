@@ -1,0 +1,40 @@
+name: "Flake.lock: update Nix dependencies"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  nix-flake-update:
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31
+        with:
+          install_url: https://nixos.org/nix/install
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+            experimental-features = nix-command flakes
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Update flake.lock
+        uses: DeterminateSystems/update-flake-lock@main
+        id: update
+        with:
+          token: ${{ secrets.BOT_TOKEN_FOR_UPDATES }}
+          input: llm-agents
+          pr-title: "Update Nix flake: llm-agents"
+          pr-labels: |
+            dependencies
+            github_actions
+      - name: Print PR number
+        run: echo Pull request number is ${{ steps.update.outputs.pull-request-number }}.
+
