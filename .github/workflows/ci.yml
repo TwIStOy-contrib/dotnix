@@ -33,7 +33,10 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
             experimental-features = nix-command flakes
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+            # Auto-GC during builds: full-system builds on fresh channel revs
+            # can otherwise fill the runner disk and fail with ENOSPC.
+            min-free = 5368709120
+            max-free = 16106127360
       - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.10.0
         with:
@@ -69,7 +72,10 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
             experimental-features = nix-command flakes
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+            # Auto-GC during builds: full-system builds on fresh channel revs
+            # can otherwise fill the runner disk and fail with ENOSPC.
+            min-free = 5368709120
+            max-free = 16106127360
       - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.10.0
         with:
@@ -81,14 +87,16 @@ jobs:
         if: runner.os == 'Linux'
         uses: jlumbroso/free-disk-space@main
         with:
-          tool-cache: false
+          tool-cache: true
           android: true
           dotnet: true
           haskell: true
           large-packages: true
           docker-images: true
           swap-storage: false
-      - run: just ci-${{ matrix.host_name }}
+      # Retry once: fresh channel revs occasionally require source builds whose
+      # check phases are flaky or runners run out of disk mid-build.
+      - run: just ci-${{ matrix.host_name }} || just ci-${{ matrix.host_name }}
       - name: Push to Cachix
         uses: cachix/cachix-action@v17
         with:
