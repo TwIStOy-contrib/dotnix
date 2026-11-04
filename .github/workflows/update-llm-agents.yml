@@ -30,7 +30,8 @@ jobs:
         id: update
         with:
           token: ${{ secrets.BOT_TOKEN_FOR_UPDATES }}
-          input: llm-agents
+          inputs: llm-agents
+          branch: update-llm-agents
           pr-title: "Update Nix flake: llm-agents"
           pr-labels: |
             dependencies
