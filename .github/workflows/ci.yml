@@ -80,20 +80,22 @@ jobs:
         uses: webfactory/ssh-agent@v0.10.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - uses: extractions/setup-just@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Linux-specific command
         if: runner.os == 'Linux'
         uses: jlumbroso/free-disk-space@main
         with:
-          tool-cache: true
+          # Must run before setup-just: this step wipes the runner tool cache
+          # where setup-just installs the just binary.
+          preinstalled-runtimes: true
           android: true
           dotnet: true
           haskell: true
           large-packages: true
           docker-images: true
           swap-storage: false
+      - uses: extractions/setup-just@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Retry once: fresh channel revs occasionally require source builds whose
       # check phases are flaky or runners run out of disk mid-build.
       - run: just ci-${{ matrix.host_name }} || just ci-${{ matrix.host_name }}
