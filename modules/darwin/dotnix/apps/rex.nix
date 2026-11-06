@@ -29,6 +29,7 @@
   # bin dir is an absolute path for Rex-launched commands, because the bundled
   # server's PATH may lack the HM profile.
   rexPaths = config.dotnix.rex.substitutions;
+  rexFiles = config.dotnix.rex.files;
   # The app-bundled CLI (Versions/Current is an app-maintained symlink);
   # darwin has no HM-profile rex.
   rexBin = "${homeDir}/${rexAppSupportDir}/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex";
@@ -200,12 +201,13 @@ in {
       };
 
       xdg.configFile."rex/init.lua" = {
-        text = config.dotnix.rex.initLua;
+        text = rexFiles."init.lua";
         force = true;
       };
-      xdg.configFile."rex/font-fit.lua".text = config.dotnix.rex.scripts."font-fit.lua";
-      xdg.configFile."rex/display-info.js".text = config.dotnix.rex.scripts."display-info.js";
-      xdg.configFile."rex/focus-font-fit.lua".text = config.dotnix.rex.scripts."focus-font-fit.lua";
+      xdg.configFile."rex/actions/init.lua".text = rexFiles."actions/init.lua";
+      xdg.configFile."rex/font-fit.lua".text = rexFiles."font-fit.lua";
+      xdg.configFile."rex/display-info.js".text = rexFiles."display-info.js";
+      xdg.configFile."rex/focus-font-fit.lua".text = rexFiles."focus-font-fit.lua";
     };
   };
 }

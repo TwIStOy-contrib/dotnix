@@ -3,8 +3,10 @@
 These Lua/JS assets are shared by both Rex deployments: taihou's system server
 (`modules/nixos/dotnix/services/rex.nix`) and the macOS app's local bundled
 server (`modules/darwin/dotnix/apps/rex.nix`). `default.nix` in this directory
-renders `init.lua` and exposes the helper scripts, so only the platform paths
-differ; installing the results stays in the platform modules. `display-info.js`
+renders the Lua and exposes every file keyed by its path under `~/.config/rex/`,
+so only the platform paths differ; installing the results stays in the platform
+modules. `init.lua` holds just the keybindings and pulls the actions in with
+`require("actions")`, which resolves to `actions/init.lua`. `display-info.js`
 and `focus-font-fit.lua` are macOS-only, since font fitting needs that Mac's
 display geometry and Hammerspoon.
 

@@ -3,7 +3,10 @@
 # socket needs these files: taihou's system service and the macOS app's local
 # bundled server. The Lua and its helpers are identical on both platforms;
 # only the substituted paths differ, so the fill-in happens once here and the
-# platform modules install the results.
+# platform modules install the results. The values are also what the same
+# files use when they run on a machine this repo does not manage (a copied
+# config): there they are a first candidate and the Lua resolves the local
+# equivalents itself.
 #
 # display-info.js and focus-font-fit.lua are macOS-only: font fitting needs
 # the Mac's display geometry and a Hammerspoon controller. Linux installs
@@ -58,27 +61,23 @@ in {
       };
     };
 
-    initLua = mkOption {
-      type = types.lines;
-      readOnly = true;
-      internal = true;
-      default = substitute (builtins.readFile ./init.lua);
-      description = "Rendered init.lua for the Rex server.";
-    };
-
-    scripts = mkOption {
+    files = mkOption {
       type = types.attrsOf types.lines;
       readOnly = true;
       internal = true;
       default =
         builtins.mapAttrs
-        (_: path: builtins.readFile path)
+        (_: path: substitute (builtins.readFile path))
         {
+          # Everything installed under ~/.config/rex/; the two Lua files carry
+          # the substitutions, the helpers are copied as they are.
+          "init.lua" = ./init.lua;
+          "actions/init.lua" = ./actions/init.lua;
           "font-fit.lua" = ./font-fit.lua;
           "display-info.js" = ./display-info.js;
           "focus-font-fit.lua" = ./focus-font-fit.lua;
         };
-      description = "Helper scripts installed next to init.lua, keyed by file name.";
+      description = "Rendered Rex config files, keyed by path under ~/.config/rex/.";
     };
   };
 }

@@ -69,12 +69,16 @@ in {
       # modules/shared/dotnix/apps/rex by both this server and the macOS
       # local one. Apply changes with `rex config reload` on this host — it
       # is refused over remote connections.
-      programs.rex.config = config.dotnix.rex.initLua;
+      programs.rex.config = config.dotnix.rex.files."init.lua";
+
+      # init.lua requires this one, and it has to sit beside the rendered
+      # init.lua the vendor module installs.
+      xdg.configFile."rex/actions/init.lua".text = config.dotnix.rex.files."actions/init.lua";
 
       # Remote actions require display metadata supplied by the target Mac.
       # The Mac's rex-font-fit command can also run this script locally
       # against this server, without installing a display helper on Linux.
-      xdg.configFile."rex/font-fit.lua".text = config.dotnix.rex.scripts."font-fit.lua";
+      xdg.configFile."rex/font-fit.lua".text = config.dotnix.rex.files."font-fit.lua";
       # HM fish rewrites PATH on startup, which can push the server's own rex
       # binary behind the system one inside Rex terminals (Rex docs, "PATH").
       programs.fish.interactiveShellInit = ''
