@@ -6,9 +6,9 @@ server (`modules/darwin/dotnix/apps/rex`). Runtime files live together in
 `config/`. `default.nix` exposes every file keyed by its path under
 `~/.config/rex/`; the files contain no host-specific paths. `init.lua` holds
 just the keybindings and pulls the actions in with `require("actions")`, which
-resolves to `actions/init.lua`. `display-info.js` and `focus-font-fit.lua` are
-macOS-only, since font fitting needs that Mac's display geometry and
-Hammerspoon.
+resolves to `actions/init.lua`. That file imports each action from its own Lua
+file. `display-info.js` and `focus-font-fit.lua` are macOS-only, since font
+fitting needs that Mac's display geometry and Hammerspoon.
 
 On a machine not managed by dotnix, install the same files from a configured
 Mac and reload the server there:

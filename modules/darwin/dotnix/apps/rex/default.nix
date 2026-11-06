@@ -201,6 +201,8 @@ in {
         force = true;
       };
       xdg.configFile."rex/actions/init.lua".text = rexFiles."actions/init.lua";
+      xdg.configFile."rex/actions/pi_split.lua".text = rexFiles."actions/pi_split.lua";
+      xdg.configFile."rex/actions/swap_next_pane.lua".text = rexFiles."actions/swap_next_pane.lua";
       xdg.configFile."rex/font-fit.lua".text = rexFiles."font-fit.lua";
       xdg.configFile."rex/display-info.js".text = rexFiles."display-info.js";
       xdg.configFile."rex/focus-font-fit.lua".text = rexFiles."focus-font-fit.lua";

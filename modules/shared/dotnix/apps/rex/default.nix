@@ -19,6 +19,8 @@
         # Sources under config/ are installed under ~/.config/rex/.
         "init.lua" = ./config/init.lua;
         "actions/init.lua" = ./config/actions/init.lua;
+        "actions/pi_split.lua" = ./config/actions/pi_split.lua;
+        "actions/swap_next_pane.lua" = ./config/actions/swap_next_pane.lua;
         "font-fit.lua" = ./config/font-fit.lua;
         "display-info.js" = ./config/display-info.js;
         "focus-font-fit.lua" = ./config/focus-font-fit.lua;

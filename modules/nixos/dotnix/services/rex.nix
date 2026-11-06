@@ -66,9 +66,11 @@ in {
       # connections.
       programs.rex.config = config.dotnix.rex.files."init.lua";
 
-      # init.lua requires this one, and it has to sit beside the init.lua the
-      # vendor module installs.
+      # init.lua requires these files, and they have to sit beside the
+      # init.lua the vendor module installs.
       xdg.configFile."rex/actions/init.lua".text = config.dotnix.rex.files."actions/init.lua";
+      xdg.configFile."rex/actions/pi_split.lua".text = config.dotnix.rex.files."actions/pi_split.lua";
+      xdg.configFile."rex/actions/swap_next_pane.lua".text = config.dotnix.rex.files."actions/swap_next_pane.lua";
 
       # Remote actions require display metadata supplied by the target Mac.
       # The Mac's rex-font-fit command can also run this script locally

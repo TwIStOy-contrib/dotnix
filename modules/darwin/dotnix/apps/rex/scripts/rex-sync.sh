@@ -10,6 +10,8 @@ config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/rex"
 files=(
   init.lua
   actions/init.lua
+  actions/pi_split.lua
+  actions/swap_next_pane.lua
   font-fit.lua
   display-info.js
   focus-font-fit.lua
