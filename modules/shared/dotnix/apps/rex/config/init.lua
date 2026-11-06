@@ -7,5 +7,6 @@
 
 require("actions")
 
-rex.bind("ctrl+x>ctrl+x", "pane.send_key", { key = "ctrl+x" })
-rex.bind("ctrl+x>ctrl+p", "pi_split")
+-- Use cmd+r as a prefix for rex commands
+
+rex.bind("cmd+r>cmd+p", "pi_split")
