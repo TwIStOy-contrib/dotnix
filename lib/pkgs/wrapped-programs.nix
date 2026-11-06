@@ -32,17 +32,17 @@
     '';
 
   llmApiKeys = {
-    ZAI_API_KEY = "$(cat /run/agenix/z-ai-api-key)";
-    DEEPSEEK_API_KEY = "$(cat /run/agenix/deepseek-api-key)";
-    OPENROUTER_API_KEY = "$(cat /run/agenix/openrouter-api-key)";
-    INFERENCE_TWISTOY_API_KEY = "$(cat /run/agenix/inference-twistoy-api-key)";
-    INFERENCE_V2_TWISTOY_API_KEY = "$(cat /run/agenix/inference-v2-twistoy-api-key)";
-    EXA_API_KEY = "$(cat /run/agenix/exa-api-token)";
-    BRAVE_API_KEY = "$(cat /run/agenix/brave-api-token)";
-    TAVILY_API_KEY = "$(cat /run/agenix/tavily-api-token)";
-    FIRECRAWL_API_KEY = "$(cat /run/agenix/firecrawl-api-token)";
-    KIMI_CODE_API_KEY = "$(cat /run/agenix/kimi-code-api-key)";
-    TYPESAFE_API_KEY = "$(cat /run/agenix/typesafe-api-key)";
+    ZAI_API_KEY = "$(</run/agenix/z-ai-api-key)";
+    DEEPSEEK_API_KEY = "$(</run/agenix/deepseek-api-key)";
+    OPENROUTER_API_KEY = "$(</run/agenix/openrouter-api-key)";
+    INFERENCE_TWISTOY_API_KEY = "$(</run/agenix/inference-twistoy-api-key)";
+    INFERENCE_V2_TWISTOY_API_KEY = "$(</run/agenix/inference-v2-twistoy-api-key)";
+    EXA_API_KEY = "$(</run/agenix/exa-api-token)";
+    BRAVE_API_KEY = "$(</run/agenix/brave-api-token)";
+    TAVILY_API_KEY = "$(</run/agenix/tavily-api-token)";
+    FIRECRAWL_API_KEY = "$(</run/agenix/firecrawl-api-token)";
+    KIMI_CODE_API_KEY = "$(</run/agenix/kimi-code-api-key)";
+    TYPESAFE_API_KEY = "$(</run/agenix/typesafe-api-key)";
   };
 in {
   inherit mkWrappedProgram llmApiKeys;
