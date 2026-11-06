@@ -24,11 +24,10 @@
   inherit (dotnix-constants) user;
   homeDir = config.users.users."${user.name}".home;
   rexAppSupportDir = "Library/Application Support/com.superlogical.rex";
-  # Rendered asset paths and install dir, shared with the NixOS server module
-  # so init.lua is substituted the same way on both platforms. The HM profile
-  # bin dir is an absolute path for Rex-launched commands, because the bundled
-  # server's PATH may lack the HM profile.
-  rexPaths = config.dotnix.rex.substitutions;
+  # Absolute paths for Rex-launched commands, because the bundled server's
+  # PATH may lack the HM profile.
+  hmProfileBin = "/etc/profiles/per-user/${user.name}/bin";
+  hmConfigDir = "${homeDir}/.config";
   rexFiles = config.dotnix.rex.files;
   # The app-bundled CLI (Versions/Current is an app-maintained symlink);
   # darwin has no HM-profile rex.
@@ -117,10 +116,10 @@ in {
     dotnix.apps.hammerspoon = lib.mkIf (cfg.fontFitOnFocus || cfg.fontFitHotkey != null) {
       enable = true;
       extraConfig = ''
-        rexFontFit = dofile(${builtins.toJSON "${rexPaths.hmConfigDir}/rex/focus-font-fit.lua"}).start({
+        rexFontFit = dofile(${builtins.toJSON "${hmConfigDir}/rex/focus-font-fit.lua"}).start({
           rex = ${builtins.toJSON rexBin},
           server = ${builtins.toJSON rexServer},
-          script = ${builtins.toJSON "${rexPaths.hmConfigDir}/rex/font-fit.lua"},
+          script = ${builtins.toJSON "${hmConfigDir}/rex/font-fit.lua"},
           onFocus = ${lib.boolToString cfg.fontFitOnFocus},
           hotkey = ${
           if cfg.fontFitHotkey == null
@@ -133,8 +132,9 @@ in {
 
     dotnix.hm.packages = [
       (pkgs.writeShellScriptBin "rex-font-fit" ''
-        exec ${lib.escapeShellArg rexBin} do ${lib.escapeShellArg "${rexPaths.hmConfigDir}/rex/font-fit.lua"} "$@"
+        exec ${lib.escapeShellArg rexBin} do ${lib.escapeShellArg "${hmConfigDir}/rex/font-fit.lua"} "$@"
       '')
+      (pkgs.writeShellScriptBin "rex-sync" (builtins.readFile ./scripts/rex-sync.sh))
     ];
 
     # Font family/size follow dotnix.desktop.terminal so Rex stays in sync
@@ -156,7 +156,7 @@ in {
         "Workspace.terminalUsesDisplayP3" = true;
         "Workspace.terminalSmoothScrolling" = true;
         "Workspace.terminalFallbackFontNames" = ["icomoon"];
-        "Workspace.terminalStartupCommand" = "${rexPaths.hmProfileBin}/fish";
+        "Workspace.terminalStartupCommand" = "${hmProfileBin}/fish";
         "Workspace.inactivePaneFadeMode" = "both";
         "Workspace.usesStandardInactiveWindowPaneStyles" = true;
         "Workspace.tabIconTintMode" = "off";
@@ -170,10 +170,6 @@ in {
     # shared files as taihou's system server, so local sessions get the
     # same actions and bindings. Apply after activation with
     # `rex config check && rex config reload`.
-    dotnix.rex.substitutions = {
-      inherit rexBin rexServer;
-    };
-
     home-manager = dotnix-utils.hm.hmConfig {
       home.file."${rexAppSupportDir}/Shortcuts/shortcuts.json" = {
         # Replace the GUI-written file when first adopting it into Nix.

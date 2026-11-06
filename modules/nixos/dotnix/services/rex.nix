@@ -51,11 +51,6 @@ in {
     # server and ignore this variable.)
     environment.sessionVariables.REX_SERVER = serverUrl;
 
-    # The shared rex assets render init.lua against this socket. The HM
-    # profile paths (absolute, because the server's PATH carries only the
-    # systemd defaults) come from their shared defaults.
-    dotnix.rex.substitutions.rexServer = serverUrl;
-
     # User-side setup from the same flake: installs the rex command for the
     # user, writes the xterm-rex terminfo entry to ~/.terminfo, and adds the
     # ssh guard that stops TERM=xterm-rex from leaking to hosts without it
@@ -65,14 +60,14 @@ in {
       programs.rex.enable = true;
       # init.lua is read by the Rex server only; it pushes the merged keymap
       # and actions to connected clients (palette + any future rex.bind on
-      # the Mac app). Rendered from the shared assets in
-      # modules/shared/dotnix/apps/rex by both this server and the macOS
-      # local one. Apply changes with `rex config reload` on this host — it
-      # is refused over remote connections.
+      # the Mac app). Shared with the macOS local server through
+      # modules/shared/dotnix/apps/rex. Apply changes with
+      # `rex config reload` on this host — it is refused over remote
+      # connections.
       programs.rex.config = config.dotnix.rex.files."init.lua";
 
-      # init.lua requires this one, and it has to sit beside the rendered
-      # init.lua the vendor module installs.
+      # init.lua requires this one, and it has to sit beside the init.lua the
+      # vendor module installs.
       xdg.configFile."rex/actions/init.lua".text = config.dotnix.rex.files."actions/init.lua";
 
       # Remote actions require display metadata supplied by the target Mac.

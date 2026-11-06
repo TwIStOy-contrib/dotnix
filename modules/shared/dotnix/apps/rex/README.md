@@ -2,13 +2,23 @@
 
 These Lua/JS assets are shared by both Rex deployments: taihou's system server
 (`modules/nixos/dotnix/services/rex.nix`) and the macOS app's local bundled
-server (`modules/darwin/dotnix/apps/rex.nix`). `default.nix` in this directory
-renders the Lua and exposes every file keyed by its path under `~/.config/rex/`,
-so only the platform paths differ; installing the results stays in the platform
-modules. `init.lua` holds just the keybindings and pulls the actions in with
-`require("actions")`, which resolves to `actions/init.lua`. `display-info.js`
-and `focus-font-fit.lua` are macOS-only, since font fitting needs that Mac's
-display geometry and Hammerspoon.
+server (`modules/darwin/dotnix/apps/rex`). Runtime files live together in
+`config/`. `default.nix` exposes every file keyed by its path under
+`~/.config/rex/`; the files contain no host-specific paths. `init.lua` holds
+just the keybindings and pulls the actions in with `require("actions")`, which
+resolves to `actions/init.lua`. `display-info.js` and `focus-font-fit.lua` are
+macOS-only, since font fitting needs that Mac's display geometry and
+Hammerspoon.
+
+On a machine not managed by dotnix, install the same files from a configured
+Mac and reload the server there:
+
+```sh
+rex-sync dev.work.local
+```
+
+The command uploads the config and helper scripts, runs `rex config check`,
+and reloads the system server when `/run/rex/server.sock` exists.
 
 Run on the Mac hosting the Rex app. Font size follows the display's full logical
 width, independently of splits and app-window size. All terminal panes in the
