@@ -84,6 +84,17 @@ in {
       '';
     };
 
+    nvimImSwitch = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Switch the macOS input method with the focused Rex nvim pane's mode:
+        capture the input method when leaving insert and force the ASCII
+        layout, restore it when entering insert again. Input methods are
+        discovered at runtime; nothing is hardcoded per machine.
+      '';
+    };
+
     extra-settings = lib.mkOption {
       type = lib.types.attrsOf lib.types.anything;
       default = {};
@@ -96,17 +107,29 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    dotnix.apps.hammerspoon = lib.mkIf cfg.fontFitOnFocus {
-      enable = true;
-      extraConfig = ''
-        rexFontFit = dofile(${builtins.toJSON "${hmConfigDir}/rex/focus-font-fit.lua"}).start({
-          rex = ${builtins.toJSON rexBin},
-          server = ${builtins.toJSON rexServer},
-          script = ${builtins.toJSON "${hmConfigDir}/rex/font-fit.lua"},
-          onFocus = ${lib.boolToString cfg.fontFitOnFocus},
-        })
-      '';
-    };
+    dotnix.apps.hammerspoon = lib.mkMerge [
+      (lib.mkIf cfg.fontFitOnFocus {
+        enable = true;
+        extraConfig = ''
+          rexFontFit = dofile(${builtins.toJSON "${hmConfigDir}/rex/focus-font-fit.lua"}).start({
+            rex = ${builtins.toJSON rexBin},
+            server = ${builtins.toJSON rexServer},
+            script = ${builtins.toJSON "${hmConfigDir}/rex/font-fit.lua"},
+            onFocus = ${lib.boolToString cfg.fontFitOnFocus},
+          })
+        '';
+      })
+      # The input-method switcher loads its module and starts rexNvimSup, the
+      # hs.task supervisor that keeps `rex do nvim-mode-listen.lua --all`
+      # running (restarting it on exit while the Rex app is up).
+      (lib.mkIf cfg.nvimImSwitch {
+        enable = true;
+        extraConfig = ''
+          dofile(${builtins.toJSON "${hmConfigDir}/rex/rex-nvim-im.lua"})
+          rexNvimSup.start()
+        '';
+      })
+    ];
 
     dotnix.hm.packages = [
       (pkgs.writeShellScriptBin "rex-font-fit" ''
@@ -184,6 +207,16 @@ in {
       xdg.configFile."rex/font-fit.lua".text = rexFiles."font-fit.lua";
       xdg.configFile."rex/display-info.js".text = rexFiles."display-info.js";
       xdg.configFile."rex/focus-font-fit.lua".text = rexFiles."focus-font-fit.lua";
+      # First adoption replaces the hand-run scripts from before the
+      # pipeline was managed by dotnix.
+      xdg.configFile."rex/nvim-mode-listen.lua" = {
+        text = rexFiles."nvim-mode-listen.lua";
+        force = true;
+      };
+      xdg.configFile."rex/rex-nvim-im.lua" = {
+        text = rexFiles."rex-nvim-im.lua";
+        force = true;
+      };
     };
   };
 }

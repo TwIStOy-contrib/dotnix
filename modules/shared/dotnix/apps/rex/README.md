@@ -61,3 +61,22 @@ Automatic fitting never moves pane focus. Explicit runs without `current=true`
 activate Rex and select the requested session. A remote server action needs `display` metadata from a
 local dry run, passed via `--args`, including the target `client_id`, `width_pt`,
 `height_pt`, and `default_font_pt`.
+
+# nvim mode → input-method switching
+
+`nvim-mode-listen.lua` and `rex-nvim-im.lua` are the macOS client side of a
+pipeline that switches the macOS input method with the focused Rex nvim
+pane's mode. Neovim (dotvim's `config/rex.nix`) publishes its mode as an
+OSC 7501 `nvim/mode` program-status record; the listener (`rex do
+nvim-mode-listen.lua --all`) mirrors per-block modes and focus into the
+`rexNvim` global in Hammerspoon and calls the `rexNvimOn*` hooks;
+`rex-nvim-im.lua` implements the switch: leaving insert captures the active
+input method and forces the machine's ASCII layout (discovered from the
+enabled keyboard layouts), entering insert restores it unless the source was
+changed manually in between.
+
+The listener runs as an `hs.task` supervised by `rexNvimSup` (restarted on
+exit while the Rex app is up), so no launchd agent is involved; the
+dotnix-generated hammerspoon init.lua dofiles `rex-nvim-im.lua` and starts
+the supervisor. Disable with `dotnix.apps.rex.nvimImSwitch = false`. These
+two files are macOS-only and are not part of `rex-sync`.
