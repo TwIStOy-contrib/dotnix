@@ -8,11 +8,7 @@
 }: let
   inherit (dotnix-constants) user;
   cfg = config.dotnix.services.rex;
-  # Absolute path for Rex-launched commands: the rex server's PATH carries
-  # only the systemd defaults, so anything from the HM profile (fish, pi,
-  # git, ...) must be reached through a login shell started by path.
-  hmProfileBin = "/etc/profiles/per-user/${user.name}/bin";
-  hmConfigDir = "/home/${user.name}/.config";
+  serverUrl = "unix:///run/rex/server.sock";
 in {
   imports = [inputs.rex.nixosModules.default];
 
@@ -53,7 +49,12 @@ in {
     # the CLI auto-spawns a personal server with its own sessions. (The
     # `rex server status/stop` subcommands always manage the personal
     # server and ignore this variable.)
-    environment.sessionVariables.REX_SERVER = "unix:///run/rex/server.sock";
+    environment.sessionVariables.REX_SERVER = serverUrl;
+
+    # The shared rex assets render init.lua against this socket. The HM
+    # profile paths (absolute, because the server's PATH carries only the
+    # systemd defaults) come from their shared defaults.
+    dotnix.rex.substitutions.rexServer = serverUrl;
 
     # User-side setup from the same flake: installs the rex command for the
     # user, writes the xterm-rex terminfo entry to ~/.terminfo, and adds the
@@ -64,21 +65,16 @@ in {
       programs.rex.enable = true;
       # init.lua is read by the Rex server only; it pushes the merged keymap
       # and actions to connected clients (palette + any future rex.bind on
-      # the Mac app). Shared with the macOS local server via
-      # modules/shared/dotnix/rex/init.lua. Apply changes with
-      # `rex config reload` on this host — it is refused over remote
-      # connections.
-      programs.rex.config =
-        lib.replaceStrings
-        ["@hmProfileBin@" "@rexBin@" "@hmConfigDir@" "@rexServer@"]
-        [hmProfileBin "${hmProfileBin}/rex" hmConfigDir "unix:///run/rex/server.sock"]
-        (builtins.readFile ../../../shared/dotnix/rex/init.lua);
+      # the Mac app). Rendered from the shared assets in
+      # modules/shared/dotnix/apps/rex by both this server and the macOS
+      # local one. Apply changes with `rex config reload` on this host — it
+      # is refused over remote connections.
+      programs.rex.config = config.dotnix.rex.initLua;
 
       # Remote actions require display metadata supplied by the target Mac.
       # The Mac's rex-font-fit command can also run this script locally
       # against this server, without installing a display helper on Linux.
-      xdg.configFile."rex/font-fit.lua".text =
-        builtins.readFile ../../../shared/dotnix/rex/font-fit.lua;
+      xdg.configFile."rex/font-fit.lua".text = config.dotnix.rex.scripts."font-fit.lua";
       # HM fish rewrites PATH on startup, which can push the server's own rex
       # binary behind the system one inside Rex terminals (Rex docs, "PATH").
       programs.fish.interactiveShellInit = ''

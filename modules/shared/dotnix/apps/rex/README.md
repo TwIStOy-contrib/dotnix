@@ -1,5 +1,13 @@
 # Display-based font fitting
 
+These Lua/JS assets are shared by both Rex deployments: taihou's system server
+(`modules/nixos/dotnix/services/rex.nix`) and the macOS app's local bundled
+server (`modules/darwin/dotnix/apps/rex.nix`). `default.nix` in this directory
+renders `init.lua` and exposes the helper scripts, so only the platform paths
+differ; installing the results stays in the platform modules. `display-info.js`
+and `focus-font-fit.lua` are macOS-only, since font fitting needs that Mac's
+display geometry and Hammerspoon.
+
 Run on the Mac hosting the Rex app. Font size follows the display's full logical
 width, independently of splits and app-window size. All terminal panes in the
 active tab are adjusted, including floating layers; zoom limits this to one pane.

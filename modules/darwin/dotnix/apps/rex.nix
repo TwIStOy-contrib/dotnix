@@ -24,10 +24,11 @@
   inherit (dotnix-constants) user;
   homeDir = config.users.users."${user.name}".home;
   rexAppSupportDir = "Library/Application Support/com.superlogical.rex";
-  # Same layout on darwin as on NixOS: absolute path for Rex-launched
-  # commands, because the bundled server's PATH may lack the HM profile.
-  hmProfileBin = "/etc/profiles/per-user/${user.name}/bin";
-  hmConfigDir = "${homeDir}/.config";
+  # Rendered asset paths and install dir, shared with the NixOS server module
+  # so init.lua is substituted the same way on both platforms. The HM profile
+  # bin dir is an absolute path for Rex-launched commands, because the bundled
+  # server's PATH may lack the HM profile.
+  rexPaths = config.dotnix.rex.substitutions;
   # The app-bundled CLI (Versions/Current is an app-maintained symlink);
   # darwin has no HM-profile rex.
   rexBin = "${homeDir}/${rexAppSupportDir}/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex";
@@ -115,10 +116,10 @@ in {
     dotnix.apps.hammerspoon = lib.mkIf (cfg.fontFitOnFocus || cfg.fontFitHotkey != null) {
       enable = true;
       extraConfig = ''
-        rexFontFit = dofile(${builtins.toJSON "${hmConfigDir}/rex/focus-font-fit.lua"}).start({
+        rexFontFit = dofile(${builtins.toJSON "${rexPaths.hmConfigDir}/rex/focus-font-fit.lua"}).start({
           rex = ${builtins.toJSON rexBin},
           server = ${builtins.toJSON rexServer},
-          script = ${builtins.toJSON "${hmConfigDir}/rex/font-fit.lua"},
+          script = ${builtins.toJSON "${rexPaths.hmConfigDir}/rex/font-fit.lua"},
           onFocus = ${lib.boolToString cfg.fontFitOnFocus},
           hotkey = ${
           if cfg.fontFitHotkey == null
@@ -131,7 +132,7 @@ in {
 
     dotnix.hm.packages = [
       (pkgs.writeShellScriptBin "rex-font-fit" ''
-        exec ${lib.escapeShellArg rexBin} do ${lib.escapeShellArg "${hmConfigDir}/rex/font-fit.lua"} "$@"
+        exec ${lib.escapeShellArg rexBin} do ${lib.escapeShellArg "${rexPaths.hmConfigDir}/rex/font-fit.lua"} "$@"
       '')
     ];
 
@@ -154,7 +155,7 @@ in {
         "Workspace.terminalUsesDisplayP3" = true;
         "Workspace.terminalSmoothScrolling" = true;
         "Workspace.terminalFallbackFontNames" = ["icomoon"];
-        "Workspace.terminalStartupCommand" = "/etc/profiles/per-user/${dotnix-constants.user.name}/bin/fish";
+        "Workspace.terminalStartupCommand" = "${rexPaths.hmProfileBin}/fish";
         "Workspace.inactivePaneFadeMode" = "both";
         "Workspace.usesStandardInactiveWindowPaneStyles" = true;
         "Workspace.tabIconTintMode" = "off";
@@ -163,11 +164,15 @@ in {
       }
       // cfg.extra-settings;
 
-    # init.lua + font-fit.lua for the local bundled server (read from
+    # init.lua + helper scripts for the local bundled server (read from
     # ~/.config/rex/; the app sets REX_SERVER to the local socket). Same
     # shared files as taihou's system server, so local sessions get the
     # same actions and bindings. Apply after activation with
     # `rex config check && rex config reload`.
+    dotnix.rex.substitutions = {
+      inherit rexBin rexServer;
+    };
+
     home-manager = dotnix-utils.hm.hmConfig {
       home.file."${rexAppSupportDir}/Shortcuts/shortcuts.json" = {
         # Replace the GUI-written file when first adopting it into Nix.
@@ -195,19 +200,12 @@ in {
       };
 
       xdg.configFile."rex/init.lua" = {
-        text =
-          lib.replaceStrings
-          ["@hmProfileBin@" "@rexBin@" "@hmConfigDir@" "@rexServer@"]
-          [hmProfileBin rexBin hmConfigDir rexServer]
-          (builtins.readFile ../../../shared/dotnix/rex/init.lua);
+        text = config.dotnix.rex.initLua;
         force = true;
       };
-      xdg.configFile."rex/font-fit.lua".text =
-        builtins.readFile ../../../shared/dotnix/rex/font-fit.lua;
-      xdg.configFile."rex/display-info.js".text =
-        builtins.readFile ../../../shared/dotnix/rex/display-info.js;
-      xdg.configFile."rex/focus-font-fit.lua".text =
-        builtins.readFile ../../../shared/dotnix/rex/focus-font-fit.lua;
+      xdg.configFile."rex/font-fit.lua".text = config.dotnix.rex.scripts."font-fit.lua";
+      xdg.configFile."rex/display-info.js".text = config.dotnix.rex.scripts."display-info.js";
+      xdg.configFile."rex/focus-font-fit.lua".text = config.dotnix.rex.scripts."focus-font-fit.lua";
     };
   };
 }

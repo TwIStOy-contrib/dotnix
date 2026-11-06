@@ -69,3 +69,6 @@ rex.action{
     return out
   end,
 }
+
+rex.bind("ctrl+x>ctrl+x", "pane.send_key", { key = "ctrl+x" })
+rex.bind("ctrl+x>ctrl+p", "pi_split")
