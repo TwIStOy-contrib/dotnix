@@ -6,7 +6,6 @@ function M.start(options)
   local targets = {}
   local task
   local pending
-  local hotkey
   local filter
   local queued
   local stopped = false
@@ -136,7 +135,6 @@ function M.start(options)
   end
 
   local function on_focus(window)
-    if hotkey then hotkey:enable() end
     if not options.onFocus then return end
     window = window or focused_window()
     if window == nil or active_window == window:id() then return end
@@ -147,9 +145,6 @@ function M.start(options)
     schedule(false, true, window)
   end
 
-  if options.hotkey then
-    hotkey = hs.hotkey.new(options.hotkey.modifiers, options.hotkey.key, function() schedule(true, true) end)
-  end
   filter = hs.window.filter.new(function(window)
     local app = window and window:application()
     return app ~= nil and app:bundleID() == "com.superlogical.rex"
@@ -157,7 +152,6 @@ function M.start(options)
   filter:subscribe(hs.window.filter.windowFocused, on_focus)
   filter:subscribe(hs.window.filter.windowUnfocused, function(window)
     if active_window ~= nil and window:id() ~= active_window then return end
-    if hotkey then hotkey:disable() end
     if pending then pending:stop(); pending = nil end
     if observer then observer:stop() end
     active_window = nil
@@ -178,7 +172,6 @@ function M.start(options)
       queued = nil
       filter:unsubscribeAll()
       if observer then observer:stop() end
-      if hotkey then hotkey:delete() end
       if pending then pending:stop() end
       if task then task:terminate() end
     end,

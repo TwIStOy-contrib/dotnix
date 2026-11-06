@@ -41,15 +41,12 @@ selection changes reuse that size and fit the newly active pane. These changes
 are observed through macOS Accessibility focus notifications, including remote
 sessions; no background polling is used.
 
-**Cmd+Alt+Shift+F** refreshes the target and fits all visible panes in the current
-tab. Hammerspoon must be installed, running, and have Accessibility access. Configure
-`dotnix.apps.rex.fontFitOnFocus` and `dotnix.apps.rex.fontFitHotkey`; use `false`
-and `null`, respectively, to disable automatic fitting and the shortcut. Events
+Hammerspoon must be installed, running, and have Accessibility access. Set
+`dotnix.apps.rex.fontFitOnFocus` to `false` to disable automatic fitting. Events
 are debounced and runs are serialized; a selection change during a fit is handled
 afterward. Successful fits are remembered per pane, so returning to one at the
-same target skips font actions. Use the shortcut after manually changing font
-sizes, which Rex does not expose for reading. Cached targets and successful fits
-last until Hammerspoon reloads or the native window closes.
+same target skips font actions. Cached targets and successful fits last until
+Hammerspoon reloads or the native window closes.
 
 The trigger enters through the local server with `current=true`. It reads the
 app-owned `Workspace.lastFocusedSession` preference and resolves remote server
@@ -60,8 +57,7 @@ changes. To preview this path while Rex is frontmost:
 rex-font-fit current=true dry_run=true
 ```
 
-Automatic fitting never moves pane focus. The tab shortcut temporarily moves
-focus, then restores it unless the user has moved elsewhere. Explicit runs without
-`current=true` activate Rex and select the requested session. A remote server action needs `display` metadata from a
+Automatic fitting never moves pane focus. Explicit runs without `current=true`
+activate Rex and select the requested session. A remote server action needs `display` metadata from a
 local dry run, passed via `--args`, including the target `client_id`, `width_pt`,
 `height_pt`, and `default_font_pt`.

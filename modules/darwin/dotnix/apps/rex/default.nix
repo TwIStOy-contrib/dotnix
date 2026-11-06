@@ -43,23 +43,6 @@ in {
       description = "Remember the display's font size on native-window focus and fit the active Rex pane on selection changes, using Hammerspoon.";
     };
 
-    fontFitHotkey = lib.mkOption {
-      type = lib.types.nullOr (lib.types.submodule {
-        options = {
-          modifiers = lib.mkOption {
-            type = lib.types.listOf (lib.types.enum ["cmd" "alt" "ctrl" "shift"]);
-            default = ["cmd" "alt" "shift"];
-          };
-          key = lib.mkOption {
-            type = lib.types.str;
-            default = "F";
-          };
-        };
-      });
-      default = {};
-      description = "Hammerspoon shortcut for fitting all visible Rex panes; active only while Rex is focused.";
-    };
-
     dark-theme = lib.mkOption {
       type = lib.types.str;
       default = "ink-meridian";
@@ -113,7 +96,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    dotnix.apps.hammerspoon = lib.mkIf (cfg.fontFitOnFocus || cfg.fontFitHotkey != null) {
+    dotnix.apps.hammerspoon = lib.mkIf cfg.fontFitOnFocus {
       enable = true;
       extraConfig = ''
         rexFontFit = dofile(${builtins.toJSON "${hmConfigDir}/rex/focus-font-fit.lua"}).start({
@@ -121,11 +104,6 @@ in {
           server = ${builtins.toJSON rexServer},
           script = ${builtins.toJSON "${hmConfigDir}/rex/font-fit.lua"},
           onFocus = ${lib.boolToString cfg.fontFitOnFocus},
-          hotkey = ${
-          if cfg.fontFitHotkey == null
-          then "nil"
-          else ''{modifiers = {${lib.concatMapStringsSep ", " builtins.toJSON cfg.fontFitHotkey.modifiers}}, key = ${builtins.toJSON cfg.fontFitHotkey.key}}''
-        },
         })
       '';
     };
