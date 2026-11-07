@@ -42,7 +42,7 @@ local INIT = "rexNvim=rexNvim or {blocks={},last={},sessions={}};"
   -- Bootstrap the hs-side consumer once per hs lifetime; the hammerspoon
   -- init.lua also dofiles it, so this only heals a missed reload.
   .. "if rexNvimOnMode==nil then "
-  .. "pcall(dofile,'" .. home .. "/.config/rex/rex-nvim-im.lua') end"
+  .. "pcall(dofile,'" .. home .. "/.hammerspoon/rex-nvim-im.lua') end"
 
 local function safe(v)
   return type(v) == "string" and v:match("^[%w:._+-]+$") ~= nil

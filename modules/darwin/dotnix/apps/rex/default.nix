@@ -28,6 +28,7 @@
   # PATH may lack the HM profile.
   hmProfileBin = "/etc/profiles/per-user/${user.name}/bin";
   hmConfigDir = "${homeDir}/.config";
+  hsConfigDir = "${homeDir}/.hammerspoon";
   rexFiles = config.dotnix.rex.files;
   # The app-bundled CLI (Versions/Current is an app-maintained symlink);
   # darwin has no HM-profile rex.
@@ -111,7 +112,7 @@ in {
       (lib.mkIf cfg.fontFitOnFocus {
         enable = true;
         extraConfig = ''
-          rexFontFit = dofile(${builtins.toJSON "${hmConfigDir}/rex/focus-font-fit.lua"}).start({
+          rexFontFit = dofile(${builtins.toJSON "${hsConfigDir}/focus-font-fit.lua"}).start({
             rex = ${builtins.toJSON rexBin},
             server = ${builtins.toJSON rexServer},
             script = ${builtins.toJSON "${hmConfigDir}/rex/font-fit.lua"},
@@ -121,11 +122,13 @@ in {
       })
       # The input-method switcher loads its module and starts rexNvimSup, the
       # hs.task supervisor that keeps `rex do nvim-mode-listen.lua --all`
-      # running (restarting it on exit while the Rex app is up).
+      # running (restarting it on exit while the Rex app is up). Both hs-side
+      # scripts are installed under ~/.hammerspoon/ by the hammerspoon
+      # module.
       (lib.mkIf cfg.nvimImSwitch {
         enable = true;
         extraConfig = ''
-          dofile(${builtins.toJSON "${hmConfigDir}/rex/rex-nvim-im.lua"})
+          dofile(${builtins.toJSON "${hsConfigDir}/rex-nvim-im.lua"})
           rexNvimSup.start()
         '';
       })
@@ -206,15 +209,10 @@ in {
       xdg.configFile."rex/actions/swap_next_pane.lua".text = rexFiles."actions/swap_next_pane.lua";
       xdg.configFile."rex/font-fit.lua".text = rexFiles."font-fit.lua";
       xdg.configFile."rex/display-info.js".text = rexFiles."display-info.js";
-      xdg.configFile."rex/focus-font-fit.lua".text = rexFiles."focus-font-fit.lua";
       # First adoption replaces the hand-run scripts from before the
       # pipeline was managed by dotnix.
       xdg.configFile."rex/nvim-mode-listen.lua" = {
         text = rexFiles."nvim-mode-listen.lua";
-        force = true;
-      };
-      xdg.configFile."rex/rex-nvim-im.lua" = {
-        text = rexFiles."rex-nvim-im.lua";
         force = true;
       };
     };

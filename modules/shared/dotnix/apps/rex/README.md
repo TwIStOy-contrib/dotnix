@@ -7,8 +7,13 @@ server (`modules/darwin/dotnix/apps/rex`). Runtime files live together in
 `~/.config/rex/`; the files contain no host-specific paths. `init.lua` holds
 just the keybindings and pulls the actions in with `require("actions")`, which
 resolves to `actions/init.lua`. That file imports each action from its own Lua
-file. `display-info.js` and `focus-font-fit.lua` are macOS-only, since font
-fitting needs that Mac's display geometry and Hammerspoon.
+file. `display-info.js` is macOS-only, since font fitting needs that Mac's
+display geometry and Hammerspoon.
+
+Scripts that run inside Hammerspoon rather than the rex server
+(`focus-font-fit.lua`, `rex-nvim-im.lua`) live with hammerspoon instead: the
+darwin hammerspoon module installs them under `~/.hammerspoon/`, and the rex
+module's options dofile them from there.
 
 On a machine not managed by dotnix, install the same files from a configured
 Mac and reload the server there:
@@ -70,13 +75,14 @@ pane's mode. Neovim (dotvim's `config/rex.nix`) publishes its mode as an
 OSC 7501 `nvim/mode` program-status record; the listener (`rex do
 nvim-mode-listen.lua --all`) mirrors per-block modes and focus into the
 `rexNvim` global in Hammerspoon and calls the `rexNvimOn*` hooks;
-`rex-nvim-im.lua` implements the switch: leaving insert captures the active
-input method and forces the machine's ASCII layout (discovered from the
-enabled keyboard layouts), entering insert restores it unless the source was
-changed manually in between.
+`rex-nvim-im.lua` (an hs-side script, installed under `~/.hammerspoon/` by
+the hammerspoon module) implements the switch: leaving insert captures the
+active input method and forces the machine's ASCII layout (discovered from
+the enabled keyboard layouts), entering insert restores it unless the source
+was changed manually in between.
 
 The listener runs as an `hs.task` supervised by `rexNvimSup` (restarted on
 exit while the Rex app is up), so no launchd agent is involved; the
 dotnix-generated hammerspoon init.lua dofiles `rex-nvim-im.lua` and starts
-the supervisor. Disable with `dotnix.apps.rex.nvimImSwitch = false`. These
-two files are macOS-only and are not part of `rex-sync`.
+the supervisor. Disable with `dotnix.apps.rex.nvimImSwitch = false`. Both
+files are macOS-only and are not part of `rex-sync`.

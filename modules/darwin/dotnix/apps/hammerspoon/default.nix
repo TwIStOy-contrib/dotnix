@@ -65,6 +65,17 @@ in {
               + cfg.extraConfig;
             force = true;
           };
+
+          # Rex-provided hs scripts, dofile'd by init.lua via the
+          # dotnix.apps.rex options. Inert definitions on their own.
+          "${homeDir}/.hammerspoon/rex-nvim-im.lua" = {
+            source = ./rex-nvim-im.lua;
+            force = true;
+          };
+          "${homeDir}/.hammerspoon/focus-font-fit.lua" = {
+            source = ./focus-font-fit.lua;
+            force = true;
+          };
         };
       };
     };

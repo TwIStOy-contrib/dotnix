@@ -4,11 +4,13 @@
 # bundled server. The files are portable and contain no host-specific paths;
 # rex-sync copies the same set to machines this repo does not manage.
 #
-# display-info.js and focus-font-fit.lua are macOS-only: font fitting needs
-# the Mac's display geometry and a Hammerspoon controller. Linux installs
-# font-fit.lua only, and accepts display metadata handed over by the Mac.
-# nvim-mode-listen.lua and rex-nvim-im.lua are also macOS-only (the client
-# side of the nvim/mode input-method pipeline); Linux hosts never run them.
+# display-info.js is macOS-only: font fitting needs the Mac's display
+# geometry and a Hammerspoon controller. Linux installs font-fit.lua
+# only, and accepts display metadata handed over by the Mac.
+# nvim-mode-listen.lua is also macOS-only (the client side of the
+# nvim/mode input-method pipeline); Linux hosts never run it. The hs-side
+# scripts this pipeline loads (rex-nvim-im.lua, focus-font-fit.lua) live in
+# the darwin hammerspoon module and install under ~/.hammerspoon/.
 {lib, ...}: {
   options.dotnix.rex.files = lib.mkOption {
     type = lib.types.attrsOf lib.types.lines;
@@ -25,9 +27,7 @@
         "actions/swap_next_pane.lua" = ./config/actions/swap_next_pane.lua;
         "font-fit.lua" = ./config/font-fit.lua;
         "display-info.js" = ./config/display-info.js;
-        "focus-font-fit.lua" = ./config/focus-font-fit.lua;
         "nvim-mode-listen.lua" = ./config/nvim-mode-listen.lua;
-        "rex-nvim-im.lua" = ./config/rex-nvim-im.lua;
       };
     description = "Rex config files, keyed by path under ~/.config/rex/.";
   };
