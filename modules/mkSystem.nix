@@ -66,6 +66,13 @@ in
           })
         else pkg)
       inputs.neovim-nightly-overlay.packages.${system};
+    # Plugins have to be wrapped against the same luajit as the nightly neovim,
+    # otherwise home-manager's plugin environment fails with two conflicting
+    # `bin/lua` paths once nixpkgs-unstable bumps luajit ahead of the overlay pin.
+    neovim-nightly-pkgs = import inputs.neovim-nightly-overlay.inputs.nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    };
     isDarwin = hasSuffix "darwin" system;
     mkSystemImpl =
       if isDarwin
@@ -96,7 +103,7 @@ in
         # unstable channel
         inherit pkgs-unstable;
         # neovim packages from nightly overlay
-        inherit neovim-pkgs;
+        inherit neovim-pkgs neovim-nightly-pkgs;
         # llm-agents
         inherit llm-agents;
         # my nur channel (rime-ls only: nixpkgs rime-ls lacks aarch64-darwin)

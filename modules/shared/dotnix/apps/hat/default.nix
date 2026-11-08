@@ -8,7 +8,11 @@
   ...
 }: let
   cfg = config.dotnix.apps.hat;
-  hat = inputs.hat.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  # nixpkgs-unstable now forces pkg-config for Rust system libs; hat's package
+  # does not declare sqlite yet, so building it from source fails to link.
+  hat = inputs.hat.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+    buildInputs = (old.buildInputs or []) ++ [pkgs.sqlite.out];
+  });
 in {
   options.dotnix.apps.hat = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.hat";

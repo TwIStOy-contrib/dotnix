@@ -45,8 +45,6 @@ in {
       ++ (with pkgs-unstable; [
         cmake-language-server
         llvmPackages_19.clang-tools
-        # format cmake files
-        gersemi
       ]);
     # generate clangd user configuration file
 

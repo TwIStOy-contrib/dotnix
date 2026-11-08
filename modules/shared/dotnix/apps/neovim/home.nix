@@ -4,18 +4,19 @@
   pkgs,
   pkgs-unstable,
   neovim-pkgs,
+  neovim-nightly-pkgs,
   ...
 }: let
   user-dotpath = "${config.home.homeDirectory}/.dotvim";
 
-  unstableVimPlugins = pkgs-unstable.vimPlugins;
+  nightlyVimPlugins = neovim-nightly-pkgs.vimPlugins;
 
   plugins = {
-    inherit (unstableVimPlugins) codesnap-nvim;
-    inherit (unstableVimPlugins) telescope-fzf-native-nvim;
-    inherit (unstableVimPlugins) markdown-preview-nvim;
-    inherit (unstableVimPlugins) rest-nvim;
-    inherit (unstableVimPlugins) codediff-nvim;
+    inherit (nightlyVimPlugins) codesnap-nvim;
+    inherit (nightlyVimPlugins) telescope-fzf-native-nvim;
+    inherit (nightlyVimPlugins) markdown-preview-nvim;
+    inherit (nightlyVimPlugins) rest-nvim;
+    inherit (nightlyVimPlugins) codediff-nvim;
   };
 
   bins = {
