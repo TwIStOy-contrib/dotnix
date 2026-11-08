@@ -2,7 +2,7 @@
   config,
   lib,
   pkgs,
-  pkgs-unstable,
+  llm-agents,
   dotnix-utils,
   dotnix-constants,
   ...
@@ -11,9 +11,11 @@
   inherit (dotnix-constants) user;
   homeDir = config.users.users."${user.name}".home;
   openrouterApiKeyPath = config.age.secrets."openrouter-api-key".path;
+  # Prefer llm-agents' build: nixpkgs-unstable's codex is rebuilt from source on
+  # every pin bump and has been breaking on darwin (missing system libs).
   codex = pkgs.writeShellScriptBin "codex" ''
     export OPENROUTER_API_KEY="$(cat ${openrouterApiKeyPath})"
-    exec ${pkgs-unstable.codex}/bin/codex "$@"
+    exec ${llm-agents.codex}/bin/codex "$@"
   '';
 in {
   options.dotnix.apps.codex = {
