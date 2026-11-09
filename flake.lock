@@ -519,10 +519,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1788870580,
-        "narHash": "sha256-HT3hSq3B9oEmaT+9gYeRNmHPSuVVvP9aD7RfkXlsl0o=",
+        "lastModified": 1794199014,
+        "narHash": "sha256-HIfO8ND2TsSpvwh5uw4URjHbLlbzOMTaqp+CKad05H0=",
         "ref": "refs/heads/master",
-        "rev": "b5e9b0625493c2d6e44ff5b8c6dc313d4d91d37f",
+        "rev": "99ff2a61a01a57a54c2dda7640b4a3dea78cbe69",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/TwIStOy/hat.git"
