@@ -86,19 +86,22 @@ Add the new `.age` file to the public keys list. This defines **which hosts can 
 
 #### Step 2: Create the encrypted `.age` file — `secrets/<name>.age`
 
-Run `agenix` **from the `secrets/` directory** (it reads `./secrets.nix` relative to cwd):
+Run `agenix` **from the `secrets/` directory** (it reads `./secrets.nix` relative to cwd). For a new file, feed the plaintext on **stdin** — non-interactive stdin replaces the secret without decrypting:
 
 ```bash
 cd secrets
-echo "" | agenix -e my-secret.age
+printf '%s\n' "my-secret-value" | agenix -e my-secret.age
 ```
 
-This opens `$EDITOR` with the plaintext. For an empty secret, pipe empty content. If you need to pre-fill a value, set `EDITOR` appropriately:
+**`$EDITOR` is ignored when stdin is not a TTY** (every agent/CI shell). Under an agent, `EDITOR="cp /tmp/value" agenix -e my-secret.age` silently encrypts an *empty* secret with exit 0 — the tool's empty stdin wins. Never run `agenix -e` under an agent without redirecting stdin.
+
+Always verify right after creating, matching the runtime identity (`/etc/ssh/ssh_host_ed25519_key` needs sudo; bundled age lives at `/nix/store/*-age-*/bin/age`):
 
 ```bash
-# Pre-fill a value
-echo "my-secret-value" | EDITOR="cp /dev/stdin" agenix -e my-secret.age
+sudo agenix -d my-secret.age -i /etc/ssh/ssh_host_ed25519_key | cmp - /tmp/value && echo MATCH
 ```
+
+Note the flag order: `-d FILE -i KEY` decrypts, `-d -i KEY FILE` prints usage. Plain `agenix -d` prints the help text (~1.2 KB) instead of failing loudly, so compare content, not byte counts.
 
 #### Step 3: Wire into the system — `modules/shared/secrets.nix`
 

@@ -59,4 +59,6 @@ in {
   "kimi-code-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "typesafe-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "magpie-web-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "openviking-root-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "openviking-user-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }

@@ -179,5 +179,13 @@ in {
     magpie-web-key = ageSecret {
       file = "magpie-web-key.age";
     };
+    openviking-root-key = ageSecret {
+      file = "openviking-root-key.age";
+      owner = user.name;
+    };
+    openviking-user-key = ageSecret {
+      file = "openviking-user-key.age";
+      owner = user.name;
+    };
   };
 }
