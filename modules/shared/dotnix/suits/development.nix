@@ -24,6 +24,7 @@ in {
         "git"
         "lazygit"
         "difftastic"
+        "emacs"
 
         "claude-code-router"
         "codex"
