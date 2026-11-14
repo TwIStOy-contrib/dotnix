@@ -179,6 +179,11 @@ in {
     magpie-web-key = ageSecret {
       file = "magpie-web-key.age";
     };
+    # Main gateway key (magpie on poi) for clients calling the shared gateway
+    magpie-main-key = ageSecret {
+      file = "magpie-main-key.age";
+      owner = user.name;
+    };
     openviking-root-key = ageSecret {
       file = "openviking-root-key.age";
       owner = user.name;

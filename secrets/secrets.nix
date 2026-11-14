@@ -61,4 +61,5 @@ in {
   "magpie-web-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "openviking-root-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "openviking-user-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "magpie-main-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }
