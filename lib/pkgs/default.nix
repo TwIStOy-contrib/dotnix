@@ -7,4 +7,5 @@
 in {
   inherit (wp) mkWrappedProgram llmApiKeys;
   wrapped-programs = wp.wrappedPrograms;
+  openviking-cli = pkgs-unstable.callPackage ./openviking-cli.nix {};
 }

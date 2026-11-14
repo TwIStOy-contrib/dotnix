@@ -4,6 +4,7 @@
   inputs,
   dotnix-utils,
   dotnix-constants,
+  dotnix-pkgs,
   ...
 }: let
   cfg = config.dotnix.apps.openviking;
@@ -30,6 +31,10 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    dotnix.hm.packages = [
+      dotnix-pkgs.openviking-cli
+    ];
+
     home-manager = dotnix-utils.hm.hmConfig {
       # agenix owns the credential; derive the connection file the OpenViking
       # CLI and plugins read from it rather than keeping a second copy.
