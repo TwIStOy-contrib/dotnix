@@ -32,6 +32,7 @@ in {
         "htw"
         "hunk"
         "opencode"
+        "openviking"
         "pi"
         "todoist"
       ];
