@@ -60,4 +60,5 @@ in {
   "typesafe-api-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "magpie-web-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
   "magpie-main-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
+  "openviking-cloud-user-key.age".publicKeys = mkSecrets (homeServers ++ desktops);
 }

@@ -184,5 +184,10 @@ in {
       file = "magpie-main-key.age";
       owner = user.name;
     };
+    # user key for the cloud OpenViking plan
+    openviking-cloud-user-key = ageSecret {
+      file = "openviking-cloud-user-key.age";
+      owner = user.name;
+    };
   };
 }
