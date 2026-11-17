@@ -6,13 +6,7 @@
   ...
 }: let
   cfg = config.dotnix.apps.emacs;
-
-  # macOS gets the Cocoa build. The Linux hosts (poi, taihou) are headless and
-  # are driven over ssh/tmux, so emacs-nox keeps GTK/X libs out of the closure.
-  emacsPackage =
-    if pkgs.stdenv.hostPlatform.isDarwin
-    then pkgs-unstable.emacs
-    else pkgs-unstable.emacs-nox;
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 in {
   options.dotnix.apps.emacs = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.emacs";
@@ -22,6 +16,10 @@ in {
     # Only the binary is managed here: ~/.emacs.d is the hand-rolled config and
     # keeps installing packages itself through package.el (MELPA), which needs a
     # writable elpa/ + eln-cache/.
-    dotnix.hm.packages = [emacsPackage];
+    # Darwin hosts use the homebrew emacs-plus build (tap + brew declared in
+    # modules/darwin/app.nix), so no nix package there. The Linux hosts (poi,
+    # taihou) are headless and driven over ssh/tmux, so emacs-nox keeps GTK/X
+    # libs out of the closure.
+    dotnix.hm.packages = lib.optionals (!isDarwin) [pkgs-unstable.emacs-nox];
   };
 }
