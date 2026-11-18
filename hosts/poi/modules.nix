@@ -1,8 +1,4 @@
-{
-  pkgs,
-  pkgs-unstable,
-  ...
-}: {
+{...}: {
   dotnix = {
     nixos-shared-suit = {
       enable = true;
@@ -25,46 +21,11 @@
         "--accept-dns=false"
       ];
     };
-    services.fava = {
-      enable = true;
-      port = 5000;
-      home = "/var/lib/fava";
-      mainFile = "main.bean";
-      accountBookRepo = "git@github.com:TwIStOy-contrib/account-book.git";
-    };
     services.eternal-terminal = {
       enable = true;
     };
-  };
-
-  services.github-runners = {
-    general-private-contrib = {
-      enable = false;
-      name = "poi-private-contrib";
-      tokenFile = "/run/agenix/github-actions-runner-token";
-      url = "https://github.com/TwIStOy-contrib";
-      extraLabels = [
-        "nixos"
-      ];
-      replace = true;
-      extraPackages = with pkgs; [
-        docker
-      ];
-    };
-    account-book = {
-      enable = false;
-      name = "poi-account-book";
-      tokenFile = "/run/agenix/github-actions-runner-token";
-      url = "https://github.com/TwIStOy-contrib";
-      extraLabels = [
-        "nixos"
-        "beancount"
-      ];
-      runnerGroup = "beancount";
-      replace = true;
-      extraPackages = with pkgs-unstable; [
-        beancount
-      ];
+    services.rex = {
+      enable = true;
     };
   };
 }
