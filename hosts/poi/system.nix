@@ -4,7 +4,7 @@ in {
   networking = {
     hostName = hostname;
     networkmanager.enable = true;
-    proxy.default = "http://192.168.50.217:6152";
+    proxy.default = "http://127.0.0.1:7893";
   };
 
   systemd.network.wait-online.enable = false;
