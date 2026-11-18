@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   pkgs-unstable,
   inputs,
   ...
@@ -48,6 +49,16 @@ in {
         Grant capabilities so `process-name` based rules work.
       '';
     };
+
+    restartOnConfigChange = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Restart mihomo during activation when the decrypted
+        `mihomo-config` secret differs from the config the running daemon
+        actually loaded. No-op when the content is unchanged.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -62,5 +73,28 @@ in {
     };
 
     networking.firewall.allowedTCPPorts = [cfg.controllerPort];
+
+    # `services.mihomo` hands the secret to the daemon through systemd's
+    # `LoadCredential`, which snapshots the file when the unit starts. The
+    # unit's `configFile` is the constant `/run/agenix/mihomo-config` path, so
+    # re-encrypting the secret changes nothing systemd can see and the daemon
+    # keeps serving the config it read at its (possibly much older) start time.
+    # Compare the credential the daemon actually loaded against the freshly
+    # decrypted secret and restart it only when the bytes differ.
+    system.activationScripts.mihomo-config-change = lib.mkIf cfg.restartOnConfigChange {
+      deps = ["agenix"];
+      text = ''
+        loaded=/run/credentials/mihomo.service/config.yaml
+        secret=${config.age.secrets."mihomo-config".path}
+        if [ -r "$loaded" ] && [ -r "$secret" ] && \
+          ! ${lib.getExe' pkgs.coreutils "cmp"} -s "$loaded" "$secret"; then
+          if ${config.systemd.package}/bin/systemctl is-active --quiet mihomo.service; then
+            echo "[mihomo] config secret changed, restarting mihomo.service"
+            ${config.systemd.package}/bin/systemctl restart mihomo.service ||
+              echo "[mihomo] WARNING: failed to restart mihomo.service" >&2
+          fi
+        fi
+      '';
+    };
   };
 }
