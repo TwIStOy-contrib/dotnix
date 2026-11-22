@@ -77,7 +77,7 @@
     sha256 = "sha256-pllFZoWRdtLliz/5pLWks0V9nKFMzeWoRcmFgu2UWi8=";
   };
 
-  inherit (dotnix-pkgs.wrapped-programs) opencode opencode2;
+  inherit (dotnix-pkgs.wrapped-programs) opencode;
 in {
   options.dotnix.apps.opencode = {
     enable = lib.mkEnableOption "Enable module dotnix.apps.opencode";
@@ -86,7 +86,6 @@ in {
   config = lib.mkIf cfg.enable {
     dotnix.hm.packages = [
       opencode
-      opencode2
     ];
 
     # setup opencode configs
